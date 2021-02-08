@@ -1,7 +1,9 @@
 package br.tiagohm.astrum.core.time
 
+import br.tiagohm.astrum.core.Consts
+import java.time.Instant
+import java.time.ZoneOffset
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.floor
 
 data class DateTime(
@@ -12,6 +14,7 @@ data class DateTime(
     val minute: Int = 0,
     val second: Int = 0,
     val millisecond: Int = 0,
+    val utcOffset: Double = currentUTCOffset,
 ) {
 
     val isLepYear by lazy { isLeapYear(year) }
@@ -20,13 +23,16 @@ data class DateTime(
 
     companion object {
 
+        val currentUTCOffset: Double
+            get() = ZoneOffset.systemDefault().rules.getOffset(Instant.now()).totalSeconds / 3600.0
+
         fun now(): DateTime {
-            val c = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            val c = Calendar.getInstance()
 
             return DateTime(
                 c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE),
                 c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND),
-                c.get(Calendar.MILLISECOND)
+                c.get(Calendar.MILLISECOND), currentUTCOffset
             )
         }
 
@@ -68,7 +74,11 @@ data class DateTime(
         }
 
         fun computeJDFromDateTime(dt: DateTime): Double {
-            return computeJDFromDate(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.millisecond)
+            return computeJDFromDate(
+                dt.year, dt.month, dt.day,
+                dt.hour, dt.minute, dt.second, dt.millisecond,
+                dt.utcOffset
+            )
         }
 
         fun computeJDFromDate(
@@ -78,7 +88,8 @@ data class DateTime(
             hour: Int,
             minute: Int,
             second: Int,
-            millisecond: Int
+            millisecond: Int,
+            utcOffset: Double,
         ): Double {
             val deltaTime = (hour / 24.0) +
                     (minute / (24.0 * 60.0)) +
@@ -120,26 +131,7 @@ data class DateTime(
                 ljul += 2 - lcc + lee
             }
 
-            return ljul.toDouble() + deltaTime
-        }
-
-        fun computeJDFromDateTime2(dt: DateTime): Double {
-            return computeJDFromDate2(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
-        }
-
-        fun computeJDFromDate2(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int): Double {
-            val extra = (100.0 * year) + month - 190002.5
-            var rjd = 367.0 * year
-
-            rjd -= floor(7.0 * (year + floor((month + 9.0) / 12.0)) / 4.0)
-            rjd += floor(275.0 * month / 9.0)
-            rjd += day
-            rjd += (hour + (minute + second / 60.0) / 60.0) / 24.0
-            rjd += 1721013.5
-            rjd -= 0.5 * extra / abs(extra)
-            rjd += 0.5
-
-            return rjd
+            return (ljul.toDouble() + deltaTime) - (utcOffset * Consts.JD_HOUR)
         }
 
         fun computeJDFromBesselianEpoch(epoch: Double): Double {

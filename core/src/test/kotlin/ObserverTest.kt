@@ -2,6 +2,7 @@ import br.tiagohm.astrum.core.ObservationSite
 import br.tiagohm.astrum.core.Observer
 import br.tiagohm.astrum.core.deg
 import br.tiagohm.astrum.core.math.Duad
+import br.tiagohm.astrum.core.math.Triad
 import br.tiagohm.astrum.core.sky.*
 import br.tiagohm.astrum.core.time.DateTime
 import br.tiagohm.astrum.core.time.DeltaTAlgorithmType
@@ -20,7 +21,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.36244, -15.7656),
@@ -42,7 +43,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.35828, -15.7673),
@@ -64,7 +65,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.36441, -15.7649),
@@ -86,7 +87,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.35672, -15.7673),
@@ -108,7 +109,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.35536, -15.7681),
@@ -136,7 +137,7 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             DeltaTAlgorithmType.NONE,
             useTopocentricCoordinates = true,
             useNutation = true,
@@ -146,7 +147,7 @@ class ObserverTest {
         val mercury = Mercury(sun)
 
         for (i in 5 until 12) {
-            val oi = o0.copy(dateTime = DateTime(2021, 2, i, 12, 0, 0))
+            val oi = o0.copy(dateTime = DateTime(2021, 2, i, 9, 0, 0))
             var pos = mercury.raDecOfDate(oi)
 
             when (i) {
@@ -173,7 +174,7 @@ class ObserverTest {
         }
 
         for (i in 4 downTo 1) {
-            val oi = o0.copy(dateTime = DateTime(2021, 2, i, 12, 0, 0))
+            val oi = o0.copy(dateTime = DateTime(2021, 2, i, 9, 0, 0))
             var pos = mercury.raDecOfDate(oi)
 
             when (i) {
@@ -202,7 +203,7 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0),
         )
 
         assertTrue(Neptune(sun).isAboveHorizon(o0))
@@ -212,7 +213,7 @@ class ObserverTest {
         val o1 = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 6, 0, 0, 0), // 2459251.500000
+            DateTime(2021, 2, 5, 21, 0, 0),
         )
 
         assertTrue(!Neptune(sun).isAboveHorizon(o1))
@@ -273,7 +274,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         System.err.println(Jupiter(sun).parallacticAngle(o).deg)
@@ -287,7 +288,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(319.06728, -15.8555), sun.raDecJ2000(o), 0.0001)
@@ -308,7 +309,7 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(90.7432, 43.3413), sun.altAz(o0), 0.0001)
@@ -323,7 +324,7 @@ class ObserverTest {
         val o1 = Observer(
             earth,
             ObservationSite("Tokyo", 35.689499, 139.691711, 44.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(285.4773, -46.2733), sun.altAz(o1), 0.0001)
@@ -344,7 +345,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(90.7432, 43.3584), sun.altAz(o, apparent = true), 0.0001)
@@ -365,7 +366,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(270.7432, 43.3584), sun.altAz(o, true, apparent = true), 0.0001)
@@ -386,7 +387,7 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(20.72784, -15.7682), sun.hourAngle(o0), 0.0001)
@@ -401,7 +402,7 @@ class ObserverTest {
         val o1 = Observer(
             earth,
             ObservationSite("Tokyo", 35.689499, 139.691711, 44.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(9.07967, -15.7697), sun.hourAngle(o1), 0.0001)
@@ -422,7 +423,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(20.72897, -15.7730), sun.hourAngle(o, true), 0.0001)
@@ -443,7 +444,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(34.1094, -39.0728), sun.galactic(o), 0.0001)
@@ -464,7 +465,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(-104.0866, 42.9741), sun.supergalactic(o), 0.0001)
@@ -485,7 +486,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(316.6135, 0.0017), sun.eclipticJ2000(o), 0.0001)
@@ -506,7 +507,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertDuadEquals(Duad(316.9039, 0.00000), sun.eclipticOfDate(o), 0.0001)
@@ -517,5 +518,28 @@ class ObserverTest {
         assertDuadEquals(Duad(305.8131, -0.4285), Saturn(sun).eclipticOfDate(o), 0.0001)
         assertDuadEquals(Duad(36.9358, -0.4327), Uranus(sun).eclipticOfDate(o), 0.0001)
         assertDuadEquals(Duad(349.4198, -1.0697), Neptune(sun).eclipticOfDate(o), 0.0001)
+    }
+
+    @Test
+    fun rts() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+        )
+        
+        // TODO: Moon, DSOs, Pluto, etc
+
+        assertTriadEquals(Triad(5.7500, 12.2833, 18.8167), sun.rts(o), 0.01)
+        assertTriadEquals(Triad(6.283333, 12.633333, 19.0), Mercury(sun).rts(o), 0.01)
+        assertTriadEquals(Triad(4.85, 11.483, 18.117), Venus(sun).rts(o), 0.01)
+        assertTriadEquals(Triad(12.267, 17.817, 23.367), Mars(sun).rts(o), 0.01)
+        assertTriadEquals(Triad(5.333, 11.9, 18.483), Jupiter(sun).rts(o), 0.01)
+        assertTriadEquals(Triad(4.933, 11.55, 18.15), Saturn(sun).rts(o), 0.01)
+        assertTriadEquals(Triad(11.65, 17.317,23.0), Uranus(sun).rts(o), 0.01)
+        assertTriadEquals(Triad(8.183, 14.383, 20.583), Neptune(sun).rts(o), 0.01)
     }
 }

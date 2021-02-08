@@ -23,7 +23,7 @@ data class Observer(
     val useLightTravelTime: Boolean = true,
 ) {
 
-    private val refraction = Refraction(pressure, temperature)
+    val refraction = Refraction(pressure, temperature)
 
     val jde by lazy { JD[0] + JD[1] / 86400.0 }
 

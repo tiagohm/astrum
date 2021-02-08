@@ -42,7 +42,7 @@ class DeltaTTest {
         )
 
         for (year in data.keys) {
-            val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0)
+            val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0, 0.0)
             val deltaT = DeltaTByMeeusSimons.compute(jd)
             assertEquals(data[year]!!, deltaT, 1.0)
         }
@@ -106,7 +106,7 @@ class DeltaTTest {
         )
 
         for (year in data.keys) {
-            val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0)
+            val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0, 0.0)
             val deltaT = DeltaTByEspenakMeeus.compute(jd)
             val result = data[year]!!.first
             val error = data[year]!!.second

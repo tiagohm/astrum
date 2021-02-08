@@ -3,10 +3,11 @@ package br.tiagohm.astrum.core.sky
 import br.tiagohm.astrum.core.Consts
 import br.tiagohm.astrum.core.Observer
 import br.tiagohm.astrum.core.math.Triad
+import br.tiagohm.astrum.core.rad
 
 class Sun : Planet(
     "Sun",
-    695700.0,
+    695700.0 / Consts.AU,
     0.0,
     -1.0,
     null,
@@ -29,4 +30,8 @@ class Sun : Planet(
     override fun computePosition(jde: Double) = Triad.ZERO to Triad.ZERO
 
     override fun computeRotObliquity(jde: Double) = 0.12653637076958889433
+
+    override fun internalComputeRTSTime(o: Observer, hz: Double, hasAtmosphere: Boolean): Triad {
+        return super.internalComputeRTSTime(o, hz - angularSize(o).rad, hasAtmosphere)
+    }
 }

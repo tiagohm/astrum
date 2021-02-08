@@ -114,6 +114,27 @@ class DateTimeTest {
         }
     }
 
+    @Test
+    fun utcOffset() {
+        val dt0 = DateTime(2021, 2, 5, 12, 0, 0, utcOffset = 0.0) // 2459251.000000
+        assertEquals(2459251.0, dt0.jd)
+
+        val dt1 = DateTime(2021, 2, 5, 9, 0, 0, utcOffset = -3.0)
+        assertEquals(2459251.0, dt1.jd)
+
+        val dt2 = DateTime(2021, 2, 5, 15, 0, 0, utcOffset = 3.0)
+        assertEquals(2459251.0, dt2.jd)
+
+        val dt3 = DateTime(2021, 2, 5, 0, 0, 0, utcOffset = -12.0)
+        assertEquals(2459251.0, dt3.jd)
+
+        val dt4 = DateTime(2021, 2, 6, 0, 0, 0, utcOffset = 12.0)
+        assertEquals(2459251.0, dt4.jd)
+
+        val dt5 = DateTime(2021, 2, 5, 11, 30, 0, utcOffset = -0.5)
+        assertEquals(2459251.0, dt5.jd)
+    }
+
     companion object {
 
         private const val DELTA_4 = 0.0001

@@ -1,15 +1,11 @@
 package br.tiagohm.astrum.core.sky
 
-import br.tiagohm.astrum.core.Consts
-import br.tiagohm.astrum.core.KeplerOrbit
-import br.tiagohm.astrum.core.Observer
-import br.tiagohm.astrum.core.Orbit
+import br.tiagohm.astrum.core.*
 import br.tiagohm.astrum.core.algorithms.Elp82b
 import br.tiagohm.astrum.core.algorithms.Vsop87
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Triad
-import kotlin.math.abs
-import kotlin.math.atan2
+import kotlin.math.*
 
 abstract class Planet internal constructor(
     // English planet name
@@ -220,6 +216,65 @@ abstract class Planet internal constructor(
      * For moons, it may be the obliquity against its planet's equatorial plane.
      */
     open fun computeRotObliquity(jde: Double): Double = 0.0
+
+    final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
+        // TODO: For Moon: hz = + (0.7275 * 0.95).rad; // horizon parallax factor
+        var hz = 0.0
+
+        if (hasAtmosphere) {
+            // Canonical refraction at horizon is -34'. Replace by pressure-dependent value here!
+            val zero = Triad(1.0, 0.0, 0.0)
+            hz += asin(o.refraction.backward(zero)[2])
+        }
+
+        return internalComputeRTSTime(o, hz, hasAtmosphere)
+    }
+
+    // "hz" is in radians
+    internal open fun internalComputeRTSTime(o: Observer, hz: Double, hasAtmosphere: Boolean): Triad {
+        val phi = o.site.latitude.rad
+        val coeff = o.home.computeMeanSolarDay() / o.home.siderealDay
+
+        var (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeSiderealPositionGeometric(o))
+        ra = Consts.M_2_PI - ra
+
+        var ha = ra * 12.0 / Consts.M_PI
+        if (ha > 24.0) ha -= 24.0
+        // It seems necessary to have ha in [-12,12]!
+        if (ha > 12.0) ha -= 24.0
+
+        val jd = o.jd
+        val ct = (jd - jd.toInt()) * 24.0
+        var transit = ct - ha * coeff // For Earth: coeff = (360.985647 / 360.0) = 1.0027379083333
+
+        if (ha > 12.0 && ha <= 24.0) transit += 24.0
+
+        transit += o.dateTime.utcOffset + 12.0
+
+        transit = posMod(transit, 24.0)
+
+        val cosH = (sin(hz) - sin(phi) * sin(dec)) / (cos(phi) * cos(dec))
+
+        val rise: Double
+        val set: Double
+
+        // Circumpolar
+        if (cosH < -1.0) {
+            rise = 100.0
+            set = 100.0
+        }
+        // Never rises
+        else if (cosH > 1.0) {
+            rise = -100.0
+            set = -100.0
+        } else {
+            val HC = acos(cosH) * 12.0 * coeff / Consts.M_PI
+            rise = posMod(transit - HC, 24.0)
+            set = posMod(transit + HC, 24.0)
+        }
+
+        return Triad(rise, transit, set)
+    }
 
     inline val isRotatingRetrograde: Boolean
         get() = siderealDay < 0.0

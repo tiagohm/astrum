@@ -102,8 +102,10 @@ interface CelestialObject {
         return Algorithms.rectangularToSphericalCoordinates(computeAltAzPositionGeometric(o))[1] >= 0.0
     }
 
-    // Gets today's time of rise, transit and set in decimal hours for celestial object for current location.
-    // fun computeRTSTime(o: Observer): Triad
+    /**
+     * Computes today's time of rise, transit and set in decimal hours for celestial object for current location.
+     */
+    fun rts(o: Observer, hasAtmosphere: Boolean = true): Triad
 
     // Returns object's apparent V magnitude as seen from observer, without including extinction.
     // fun computeVMagnitude(o: Observer): Double

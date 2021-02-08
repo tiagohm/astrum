@@ -8,8 +8,17 @@ fun remainder(numer: Double, denom: Double): Double {
     return numer - round(numer / denom) * denom
 }
 
-fun bound(a: Double, b: Double, c: Double): Double {
+@Suppress("NOTHING_TO_INLINE")
+inline fun bound(a: Double, b: Double, c: Double): Double {
     return max(a, min(b, c))
+}
+
+/**
+ * Modulo where the result is always nonnegative.
+ */
+fun posMod(a: Double, b: Double): Double {
+    val res = a % b
+    return if (res < 0.0) res + b else res
 }
 
 fun fuzzyEquals(a: Double, b: Double, eps: Double = Consts.EPSILON): Boolean {
