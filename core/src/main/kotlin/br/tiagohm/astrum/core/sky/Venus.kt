@@ -23,4 +23,6 @@ class Venus(parent: Sun) : Planet(
         val xyz = computePlanetHeliocentricCoordinates(jde, 1)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
+
+    override fun computeRotObliquity(jde: Double) = 0.021624851729521666
 }

@@ -27,4 +27,6 @@ class Sun : Planet(
     }
 
     override fun computePosition(jde: Double) = Triad.ZERO to Triad.ZERO
+
+    override fun computeRotObliquity(jde: Double) = 0.12653637076958889433
 }

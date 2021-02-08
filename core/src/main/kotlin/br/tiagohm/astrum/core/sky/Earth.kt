@@ -63,4 +63,8 @@ class Earth(parent: Sun) : Planet(
 
         return rotLocalToParent
     }
+
+    override fun computeRotObliquity(jde: Double): Double {
+        return Precession.computeVondrakEpsilon(jde)
+    }
 }

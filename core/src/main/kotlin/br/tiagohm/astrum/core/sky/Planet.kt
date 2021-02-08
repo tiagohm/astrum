@@ -198,7 +198,7 @@ abstract class Planet internal constructor(
         return m
     }
 
-    override fun computeAngularSize(o: Observer): Double {
+    override fun angularSize(o: Observer): Double {
         val radius = equatorialRadius // TODO: Saturn Rings
         return atan2(radius, computeJ2000EquatorialPosition(o).length) * Consts.M_180_PI
     }
@@ -211,6 +211,15 @@ abstract class Planet internal constructor(
 
     // Get the planet phase (illuminated fraction of the planet disk, [0=dark..1=full]) for an observer at pos obsPos in heliocentric coordinates (in AU)
     // fun getPhase(obsPos: Triplet): Double
+
+    /**
+     * Computes the obliquity in radians.
+     * For Earth, this is epsilon, the angle between earth's rotational axis and pole of mean ecliptic of date.
+     * Details: e.g. Hilton etal, Report on Precession and the Ecliptic, Cel.Mech.Dyn.Astr.94:351-67 (2006), Fig1.
+     * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
+     * For moons, it may be the obliquity against its planet's equatorial plane.
+     */
+    open fun computeRotObliquity(jde: Double): Double = 0.0
 
     inline val isRotatingRetrograde: Boolean
         get() = siderealDay < 0.0

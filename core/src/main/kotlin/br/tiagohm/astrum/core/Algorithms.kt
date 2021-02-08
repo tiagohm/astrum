@@ -87,6 +87,18 @@ object Algorithms {
         return Triad(cos(lon) * cosLat, sin(lon) * cosLat, sin(lat))
     }
 
+    fun equatorialToEcliptic(ra: Double, dec: Double, ecl: Double): Duad {
+        val lambda = atan2(sin(ra) * cos(ecl) + tan(dec) * sin(ecl), cos(ra))
+        val beta = asin(sin(dec) * cos(ecl) - cos(dec) * sin(ecl) * sin(ra))
+        return Duad(lambda, beta)
+    }
+
+    fun eclipticToEquatorial(lambda: Double, beta: Double, ecl: Double): Duad {
+        val ra = atan2(sin(lambda) * cos(ecl) - tan(beta) * sin(ecl), cos(lambda))
+        val dec = asin(sin(beta) * cos(ecl) + cos(beta) * sin(ecl) * sin(lambda))
+        return Duad(ra, dec)
+    }
+
     fun computeInterpolatedElements(
         t: Double,
         elem: DoubleArray,
