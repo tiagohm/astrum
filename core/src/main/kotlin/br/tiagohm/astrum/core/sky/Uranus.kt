@@ -21,6 +21,7 @@ class Uranus(parent: Sun) : Planet(
             1.4360256624251349, // Obliquity
             -0.21560564768092383, // Ascending Node
             203.81, // W0
+            -501.1600928, // W1
         )
 
         siderealPeriod = 30685.0

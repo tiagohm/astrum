@@ -21,6 +21,7 @@ class Jupiter(parent: Sun) : Planet(
             0.03868532751568998, // Obliquity
             -0.3871470026094814, // Ascending Node
             43.3, // W0
+            870.270, // W1
         )
 
         siderealPeriod = 4331.87

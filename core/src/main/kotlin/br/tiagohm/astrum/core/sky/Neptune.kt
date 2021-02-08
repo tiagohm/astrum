@@ -21,6 +21,7 @@ class Neptune(parent: Sun) : Planet(
             0.489152978736078, // Obliquity
             0.8593144058841349, // Ascending Node
             253.18, // W0
+            536.3128492, // W1
         )
 
         siderealPeriod = 60189.0

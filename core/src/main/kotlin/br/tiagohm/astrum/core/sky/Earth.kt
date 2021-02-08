@@ -25,6 +25,7 @@ class Earth(parent: Sun) : Planet(
             -23.4392803055555555556 * Consts.M_PI_180, // Obliquity
             0.0, // Ascending Node
             190.147, // W0
+            360.9856235, // W1
         )
 
         siderealPeriod = 365.256363004

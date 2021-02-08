@@ -22,6 +22,7 @@ class Mars(parent: Sun) : Planet(
             26.72.rad, // Obliquity
             82.91.rad, // Ascending Node
             176.049863, // W0
+            350.891982443297, // W1
         )
 
         siderealPeriod = 686.971

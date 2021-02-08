@@ -22,6 +22,7 @@ class Sun : Planet(
             7.25.rad, // Obliquity
             196.13.rad, // Ascending Node
             84.176, // W0
+            14.1844000, // W1
         )
 
         siderealPeriod = 0.0

@@ -21,6 +21,7 @@ class Venus(parent: Sun) : Planet(
             0.021624851729521666, // Obliquity
             2.097642769084066, // Ascending Node
             160.20, // W0
+            -1.4813688, // W1
         )
 
         siderealPeriod = 224.70

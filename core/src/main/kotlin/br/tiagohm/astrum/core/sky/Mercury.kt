@@ -21,6 +21,7 @@ class Mercury(parent: Sun) : Planet(
             0.1228178112752234, // Obliquity
             0.8418651386288667, // Ascending Node
             329.5988, // W0
+            6.1385108, // W1
         )
 
         siderealPeriod = 87.97

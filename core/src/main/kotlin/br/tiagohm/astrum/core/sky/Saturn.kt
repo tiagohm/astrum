@@ -21,6 +21,7 @@ class Saturn(parent: Sun) : Planet(
             0.4896026430986047, // Obliquity
             2.9588132951645223, // Ascending Node
             38.90, // W0
+            810.7939024, // W1
         )
 
         siderealPeriod = 10760.0
