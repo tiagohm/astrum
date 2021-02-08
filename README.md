@@ -1,11 +1,11 @@
 # Astrum
 
-Astrum is a Java astronomy library and command-line tool to compute high-precision positional informations for celestial
-bodies and Earth satellites.
+Astrum is a Kotlin astronomy library and command-line tool to compute high-precision positions of the celestial
+objects and Earth satellites.
 
 Most of the algorithms were ported from [Stellarium](https://github.com/Stellarium/stellarium/).
 
-Java
+Kotlin
 
 ```kotlin
 val sun = Sun()
@@ -26,3 +26,9 @@ val radec = Algorithms.rectangularToSphericalCoordinates(pos)
 ```
 
 ## Features
+
+## References and Inspirations
+
+* [Stellarium](https://github.com/Stellarium/stellarium/)
+* [Bill-Gray/lunar](https://github.com/Bill-Gray/lunar)
+* [skyfielders/python-skyfield](https://github.com/skyfielders/python-skyfield)
