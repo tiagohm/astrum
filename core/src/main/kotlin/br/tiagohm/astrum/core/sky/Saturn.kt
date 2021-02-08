@@ -13,20 +13,11 @@ class Saturn(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            0.44400925923884945092, // 360.0 / W1
-            358.922, // Offset
-            Consts.J2000, // Epoch
-            0.4896026430986047, // Obliquity
-            2.9588132951645223, // Ascending Node
-            38.90, // W0
-            810.7939024, // W1
-        )
+    override val siderealDay = 0.44400925923884945092
 
-        siderealPeriod = 10760.0
-        absoluteMagnitude = -8.88
-    }
+    override val siderealPeriod = 10760.0
+
+    override val absoluteMagnitude = -8.88
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 5)

@@ -1,8 +1,10 @@
 package br.tiagohm.astrum.core.sky
 
-import br.tiagohm.astrum.core.*
+import br.tiagohm.astrum.core.Consts
+import br.tiagohm.astrum.core.KeplerOrbit
+import br.tiagohm.astrum.core.Observer
+import br.tiagohm.astrum.core.Orbit
 import br.tiagohm.astrum.core.algorithms.Elp82b
-import br.tiagohm.astrum.core.algorithms.Rotation
 import br.tiagohm.astrum.core.algorithms.Vsop87
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Triad
@@ -33,50 +35,37 @@ abstract class Planet internal constructor(
 
     val oneMinusOblateness = 1.0 - oblateness
 
-    protected var rotation = Rotation()
-        private set
-
     /**
      * Gets duration of sidereal year
      */
-    var siderealPeriod: Double = 0.0
+    open val siderealPeriod = if (orbit is KeplerOrbit &&
+        type != PlanetType.OBSERVER &&
+        orbit.semiMajorAxis > 0.0 &&
+        orbit.e < 0.9
+    ) orbit.siderealPeriod else 0.0
 
     /**
      * Gets duration of mean solar day, in earth days.
      */
     open val meanSolarDay: Double
-        get() = computeMeanSolarDay(false)
+        get() = computeMeanSolarDay()
 
     /**
      * Get duration of sidereal day (earth days)
      */
-    open val siderealDay: Double
-        get() = rotation.period
+    abstract val siderealDay: Double
 
     /**
-     * Gets or sets the absolute magnitude
+     * Gets the absolute magnitude
      */
-    var absoluteMagnitude: Double = 0.0
-        protected set
+    open val absoluteMagnitude: Double = -99.0
 
     /**
      * Returns the mean opposition magnitude, defined as V(1,0)+5log10(a(a-1))
      */
     val meanOppositionMagnitude: Double = 0.0
 
-    init {
-        if (
-            orbit is KeplerOrbit &&
-            type != PlanetType.OBSERVER &&
-            orbit.semiMajorAxis > 0.0 &&
-            orbit.e < 0.9
-        ) {
-            siderealPeriod = orbit.siderealPeriod
-        }
-    }
-
-    protected fun computeMeanSolarDay(isRetrograde: Boolean): Double {
-        val sign = if (isRetrograde) -1.0 else 1.0
+    protected fun computeMeanSolarDay(): Double {
         val sday = siderealDay
         val coeff = abs(sday / siderealPeriod)
 
@@ -85,28 +74,9 @@ abstract class Planet internal constructor(
             val a = parent!!.siderealPeriod / sday
             sday * (a / (a - 1))
         } else {
+            val sign = if (isRotatingRetrograde) -1.0 else 1.0
             sign * sday / (1 - sign * coeff)
         }
-    }
-
-    protected fun setRotation(
-        period: Double,
-        offset: Double,
-        epoch: Double,
-        obliquity: Double,
-        ascendingNode: Double,
-        w0: Double = 0.0,
-        w1: Double = 0.0,
-    ) {
-        rotation = Rotation(
-            period,
-            offset,
-            epoch,
-            obliquity,
-            ascendingNode,
-            w0,
-            w1,
-        )
     }
 
     internal fun update(o: Observer) {
@@ -119,14 +89,7 @@ abstract class Planet internal constructor(
     // On Earth, sidereal time on the other hand is the angle along the planet equator from RA0 to the meridian, i.e. hour angle of the first point of Aries.
     // For Earth (of course) it is sidereal time at Greenwich.
     // For planets and Moons, in this context this is the rotation angle W of the Prime meridian from the ascending node of the planet equator on the ICRF equator.
-    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Double {
-        val t = jde - rotation.epoch
-        // Avoid division by zero (typical case for moons with chaotic period of rotation)
-        var rotations = if (rotation.period == 0.0) 1.0 else t / rotation.period
-        // Remove full rotations to limit angle
-        rotations = remainder(rotations, 1.0)
-        return rotations * 360.0 + rotation.offset
-    }
+    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean) = 0.0
 
     // Returns angle between axis and normal of ecliptic plane (or, for a moon, equatorial/reference plane defined by parent).
     // For Earth, this is the angle between axis and normal to current ecliptic of date, i.e. the ecliptic obliquity of date JDE.
@@ -160,7 +123,8 @@ abstract class Planet internal constructor(
     }
 
     protected open fun internalComputeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean): Mat4 {
-        return Mat4.zrotation(rotation.ascendingNode) * Mat4.xrotation(rotation.obliquity)
+        // return Mat4.zrotation(rotation.ascendingNode) * Mat4.xrotation(rotation.obliquity)
+        return Mat4.zrotation(0.0) * Mat4.xrotation(0.0)
     }
 
     override fun computeHeliocentricEclipticPosition(o: Observer): Triad {
@@ -200,10 +164,10 @@ abstract class Planet internal constructor(
 
         if (useLightTravelTime) {
             val a = internalComputePosition(jde).first
-            val b = o.planet.internalComputePosition(jde).first
+            val b = o.home.internalComputePosition(jde).first
 
             val length =
-                (computeHeliocentricEclipticPosition(a) - o.planet.computeHeliocentricEclipticPosition(b)).length
+                (computeHeliocentricEclipticPosition(a) - o.home.computeHeliocentricEclipticPosition(b)).length
             val lsc = length * (Consts.AU / (Consts.SPEED_OF_LIGHT * 86400.0))
 
             eclipticPos = internalComputePosition(jde - lsc).first
@@ -248,8 +212,8 @@ abstract class Planet internal constructor(
     // Get the planet phase (illuminated fraction of the planet disk, [0=dark..1=full]) for an observer at pos obsPos in heliocentric coordinates (in AU)
     // fun getPhase(obsPos: Triplet): Double
 
-    val isRotatingRetrograde: Boolean
-        get() = rotation.w1 < 0.0
+    inline val isRotatingRetrograde: Boolean
+        get() = siderealDay < 0.0
 
     companion object {
 

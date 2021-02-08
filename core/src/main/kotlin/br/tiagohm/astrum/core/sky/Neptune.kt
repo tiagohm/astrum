@@ -13,20 +13,11 @@ class Neptune(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            0.671249999952453125, // 360.0 / W1
-            153.65, // Offset
-            Consts.J2000, // Epoch
-            0.489152978736078, // Obliquity
-            0.8593144058841349, // Ascending Node
-            253.18, // W0
-            536.3128492, // W1
-        )
+    override val siderealDay = 0.671249999952453125
 
-        siderealPeriod = 60189.0
-        absoluteMagnitude = -6.87
-    }
+    override val siderealPeriod = 60189.0
+
+    override val absoluteMagnitude = -6.87
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 7)

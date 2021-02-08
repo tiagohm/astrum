@@ -18,21 +18,14 @@ class Earth(parent: Sun) : Planet(
 ) {
 
     init {
-        setRotation(
-            0.99726963226279286992, // 360.0 / W1
-            280.147, // Offset
-            2451545.0, // Epoch
-            -23.4392803055555555556 * Consts.M_PI_180, // Obliquity
-            0.0, // Ascending Node
-            190.147, // W0
-            360.9856235, // W1
-        )
-
-        siderealPeriod = 365.256363004
-        absoluteMagnitude = -3.86
-
         // TODO: For the planet moons with orbits relative to planets' equator...
     }
+
+    override val siderealDay = 0.99726963226279286992
+
+    override var siderealPeriod = 365.256363004
+
+    override var absoluteMagnitude = -3.86
 
     override fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Double {
         return if (useNutation) SiderealTime.computeApparent(jd, jde)

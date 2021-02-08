@@ -3,7 +3,6 @@ package br.tiagohm.astrum.core.sky
 import br.tiagohm.astrum.core.Consts
 import br.tiagohm.astrum.core.Observer
 import br.tiagohm.astrum.core.math.Triad
-import br.tiagohm.astrum.core.rad
 
 class Sun : Planet(
     "Sun",
@@ -14,20 +13,11 @@ class Sun : Planet(
     PlanetType.STAR,
 ) {
 
-    init {
-        setRotation(
-            25.3799949240010151998, // 360.0 / W1
-            0.0, // Offset
-            Consts.J2000, // Epoch
-            7.25.rad, // Obliquity
-            196.13.rad, // Ascending Node
-            84.176, // W0
-            14.1844000, // W1
-        )
+    override val siderealDay = 25.3799949240010151998
 
-        siderealPeriod = 0.0
-        absoluteMagnitude = 4.83
-    }
+    override val siderealPeriod = 0.0
+
+    override val absoluteMagnitude = 4.83
 
     // A mean solar day (equals to Earth's day) has been added here for educational purposes
     override val meanSolarDay = 1.0

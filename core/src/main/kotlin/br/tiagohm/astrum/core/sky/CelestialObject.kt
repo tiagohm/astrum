@@ -154,22 +154,35 @@ interface CelestialObject {
 
     fun computeHeliocentricEclipticPosition(): Triad
 
-    fun computeRaDec(o: Observer): Duad {
+    fun computeRaDecJ2000(o: Observer): Duad {
+        val pos = computeJ2000EquatorialPosition(o)
+        val equ = Algorithms.rectangularToSphericalCoordinates(pos)
+        return Duad(equ[0].deg.in360, equ[1].deg)
+    }
+
+    fun computeRaDecOfDate(o: Observer): Duad {
         val pos = computeEquinoxEquatorialPosition(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
         return Duad(equ[0].deg.in360, equ[1].deg)
     }
 
-    fun computeHaDec(o: Observer, apparent: Boolean = true): Duad {
+    fun computeHourAngle(
+        o: Observer,
+        apparent: Boolean = false
+    ): Duad {
         val pos = if (apparent) computeSiderealPositionApparent(o) else computeSiderealPositionGeometric(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
         return Duad((Consts.M_2_PI - equ[0]).deg.in360 / 15.0, equ[1].deg)
     }
 
-    fun computeAltAz(o: Observer, useSouthAzimuth: Boolean = false, apparent: Boolean = true): Duad {
+    fun computeAltAz(
+        o: Observer,
+        southAzimuth: Boolean = false,
+        apparent: Boolean = false
+    ): Duad {
         val pos = if (apparent) computeAltAzPositionApparent(o) else computeAltAzPositionGeometric(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
-        val direction = if (useSouthAzimuth) 2.0 else 3.0 // N is zero, E is 90 degrees
+        val direction = if (southAzimuth) 2.0 else 3.0 // N is zero, E is 90 degrees
         var az = direction * Consts.M_PI - equ[0]
         if (az > Consts.M_2_PI) az -= Consts.M_2_PI
         return Duad(az.deg, equ[1].deg)

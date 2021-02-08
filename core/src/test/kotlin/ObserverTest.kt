@@ -14,7 +14,7 @@ class ObserverTest {
     @Test
     fun fromEarth() {
         val sun = Sun()
-        val earth = Earth(parent = sun)
+        val earth = Earth(sun)
 
         // None
         testFrom(
@@ -129,209 +129,6 @@ class ObserverTest {
     }
 
     @Test
-    fun fromMercury() {
-        val sun = Sun()
-        val mercury = Mercury(parent = sun)
-
-        testFrom(
-            sun, mercury,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(254.64116, 0.0353),
-                null,
-                Duad(244.47535, 3.0177),
-                Duad(94.977, -10.2287),
-                Duad(26.7884, -3.6063),
-                Duad(261.03025, 5.9501),
-                Duad(256.07273, 6.1676),
-                Duad(350.31127, 0.637),
-                Duad(301.58492, 4.8377),
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.01,
-        )
-    }
-
-    @Test
-    fun fromVenus() {
-        val sun = Sun()
-        val venus = Venus(parent = sun)
-
-        testFrom(
-            sun, venus,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(348.11758, 2.0377),
-                Duad(352.57937, 3.4949),
-                null,
-                Duad(4.44972, 0.6831),
-                Duad(331.53259, 1.898),
-                Duad(193.00046, -0.1601),
-                Duad(185.50387, -0.2444),
-                Duad(281.21562, 0.8482),
-                Duad(231.20865, -0.1019),
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.001,
-        )
-    }
-
-    @Test
-    fun fromMars() {
-        val sun = Sun()
-        val mars = Mars(parent = sun)
-
-        testFrom(
-            sun, mars,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(181.46025, -0.4373),
-                Duad(172.96494, -3.0603),
-                Duad(188.43485, 2.7639),
-                Duad(145.38434, -17.3767),
-                null,
-                Duad(213.85139, 14.8264),
-                Duad(213.55342, 14.9409),
-                Duad(316.2515, 18.6091),
-                Duad(263.66439, 25.4280),
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.01,
-        )
-    }
-
-    @Test
-    fun fromJupiter() {
-        val sun = Sun()
-        val jupiter = Jupiter(parent = sun)
-
-        testFrom(
-            sun, jupiter,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(151.8999, -0.4077),
-                Duad(151.46675, -0.0566),
-                Duad(155.3689, -0.4846),
-                Duad(153.01722, -0.4725),
-                Duad(141.67622, -0.5988),
-                null,
-                Duad(321.1847, 1.0994),
-                Duad(76.0703, -2.4142),
-                Duad(19.48327, -1.8694),
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.01,
-        )
-    }
-
-    @Test
-    fun fromSaturn() {
-        val sun = Sun()
-        val saturn = Saturn(parent = sun)
-
-        testFrom(
-            sun, saturn,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(318.65432, 19.893),
-                Duad(318.66756, 20.0986),
-                Duad(319.86314, 19.3473),
-                Duad(319.71552, 19.4682),
-                Duad(313.4937, 21.729),
-                Duad(313.11683, 21.5618),
-                null,
-                Duad(253.86393, 26.9318),
-                Duad(196.45235, 7.2672),
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.001,
-        )
-    }
-
-    @Test
-    fun fromUranus() {
-        val sun = Sun()
-        val uranus = Uranus(parent = sun)
-
-        testFrom(
-            sun, uranus,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(189.01196, 51.2506),
-                Duad(188.5445, 50.368),
-                Duad(189.78901, 53.1305),
-                Duad(188.14745, 48.491),
-                Duad(187.8229, 47.9974),
-                Duad(196.38444, 65.183),
-                Duad(210.70511, 75.4602),
-                null,
-                Duad(352.4839, 38.2398),
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.01,
-        )
-    }
-
-    @Test
-    fun fromNeptune() {
-        val sun = Sun()
-        val neptune = Neptune(parent = sun)
-
-        testFrom(
-            sun, neptune,
-            ObservationSite("?", 0.0, 0.0, 0.0),
-            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
-            // Coordinates from Stellarium!!!
-            listOf(
-                Duad(123.83216, -22.7148),
-                Duad(123.33756, -22.7713),
-                Duad(125.14225, -22.4131),
-                Duad(122.77255, -23.0061),
-                Duad(120.70892, -23.4092),
-                Duad(131.26003, -20.6209),
-                Duad(141.26626, -17.1594),
-                Duad(78.32872, -26.4601),
-                null,
-            ),
-            DeltaTAlgorithmType.ESPEANAK_MEEUS,
-            useTopocentricCoordinates = true,
-            useNutation = true,
-            useLightTravelTime = true,
-            delta = 0.001,
-        )
-    }
-
-    @Test
     fun timeAdvance() {
         val sun = Sun()
         val earth = Earth(sun)
@@ -350,49 +147,49 @@ class ObserverTest {
 
         for (i in 5 until 12) {
             val oi = o0.copy(dateTime = DateTime(2021, 2, i, 12, 0, 0))
-            var Duad = mercury.computeRaDec(oi)
+            var pos = mercury.computeRaDecOfDate(oi)
 
             when (i) {
-                5 -> assertDuadEquals(Duad(324.69526, -10.6663), Duad, 0.0001)
-                6 -> assertDuadEquals(Duad(323.64525, -10.8355), Duad, 0.0001)
-                7 -> assertDuadEquals(Duad(322.52248, -11.0620), Duad, 0.0001)
-                8 -> assertDuadEquals(Duad(321.35815, -11.3369), Duad, 0.0001)
-                9 -> assertDuadEquals(Duad(320.18409, -11.6507), Duad, 0.0001)
-                10 -> assertDuadEquals(Duad(319.03114, -11.9929), Duad, 0.0001)
-                11 -> assertDuadEquals(Duad(317.92765, -12.3538), Duad, 0.0001)
+                5 -> assertDuadEquals(Duad(324.69526, -10.6663), pos, 0.0001)
+                6 -> assertDuadEquals(Duad(323.64525, -10.8355), pos, 0.0001)
+                7 -> assertDuadEquals(Duad(322.52248, -11.0620), pos, 0.0001)
+                8 -> assertDuadEquals(Duad(321.35815, -11.3369), pos, 0.0001)
+                9 -> assertDuadEquals(Duad(320.18409, -11.6507), pos, 0.0001)
+                10 -> assertDuadEquals(Duad(319.03114, -11.9929), pos, 0.0001)
+                11 -> assertDuadEquals(Duad(317.92765, -12.3538), pos, 0.0001)
             }
 
-            Duad = sun.computeRaDec(oi)
+            pos = sun.computeRaDecOfDate(oi)
 
             when (i) {
-                5 -> assertDuadEquals(Duad(319.35453, -15.7683), Duad, 0.0001)
-                6 -> assertDuadEquals(Duad(320.35724, -15.4602), Duad, 0.0001)
-                7 -> assertDuadEquals(Duad(321.35671, -15.1476), Duad, 0.0001)
-                8 -> assertDuadEquals(Duad(322.35295, -14.8307), Duad, 0.0001)
-                9 -> assertDuadEquals(Duad(323.34596, -14.5096), Duad, 0.0001)
-                10 -> assertDuadEquals(Duad(324.33576, -14.1845), Duad, 0.0001)
-                11 -> assertDuadEquals(Duad(325.32234, -13.8555), Duad, 0.0001)
+                5 -> assertDuadEquals(Duad(319.35453, -15.7683), pos, 0.0001)
+                6 -> assertDuadEquals(Duad(320.35724, -15.4602), pos, 0.0001)
+                7 -> assertDuadEquals(Duad(321.35671, -15.1476), pos, 0.0001)
+                8 -> assertDuadEquals(Duad(322.35295, -14.8307), pos, 0.0001)
+                9 -> assertDuadEquals(Duad(323.34596, -14.5096), pos, 0.0001)
+                10 -> assertDuadEquals(Duad(324.33576, -14.1845), pos, 0.0001)
+                11 -> assertDuadEquals(Duad(325.32234, -13.8555), pos, 0.0001)
             }
         }
 
         for (i in 4 downTo 1) {
             val oi = o0.copy(dateTime = DateTime(2021, 2, i, 12, 0, 0))
-            var Duad = mercury.computeRaDec(oi)
+            var pos = mercury.computeRaDecOfDate(oi)
 
             when (i) {
-                4 -> assertDuadEquals(Duad(325.64359, -10.5614), Duad, 0.0001)
-                3 -> assertDuadEquals(Duad(326.46494, -10.5262), Duad, 0.0001)
-                2 -> assertDuadEquals(Duad(327.13875, -10.5637), Duad, 0.0001)
-                1 -> assertDuadEquals(Duad(327.64970, -10.6746), Duad, 0.0001)
+                4 -> assertDuadEquals(Duad(325.64359, -10.5614), pos, 0.0001)
+                3 -> assertDuadEquals(Duad(326.46494, -10.5262), pos, 0.0001)
+                2 -> assertDuadEquals(Duad(327.13875, -10.5637), pos, 0.0001)
+                1 -> assertDuadEquals(Duad(327.64970, -10.6746), pos, 0.0001)
             }
 
-            Duad = sun.computeRaDec(oi)
+            pos = sun.computeRaDecOfDate(oi)
 
             when (i) {
-                4 -> assertDuadEquals(Duad(318.34857, -16.0720), Duad, 0.0001)
-                3 -> assertDuadEquals(Duad(317.33935, -16.3710), Duad, 0.0001)
-                2 -> assertDuadEquals(Duad(316.32684, -16.6652), Duad, 0.0001)
-                1 -> assertDuadEquals(Duad(315.31102, -16.9546), Duad, 0.0001)
+                4 -> assertDuadEquals(Duad(318.34857, -16.0720), pos, 0.0001)
+                3 -> assertDuadEquals(Duad(317.33935, -16.3710), pos, 0.0001)
+                2 -> assertDuadEquals(Duad(316.32684, -16.6652), pos, 0.0001)
+                1 -> assertDuadEquals(Duad(315.31102, -16.9546), pos, 0.0001)
             }
         }
     }
@@ -400,7 +197,7 @@ class ObserverTest {
     @Test
     fun isAboveHorizon() {
         val sun = Sun()
-        val earth = Earth(parent = sun)
+        val earth = Earth(sun)
 
         val o0 = Observer(
             earth,
@@ -425,7 +222,7 @@ class ObserverTest {
 
     fun testFrom(
         sun: Sun,
-        home: Planet,
+        home: Earth,
         site: ObservationSite,
         dateTime: DateTime,
         positions: List<Duad?>,
@@ -445,20 +242,21 @@ class ObserverTest {
             useLightTravelTime = useLightTravelTime,
         )
 
-        val mercury = Mercury(sun)
-        val venus = Venus(sun)
-        val earth = Earth(sun)
-        val mars = Mars(sun)
-        val jupiter = Jupiter(sun)
-        val saturn = Saturn(sun)
-        val uranus = Uranus(sun)
-        val neptune = Neptune(sun)
-
-        val planets = listOf(sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)
+        val planets = listOf(
+            sun,
+            Mercury(sun),
+            Venus(sun),
+            home,
+            Mars(sun),
+            Jupiter(sun),
+            Saturn(sun),
+            Uranus(sun),
+            Neptune(sun),
+        )
 
         for (i in 0 until 8) {
             positions[i]?.let {
-                val (ra, dec) = planets[i].computeRaDec(o)
+                val (ra, dec) = planets[i].computeRaDecOfDate(o)
                 assertEquals(it[0], ra, delta)
                 assertEquals(it[1], dec, delta)
             }
@@ -468,7 +266,7 @@ class ObserverTest {
     @Test
     fun parallacticAngle() {
         val sun = Sun()
-        val earth = Earth(parent = sun)
+        val earth = Earth(sun)
 
         // TODO: BUG!!!
 
@@ -482,9 +280,30 @@ class ObserverTest {
     }
 
     @Test
+    fun raDecJ2000() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+        )
+
+        assertDuadEquals(Duad(319.06728, -15.8555), sun.computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(324.41508, -10.7605), Mercury(sun).computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(307.157, -19.8641), Venus(sun).computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(41.81461, 17.5037), Mars(sun).computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(313.4488, -18.0259), Jupiter(sun).computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(307.99669, -19.303), Saturn(sun).computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(34.4606, 13.3237), Uranus(sun).computeRaDecJ2000(o), 0.0001)
+        assertDuadEquals(Duad(350.42818, -5.286), Neptune(sun).computeRaDecJ2000(o), 0.0001)
+    }
+
+    @Test
     fun altAz() {
         val sun = Sun()
-        val earth = Earth(parent = sun)
+        val earth = Earth(sun)
 
         val o0 = Observer(
             earth,
@@ -518,9 +337,51 @@ class ObserverTest {
     }
 
     @Test
-    fun ahDec() {
+    fun altAzApparent() {
         val sun = Sun()
-        val earth = Earth(parent = sun)
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+        )
+
+        assertDuadEquals(Duad(90.7432, 43.3584), sun.computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(86.5517, 36.8230), Mercury(sun).computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(92.5681, 55.3141), Venus(sun).computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(87.1402, -44.6719), Mars(sun).computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(91.7507, 49.1092), Jupiter(sun).computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(91.8896, 54.4267), Saturn(sun).computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(89.7587, -36.6858), Uranus(sun).computeAltAz(o, apparent = true), 0.0001)
+        assertDuadEquals(Duad(91.1530, 10.8916), Neptune(sun).computeAltAz(o, apparent = true), 0.0001)
+    }
+
+    @Test
+    fun altAzApparentSouthAzimuth() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+        )
+
+        assertDuadEquals(Duad(270.7432, 43.3584), sun.computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(266.5517, 36.8230), Mercury(sun).computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(272.5681, 55.3141), Venus(sun).computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(267.1402, -44.6719), Mars(sun).computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(271.7507, 49.1092), Jupiter(sun).computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(271.8896, 54.4267), Saturn(sun).computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(269.7587, -36.6858), Uranus(sun).computeAltAz(o, true, apparent = true), 0.0001)
+        assertDuadEquals(Duad(271.1530, 10.8916), Neptune(sun).computeAltAz(o, true, apparent = true), 0.0001)
+    }
+
+    @Test
+    fun hourAngle() {
+        val sun = Sun()
+        val earth = Earth(sun)
 
         val o0 = Observer(
             earth,
@@ -528,14 +389,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
         )
 
-        assertDuadEquals(Duad(20.72784, -15.7682), sun.computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(20.37190, -10.6666), Mercury(sun).computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(21.52107, -19.7945), Venus(sun).computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(15.21116, 17.5901), Mars(sun).computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(21.10202, -17.9465), Jupiter(sun).computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(21.46518, -19.232), Saturn(sun).computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(15.70202, 13.4193), Uranus(sun).computeHaDec(o0), 0.0001)
-        assertDuadEquals(Duad(18.63843, -5.172), Neptune(sun).computeHaDec(o0), 0.0001)
+        assertDuadEquals(Duad(20.72784, -15.7682), sun.computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(20.37190, -10.6666), Mercury(sun).computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(21.52107, -19.7945), Venus(sun).computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(15.21116, 17.5901), Mars(sun).computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(21.10202, -17.9465), Jupiter(sun).computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(21.46518, -19.232), Saturn(sun).computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(15.70202, 13.4193), Uranus(sun).computeHourAngle(o0), 0.0001)
+        assertDuadEquals(Duad(18.63843, -5.172), Neptune(sun).computeHourAngle(o0), 0.0001)
 
         val o1 = Observer(
             earth,
@@ -543,13 +404,34 @@ class ObserverTest {
             DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
         )
 
-        assertDuadEquals(Duad(9.07967, -15.7697), sun.computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(8.72385, -10.6693), Mercury(sun).computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(9.87279, -19.7951), Venus(sun).computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(3.56296, 17.5890), Mars(sun).computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(9.45366, -17.9467), Jupiter(sun).computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(9.81681, -19.2321), Saturn(sun).computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(4.05365, 13.4192), Uranus(sun).computeHaDec(o1), 0.0001)
-        assertDuadEquals(Duad(6.99005, -5.172), Neptune(sun).computeHaDec(o1), 0.0001)
+        assertDuadEquals(Duad(9.07967, -15.7697), sun.computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(8.72385, -10.6693), Mercury(sun).computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(9.87279, -19.7951), Venus(sun).computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(3.56296, 17.5890), Mars(sun).computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(9.45366, -17.9467), Jupiter(sun).computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(9.81681, -19.2321), Saturn(sun).computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(4.05365, 13.4192), Uranus(sun).computeHourAngle(o1), 0.0001)
+        assertDuadEquals(Duad(6.99005, -5.172), Neptune(sun).computeHourAngle(o1), 0.0001)
+    }
+
+    @Test
+    fun hourAngleApparent() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 2, 5, 12, 0, 0), // 2459251.000000
+        )
+
+        assertDuadEquals(Duad(20.72897, -15.7730), sun.computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(20.37327, -10.6740), Mercury(sun).computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(21.52185, -19.7966), Venus(sun).computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(15.21116, 17.5901), Mars(sun).computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(21.10297, -17.9499), Jupiter(sun).computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(21.46598, -19.2344), Saturn(sun).computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(15.70202, 13.4193), Uranus(sun).computeHourAngle(o, true), 0.0001)
+        assertDuadEquals(Duad(18.64339, -5.2019), Neptune(sun).computeHourAngle(o, true), 0.0001)
     }
 }

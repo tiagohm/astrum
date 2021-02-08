@@ -13,23 +13,11 @@ class Uranus(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            -0.71833333334397530864, // 360.0 / W1
-            331.18, // Offset
-            Consts.J2000, // Epoch
-            1.4360256624251349, // Obliquity
-            -0.21560564768092383, // Ascending Node
-            203.81, // W0
-            -501.1600928, // W1
-        )
+    override val siderealDay = -0.71833333334397530864
 
-        siderealPeriod = 30685.0
-        absoluteMagnitude = -7.19
-    }
+    override val siderealPeriod = 30685.0
 
-    override val siderealDay: Double
-        get() = computeMeanSolarDay(true)
+    override val absoluteMagnitude = -7.19
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 6)

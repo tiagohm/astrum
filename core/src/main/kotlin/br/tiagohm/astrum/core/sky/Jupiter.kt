@@ -13,20 +13,11 @@ class Jupiter(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            0.41366472474059774553, // 360.0 / W1
-            -1.0, // Offset
-            Consts.J2000, // Epoch
-            0.03868532751568998, // Obliquity
-            -0.3871470026094814, // Ascending Node
-            43.3, // W0
-            870.270, // W1
-        )
+    override val siderealDay = 0.41366472474059774553
 
-        siderealPeriod = 4331.87
-        absoluteMagnitude = -9.40
-    }
+    override val siderealPeriod = 4331.87
+
+    override val absoluteMagnitude = -9.40
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 4)

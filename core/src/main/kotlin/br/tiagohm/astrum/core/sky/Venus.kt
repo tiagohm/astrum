@@ -13,23 +13,11 @@ class Venus(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            -243.01848398589196694301, // 360.0 / W1
-            137.45, // Offset
-            Consts.J2000, // Epoch
-            0.021624851729521666, // Obliquity
-            2.097642769084066, // Ascending Node
-            160.20, // W0
-            -1.4813688, // W1
-        )
+    override val siderealDay = -243.01848398589196694301
 
-        siderealPeriod = 224.70
-        absoluteMagnitude = -5.18
-    }
+    override val siderealPeriod = 224.70
 
-    override val siderealDay: Double
-        get() = computeMeanSolarDay(true)
+    override val absoluteMagnitude = -5.18
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 1)

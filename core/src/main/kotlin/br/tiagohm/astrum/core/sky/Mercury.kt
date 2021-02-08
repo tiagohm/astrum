@@ -13,20 +13,11 @@ class Mercury(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            58.64614590235794649087, // 360.0 / W1
-            291.20, // Offset
-            Consts.J2000, // Epoch
-            0.1228178112752234, // Obliquity
-            0.8418651386288667, // Ascending Node
-            329.5988, // W0
-            6.1385108, // W1
-        )
+    override val siderealDay = 58.64614590235794649087
 
-        siderealPeriod = 87.97
-        absoluteMagnitude = -0.60
-    }
+    override val siderealPeriod = 87.97
+
+    override val absoluteMagnitude = -0.60
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 0)

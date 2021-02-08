@@ -2,7 +2,6 @@ package br.tiagohm.astrum.core.sky
 
 import br.tiagohm.astrum.core.Consts
 import br.tiagohm.astrum.core.math.Triad
-import br.tiagohm.astrum.core.rad
 
 class Mars(parent: Sun) : Planet(
     "Mars",
@@ -14,20 +13,11 @@ class Mars(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        setRotation(
-            1.02595675596028993319, // 360.0 / W1
-            136.005, // Offset
-            Consts.J2000, // Epoch
-            26.72.rad, // Obliquity
-            82.91.rad, // Ascending Node
-            176.049863, // W0
-            350.891982443297, // W1
-        )
+    override val siderealDay = 1.02595675596028993319
 
-        siderealPeriod = 686.971
-        absoluteMagnitude = -1.52
-    }
+    override val siderealPeriod = 686.971
+
+    override val absoluteMagnitude = -1.52
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 3)
