@@ -7,8 +7,7 @@ import br.tiagohm.astrum.core.algorithms.Vsop87
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Triad
 import kotlin.math.abs
-import kotlin.math.acos
-import kotlin.math.sqrt
+import kotlin.math.atan2
 
 abstract class Planet internal constructor(
     // English planet name
@@ -164,11 +163,6 @@ abstract class Planet internal constructor(
         return Mat4.zrotation(rotation.ascendingNode) * Mat4.xrotation(rotation.obliquity)
     }
 
-    override fun computeJ2000EquatorialPosition(o: Observer): Triad {
-        return Consts.MAT_VSOP87_TO_J2000
-            .multiplyWithoutTranslation(computeHeliocentricEclipticPosition(o) - o.computeHeliocentricEclipticPosition())
-    }
-
     override fun computeHeliocentricEclipticPosition(o: Observer): Triad {
         var pos = computeEclipticPosition(o)
         var p = parent
@@ -222,20 +216,6 @@ abstract class Planet internal constructor(
         return eclipticPos
     }
 
-    override fun computePhaseAngle(o: Observer): Double {
-        val obsPos = o.computeHeliocentricEclipticPosition()
-        val observerRq = obsPos.lengthSquared
-        val planetHelioPos = computeHeliocentricEclipticPosition(o)
-        val planetRq = planetHelioPos.lengthSquared
-        val observerPlanetRq = (obsPos - planetHelioPos).lengthSquared
-        return acos((observerPlanetRq + planetRq - observerRq) / (2.0 * sqrt(observerPlanetRq * planetRq)))
-    }
-
-    override fun computeDistance(o: Observer): Double {
-        val obsHelioPos = o.computeHeliocentricEclipticPosition()
-        return (obsHelioPos - computeHeliocentricEclipticPosition(o)).length
-    }
-
     fun computeRotEquatorialToVsop87(): Mat4 {
         var m = rotLocalToParent
 
@@ -252,6 +232,11 @@ abstract class Planet internal constructor(
         }
 
         return m
+    }
+
+    override fun computeAngularSize(o: Observer): Double {
+        val radius = equatorialRadius // TODO: Saturn Rings
+        return atan2(radius, computeJ2000EquatorialPosition(o).length) * Consts.M_180_PI
     }
 
     // Gets the elongation angle (radians) for an observer at pos obsPos in heliocentric coordinates (in AU)

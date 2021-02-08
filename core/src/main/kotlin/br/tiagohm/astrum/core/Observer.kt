@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.core
 
 import br.tiagohm.astrum.core.algorithms.MoonSecularAcceleration
+import br.tiagohm.astrum.core.algorithms.Refraction
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Quad
 import br.tiagohm.astrum.core.math.Triad
@@ -15,12 +16,15 @@ data class Observer(
     val site: ObservationSite,
     val dateTime: DateTime,
     val deltaTAlgorithm: DeltaTAlgorithmType = DeltaTAlgorithmType.ESPEANAK_MEEUS,
+    val pressure: Double = 1013.0,
+    val temperature: Double = 25.0,
     val useTopocentricCoordinates: Boolean = true,
     val useNutation: Boolean = true,
     val useLightTravelTime: Boolean = true,
 ) {
 
     private var JD = DoubleArray(2) // JD_UT and DeltaT, DeltaT = TT - UT
+    private val refraction = Refraction(pressure, temperature)
 
     val jde by lazy { JD[0] + JD[1] / 86400.0 }
 
@@ -28,6 +32,8 @@ data class Observer(
 
     val mjd by lazy { JD[0] - 2400000.5 }
 
+    private val matAltAzToEquinoxEqu: Mat4
+    private val matEquinoxEquToAltAz: Mat4
     private val matJ2000ToAltAz: Mat4
     private val matAltAzToJ2000: Mat4
     private val matJ2000ToEquinoxEqu: Mat4
@@ -45,8 +51,8 @@ data class Observer(
 
         planet.update(this)
 
-        val matAltAzToEquinoxEqu = computeRotAltAzToEquatorial()
-        val matEquinoxEquToAltAz = matAltAzToEquinoxEqu.transpose()
+        matAltAzToEquinoxEqu = computeRotAltAzToEquatorial()
+        matEquinoxEquToAltAz = matAltAzToEquinoxEqu.transpose()
 
         // Multiply static J2000 earth axis tilt (eclipticalJ2000<->equatorialJ2000)
         // in effect, this matrix transforms from VSOP87 ecliptical J2000 to planet-based equatorial coordinates.
@@ -149,17 +155,47 @@ data class Observer(
      * For Earth we need JD(UT), for other planets JDE! To be general, just have both in here!
      */
     fun computeRotAltAzToEquatorial(): Mat4 {
-        val latitude = bound(-90.0, site.latitude, 90.0)
-        // TODO: Figure out how to keep continuity in sky as we reach poles
-        // otherwise sky jumps in rotation when reach poles in equatorial mode
-        // This is a kludge
-        return Mat4.zrotation((planet.computeSiderealTime(jd, jde, useNutation) + site.longitude).rad) *
-                Mat4.yrotation((90.0 - latitude).rad)
+        return Mat4.zrotation(computeLocalSiderealTime()) * Mat4.yrotation((90.0 - site.latitude).rad)
     }
 
     fun computeRotEquatorialToVsop87() = planet.computeRotEquatorialToVsop87()
 
-    internal fun j2000ToEquinoxEquatorial(a: Triad) = matJ2000ToEquinoxEqu * a
+    /**
+     * Computes the sidereal time of the prime meridian (i.e. Rotation Angle) shifted by the observer longitude.
+     */
+    fun computeLocalSiderealTime(): Double {
+        return (planet.computeSiderealTime(jd, jde, useNutation) + site.longitude).rad
+    }
+
+    internal fun j2000ToEquinoxEquatorial(a: Triad, refract: Boolean): Triad {
+        return if (refract) {
+            refraction.forward(a.transform(matJ2000ToEquinoxEqu))
+        } else {
+            matJ2000ToEquinoxEqu * a
+        }
+    }
+
+    internal fun j2000ToAltAz(a: Triad, refract: Boolean): Triad {
+        return if (refract) {
+            refraction.forward(a.transform(matJ2000ToAltAz))
+        } else {
+            matJ2000ToAltAz * a
+        }
+    }
+
+    internal fun j2000ToGalactic(a: Triad) = Consts.MAT_J2000_TO_GALACTIC * a
+
+    internal fun j2000ToSupergalactic(a: Triad) = Consts.MAT_J2000_TO_SUPERGALACTIC * a
+
+    internal fun j2000ToJ1875(a: Triad) = Consts.MAT_J2000_TO_J1875 * a
+
+    internal fun altAzToEquinoxEquatorial(a: Triad, refract: Boolean): Triad {
+        return if (refract) {
+            refraction.backward(a.transform(matAltAzToEquinoxEqu))
+        } else {
+            a.transform(matAltAzToEquinoxEqu)
+        }
+    }
 
     private fun computeLightTimeSunPosition() {
         planet.computeEclipticPosition(jde, this, false)

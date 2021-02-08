@@ -27,10 +27,10 @@ class Mat4Test {
         )
 
         val m0 = a * v
-        assertVec3Equals(Triad(38.0, 46.0, 62.0), m0)
+        assertTriadEquals(Triad(38.0, 46.0, 62.0), m0)
 
         val m1 = a.multiplyWithoutTranslation(v)
-        assertVec3Equals(Triad(37.0, 38.0, 57.0), m1)
+        assertTriadEquals(Triad(37.0, 38.0, 57.0), m1)
     }
 
     @Test
@@ -130,5 +130,20 @@ class Mat4Test {
                 -6.0, 4.0, -2.0, -4.0, -4.0, 5.0, -2.0, -3.0
             ), a - b
         )
+    }
+
+    @Test
+    fun inverse() {
+        val m = Mat4(4.0, 1.0, 2.0, 3.0, 1.0, 5.0, 7.0, 7.0, 8.0, 6.0, 9.0, 11.0, 12.0, 13.0, 14.0, 15.0)
+        val mi = m.inverse()
+        assertMat4Equals(
+            Mat4(
+                1.25, 0.3333333333333333, -0.6666666666666666, 0.08333333333333333, -2.583333333333333,
+                -1.1111111111111112, 1.222222222222222, 0.1388888888888889, 6.416666666666666, 2.888888888888889,
+                -3.7777777777777777, 0.1388888888888889, -4.75, -2.0, 3.0, -0.25
+            ), mi
+        )
+
+        assertMat4Equals(m.transpose().inverse(), m.inverse().transpose())
     }
 }
