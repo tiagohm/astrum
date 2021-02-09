@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.core.sky
 
 import br.tiagohm.astrum.core.*
+import br.tiagohm.astrum.core.algorithms.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.algorithms.Elp82b
 import br.tiagohm.astrum.core.algorithms.Vsop87
 import br.tiagohm.astrum.core.math.Mat4
@@ -27,6 +28,8 @@ abstract class Planet internal constructor(
 
     private var rotLocalToParent = Mat4.IDENTITY
     private var eclipticPos = Triad.ZERO
+    private var eclipticVelocity = Triad.ZERO
+    private var axisRotation = 0.0
     private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
 
     val oneMinusOblateness = 1.0 - oblateness
@@ -54,12 +57,34 @@ abstract class Planet internal constructor(
     /**
      * Gets the absolute magnitude
      */
-    open val absoluteMagnitude: Double = -99.0
+    open val absoluteMagnitude = -99.0
 
     /**
      * Returns the mean opposition magnitude, defined as V(1,0)+5log10(a(a-1))
      */
-    val meanOppositionMagnitude: Double = 0.0
+    open val meanOppositionMagnitude: Double
+        get() {
+            // TODO: Fixed Mean Opposition Magnitute for some objects.
+            // TODO: Testar com luas de Júpiter e asteroides
+            if (absoluteMagnitude <= -99.0) return 100.0
+
+            val a = parent?.orbit?.semiMajorAxis
+                ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis else return 100.0
+
+            return if (a > 0.0) absoluteMagnitude + 5.0 * log10(a * (a - 1.0)) else 100.0
+        }
+
+    val isStar = type == PlanetType.STAR
+
+    val isMoon = type == PlanetType.MOON
+
+    val isAsteroid = type == PlanetType.ASTEROID
+
+    val isComet = type == PlanetType.COMET
+
+    val isDwarfPlanet = type == PlanetType.DWARF_PLANET
+
+    val isPlanet = type == PlanetType.PLANET
 
     protected fun computeMeanSolarDay(): Double {
         val sday = siderealDay
@@ -111,11 +136,35 @@ abstract class Planet internal constructor(
     // In case of the planets, this makes the axis point to their respective celestial poles.
     // If only old-style rotational elements exist, we use the original algorithm (as of ~2010).
     private fun computeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean) {
+        axisRotation = computeSiderealTime(jd, jde, useNutation)
         // We have to call with both to correct this for earth with the new model.
         // For Earth, this is sidereal time for Greenwich, i.e. hour angle between meridian and First Point of Aries.
         // Return angle between ascending node of planet's equator and (J2000) ecliptic (?)
         // Store to later compute central meridian data etc.
         rotLocalToParent = internalComputeTransformationMatrix(jd, jde, useNutation)
+    }
+
+    internal fun computeEclipticPosition(jde: Double, o: Observer, useLightTravelTime: Boolean) {
+        val jd = jde - o.computeDeltaT(jde) / 86400.0
+
+        if (useLightTravelTime) {
+            val a = internalComputePosition(jde).first
+            val b = o.home.internalComputePosition(jde).first
+
+            val length =
+                (computeHeliocentricEclipticPosition(a) - o.home.computeHeliocentricEclipticPosition(b)).length
+            val lsc = length * (Consts.AU / (Consts.SPEED_OF_LIGHT * 86400.0))
+
+            val pos = internalComputePosition(jde - lsc)
+            eclipticPos = pos.first
+            eclipticVelocity = pos.second
+            computeTransformationMatrix(jd - lsc, jde - lsc, o.useNutation)
+        } else {
+            val pos = internalComputePosition(jde)
+            eclipticPos = pos.first
+            eclipticVelocity = pos.second
+            computeTransformationMatrix(jd, jde, o.useNutation)
+        }
     }
 
     protected open fun internalComputeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean): Mat4 {
@@ -135,7 +184,7 @@ abstract class Planet internal constructor(
         return pos
     }
 
-    override fun computeHeliocentricEclipticPosition(): Triad {
+    internal fun computeHeliocentricEclipticPosition(): Triad {
         return computeHeliocentricEclipticPosition(eclipticPos)
     }
 
@@ -152,28 +201,41 @@ abstract class Planet internal constructor(
     }
 
     override fun computeEclipticPosition(o: Observer): Triad {
-        return computeEclipticPosition(o.jde, o, o.useLightTravelTime)
+        computeEclipticPosition(o.jde, o, o.useLightTravelTime)
+        return eclipticPos
     }
 
-    internal fun computeEclipticPosition(jde: Double, o: Observer, useLightTravelTime: Boolean): Triad {
-        val jd = jde - o.computeDeltaT(jde) / 86400.0
+    override fun computeEclipticVelocity(o: Observer): Triad {
+        computeEclipticPosition(o.jde, o, o.useLightTravelTime)
+        return eclipticVelocity
+    }
 
-        if (useLightTravelTime) {
-            val a = internalComputePosition(jde).first
-            val b = o.home.internalComputePosition(jde).first
+    override fun computeHeliocentricEclipticVelocity(o: Observer): Triad {
+        var pos = computeEclipticVelocity(o)
+        var p = parent
 
-            val length =
-                (computeHeliocentricEclipticPosition(a) - o.home.computeHeliocentricEclipticPosition(b)).length
-            val lsc = length * (Consts.AU / (Consts.SPEED_OF_LIGHT * 86400.0))
-
-            eclipticPos = internalComputePosition(jde - lsc).first
-            computeTransformationMatrix(jd - lsc, jde - lsc, o.useNutation)
-        } else {
-            eclipticPos = internalComputePosition(jde).first
-            computeTransformationMatrix(jd, jde, o.useNutation)
+        while (p != null) {
+            pos += p.computeEclipticVelocity(o)
+            p = p.parent
         }
 
-        return eclipticPos
+        return pos
+    }
+
+    internal fun computeHeliocentricEclipticVelocity(a: Triad): Triad {
+        var pos = a
+        var p = parent
+
+        while (p != null) {
+            pos += p.eclipticVelocity
+            p = p.parent
+        }
+
+        return pos
+    }
+
+    internal fun computeHeliocentricEclipticVelocity(): Triad {
+        return computeHeliocentricEclipticVelocity(eclipticVelocity)
     }
 
     fun computeRotEquatorialToVsop87(): Mat4 {
@@ -276,8 +338,167 @@ abstract class Planet internal constructor(
         return Triad(rise, transit, set)
     }
 
+    // Used to compute shadows.
+    internal fun computeShadowMatrix(): Mat4 {
+        var res = Mat4.translation(eclipticPos) * rotLocalToParent
+        var p = parent
+
+        while (p?.parent != null) {
+            res = Mat4.translation(p.eclipticPos) * res * p.rotLocalToParent
+            p = p.parent
+        }
+
+        return res * Mat4.zrotation((axisRotation + 90.0).rad)
+    }
+
     inline val isRotatingRetrograde: Boolean
         get() = siderealDay < 0.0
+
+    /**
+     * Computes the elongation angle (radians) for an observer.
+     */
+    fun elongation(o: Observer): Double {
+        val obsPos = o.computeHeliocentricEclipticPosition()
+        val observerRq = obsPos.lengthSquared
+        val planetHelioPos = computeHeliocentricEclipticPosition(o)
+        val planetRq = planetHelioPos.lengthSquared
+        val observerPlanetRq = (obsPos - planetHelioPos).lengthSquared
+        return acos((observerPlanetRq + observerRq - planetRq) / (2.0 * sqrt(observerPlanetRq * observerRq)))
+    }
+
+    /**
+     * Computes the planet phase ([0..1] illuminated fraction of the planet disk) for an observer.
+     */
+    fun phase(o: Observer): Double {
+        val obsPos = o.computeHeliocentricEclipticPosition()
+        val observerRq = obsPos.lengthSquared
+        val planetHelioPos = computeHeliocentricEclipticPosition(o)
+        val planetRq = planetHelioPos.lengthSquared
+        val observerPlanetRq = (obsPos - planetHelioPos).lengthSquared
+        val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * sqrt(observerPlanetRq * planetRq))
+        return 0.5f * abs(1.0 + cosChi)
+    }
+
+    /**
+     * Synodic period for major planets in days.
+     */
+    fun synodicPeriod(o: Observer): Double {
+        return if (o.home.siderealPeriod > 0.0 &&
+            siderealPeriod > 0.0 &&
+            (isPlanet || parent == o.home)
+        ) {
+            abs(1 / (1 / o.home.siderealPeriod - 1 / siderealPeriod))
+        } else {
+            0.0
+        }
+    }
+
+    /**
+     * Returns the orbital velocity in km/s
+     */
+    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * Consts.AU / 86400.0
+
+    /**
+     * Returns the heliocentric velocity in km/s
+     */
+    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * Consts.AU / 86400.0
+
+    override fun visualMagnitude(o: Observer): Double {
+        // Compute the phase angle i
+        val observerHelioPos = o.computeHeliocentricEclipticPosition()
+        val observerRq = observerHelioPos.lengthSquared
+        val planetHelioPos = computeHeliocentricEclipticPosition(o)
+        val planetRq = planetHelioPos.lengthSquared
+        val observerPlanetRq = (observerHelioPos - planetHelioPos).lengthSquared
+        val dr = sqrt(observerPlanetRq * planetRq)
+        val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * dr)
+        val phaseAngle = acos(cosChi)
+        var shadowFactor = 1.0
+        val d = 5.0 * log10(dr)
+
+        // TODO: Testar com satélites!!
+        // Check if the satellite is inside the inner shadow of the parent planet
+        if (parent!!.parent != null) {
+            val parentHelioPos = parent.computeHeliocentricEclipticPosition(o)
+            val parentRq = parentHelioPos.lengthSquared
+            val posTimesParentPos = planetHelioPos.dot(parentHelioPos)
+
+            if (posTimesParentPos > parentRq) {
+                // The satellite is farther away from the sun than the parent planet.
+                val sunRadius = parent.parent!!.equatorialRadius
+                val sunMinusParentRadius = sunRadius - parent.equatorialRadius
+                val quot = posTimesParentPos / parentRq
+
+                // Compute d = distance from satellite center to border of inner shadow.
+                // d>0 means inside the shadow cone.
+                var ds = sunRadius - sunMinusParentRadius * quot -
+                        sqrt((1.0 - sunMinusParentRadius / sqrt(parentRq)) * (planetRq - posTimesParentPos * quot))
+
+                // The satellite is totally inside the inner shadow.
+                if (ds >= equatorialRadius) {
+                    // TODO: Usar is Moon
+                    // Fit a more realistic magnitude for the Moon case.
+                    // I used some empirical data for fitting. --AW
+                    shadowFactor = if (id == "Moon") 2.718e-5 else 1e-9
+                } else if (ds > -equatorialRadius) {
+                    // The satellite is partly inside the inner shadow,
+                    // compute a fantasy value for the magnitude:
+                    ds /= equatorialRadius
+                    shadowFactor = (0.5 - (asin(ds) + ds * sqrt(1.0 - ds * ds)) / Consts.M_PI)
+                }
+            }
+        }
+
+        // TODO: Plutão e Luas de Júpiter
+
+        // Use empirical formulae for main planets when seen from earth
+        return computeVisualMagnitude(
+            o,
+            phaseAngle,
+            cosChi,
+            observerRq,
+            planetRq,
+            observerPlanetRq,
+            d,
+            shadowFactor,
+        )
+    }
+
+    // phaseAngle is in radians
+    protected open fun computeVisualMagnitude(
+        o: Observer,
+        phaseAngle: Double,
+        cosChi: Double,
+        observerRq: Double,
+        planetRq: Double,
+        observerPlanetRq: Double,
+        d: Double,
+        shadowFactor: Double,
+    ): Double {
+        if (o.apparentMagnitudeAlgorithm == ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013 &&
+            id != "Moon" &&
+            absoluteMagnitude != -99.0
+        ) {
+            return absoluteMagnitude + d
+        }
+
+        // This formula source is unknown. But this is actually used even for the Moon!
+        val p = (1.0 - phaseAngle / Consts.M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / Consts.M_PI
+        val F = 2.0 * albedo * equatorialRadius * equatorialRadius * p /
+                (3.0 * observerPlanetRq * planetRq) * shadowFactor
+        return -26.73 - 2.5 * log10(F)
+    }
+
+    final override fun visualMagnitudeWithExtinction(o: Observer): Double {
+        val mag = visualMagnitude(o)
+
+        return if (isAboveHorizon(o)) {
+            val altAzPos = computeAltAzPositionGeometric(o).normalized
+            o.extinction.forward(altAzPos, mag)
+        } else {
+            mag
+        }
+    }
 
     companion object {
 

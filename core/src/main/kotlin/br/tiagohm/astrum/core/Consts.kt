@@ -7,6 +7,7 @@ import br.tiagohm.astrum.core.time.DateTime
 object Consts {
 
     const val AU = 149597870.691
+    const val PARSEC = 30.857E+12
     const val EPSILON = 1E-10
     const val M_PI = Math.PI
     const val M_2_PI = 2 * M_PI

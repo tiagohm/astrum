@@ -1,11 +1,12 @@
 package br.tiagohm.astrum.core
 
-import br.tiagohm.astrum.core.algorithms.MoonSecularAcceleration
-import br.tiagohm.astrum.core.algorithms.Refraction
+import br.tiagohm.astrum.core.algorithms.*
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Quad
 import br.tiagohm.astrum.core.math.Triad
 import br.tiagohm.astrum.core.sky.Earth
+import br.tiagohm.astrum.core.sky.Planet
+import br.tiagohm.astrum.core.sky.Sun
 import br.tiagohm.astrum.core.time.DateTime
 import br.tiagohm.astrum.core.time.DeltaTAlgorithmType
 import kotlin.math.*
@@ -18,12 +19,15 @@ data class Observer(
     val deltaTAlgorithm: DeltaTAlgorithmType = DeltaTAlgorithmType.ESPEANAK_MEEUS,
     val pressure: Double = 1013.0,
     val temperature: Double = 25.0,
+    val extinctionCoefficient: Double = 0.13,
     val useTopocentricCoordinates: Boolean = true,
     val useNutation: Boolean = true,
     val useLightTravelTime: Boolean = true,
+    val apparentMagnitudeAlgorithm: ApparentMagnitudeAlgorithm = ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013,
 ) {
 
     val refraction = Refraction(pressure, temperature)
+    val extinction = Extinction(extinctionCoefficient)
 
     val jde by lazy { JD[0] + JD[1] / 86400.0 }
 
@@ -168,6 +172,18 @@ data class Observer(
         return (home.computeSiderealTime(jd, jde, useNutation) + site.longitude).rad
     }
 
+    fun computeMeanSiderealTime(): Double {
+        var time = (home.computeSiderealTime(jd, jde, false) + site.longitude) / 15.0
+        time = posMod(time, 24.0)
+        return if (time < 0) time + 24.0 else time
+    }
+
+    fun computeApparentSiderealTime(): Double {
+        var time = (home.computeSiderealTime(jd, jde, true) + site.longitude) / 15.0
+        time = posMod(time, 24.0)
+        return if (time < 0) time + 24.0 else time
+    }
+
     internal fun j2000ToEquinoxEquatorial(a: Triad, refract: Boolean): Triad {
         return if (refract) {
             refraction.forward(a.transform(matJ2000ToEquinoxEqu))
@@ -198,6 +214,10 @@ data class Observer(
         }
     }
 
+    fun computeEclipticObliquity(): Double {
+        return home.computeRotObliquity(jde) + if (useNutation) Nutation.compute(jde).deltaEpsilon else 0.0
+    }
+
     private fun computeLightTimeSunPosition() {
         home.computeEclipticPosition(jde, this, false)
         val obsPosJDE = home.computeHeliocentricEclipticPosition()
@@ -206,5 +226,50 @@ data class Observer(
         val obsPosJDEbefore = home.computeHeliocentricEclipticPosition()
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
         home.computeEclipticPosition(jde, this, false)
+    }
+
+    // TODO: Pass Moon instead of Planet?
+    // TODO: Eclipse obscuration and Eclipse magnitude
+    fun computeEclipseFactor(sun: Sun, planet: Planet): Double {
+        val lp = lightTimeSunPosition
+        val p3 = computeHeliocentricEclipticPosition()
+        val RS = sun.equatorialRadius
+
+        val trans = planet.computeShadowMatrix()
+        val c = trans * Triad.ZERO
+        val radius = planet.equatorialRadius
+
+        var v1 = lp - p3
+        var v2 = c - p3
+        val L = v1.length
+        val l = v2.length
+        v1 /= L
+        v2 /= l
+
+        val R = RS / L
+        val r = radius / l
+        val d = (v1 - v2).length
+
+        return when {
+            // Distance too far
+            d >= R + r -> 1.0
+            // Umbra
+            d <= r - R -> 0.0
+            // Penumbra completely inside
+            d <= R - r -> 1.0 - r * r / (R * R)
+            // Penumbra partially inside
+            else -> {
+                val x = (R * R + d * d - r * r) / (2.0 * d)
+
+                val alpha = acos(x / R)
+                val beta = acos((d - x) / r)
+
+                val AR = R * R * (alpha - 0.5 * sin(2.0 * alpha))
+                val Ar = r * r * (beta - 0.5 * sin(2.0 * beta))
+                val AS = R * R * 2.0 * asin(1.0)
+
+                1.0 - (AR + Ar) / AS
+            }
+        }
     }
 }

@@ -1,8 +1,11 @@
 package br.tiagohm.astrum.core.sky
 
 import br.tiagohm.astrum.core.Consts
+import br.tiagohm.astrum.core.Observer
+import br.tiagohm.astrum.core.algorithms.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.algorithms.Nutation
 import br.tiagohm.astrum.core.algorithms.Precession
+import br.tiagohm.astrum.core.deg
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Triad
 import br.tiagohm.astrum.core.time.SiderealTime
@@ -66,5 +69,34 @@ class Earth(parent: Sun) : Planet(
 
     override fun computeRotObliquity(jde: Double): Double {
         return Precession.computeVondrakEpsilon(jde)
+    }
+
+    override fun computeVisualMagnitude(
+        o: Observer,
+        phaseAngle: Double,
+        cosChi: Double,
+        observerRq: Double,
+        planetRq: Double,
+        observerPlanetRq: Double,
+        d: Double,
+        shadowFactor: Double,
+    ): Double {
+        val phaseDeg = phaseAngle.deg
+
+        return when (o.apparentMagnitudeAlgorithm) {
+            ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013 -> {
+                -3.87 + d + (((0.48E-6 * phaseDeg + 0.000019) * phaseDeg + 0.0130) * phaseDeg)
+            }
+            else -> super.computeVisualMagnitude(
+                o,
+                phaseAngle,
+                cosChi,
+                observerRq,
+                planetRq,
+                observerPlanetRq,
+                d,
+                shadowFactor,
+            )
+        }
     }
 }

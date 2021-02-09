@@ -1,7 +1,6 @@
 package br.tiagohm.astrum.core.sky
 
 import br.tiagohm.astrum.core.*
-import br.tiagohm.astrum.core.algorithms.Nutation
 import br.tiagohm.astrum.core.math.Duad
 import br.tiagohm.astrum.core.math.Mat4
 import br.tiagohm.astrum.core.math.Triad
@@ -107,11 +106,26 @@ interface CelestialObject {
      */
     fun rts(o: Observer, hasAtmosphere: Boolean = true): Triad
 
-    // Returns object's apparent V magnitude as seen from observer, without including extinction.
-    // fun computeVMagnitude(o: Observer): Double
+    /**
+     * Returns object's apparent V magnitude as seen from observer, without including extinction.
+     */
+    fun visualMagnitude(o: Observer): Double
 
-    // Returns object's apparent V magnitude as seen from observer including extinction.
-    // fun computeVMagnitudeWithExtinction(o: Observer): Double
+    /**
+     * Returns object's apparent V magnitude as seen from observer including extinction.
+     */
+    fun visualMagnitudeWithExtinction(o: Observer): Double
+
+    fun airmass(o: Observer): Double {
+        val pos = computeAltAzPositionApparent(o)
+        val (_, az) = Algorithms.rectangularToSphericalCoordinates(pos)
+
+        return if (az > -2.0 * Consts.M_PI_180) {
+            o.extinction.airmass(cos(Consts.M_PI_2 - az), true)
+        } else {
+            0.0
+        }
+    }
 
     /**
      * Computes the angular radius in degree of a circle containing the object as seen from the observer
@@ -140,6 +154,8 @@ interface CelestialObject {
         return (obsHelioPos - computeHeliocentricEclipticPosition(o)).length
     }
 
+    fun distanceFromSun(o: Observer) = computeHeliocentricEclipticPosition(o).length
+
     /**
      * Computes observer-centered equatorial coordinates at equinox J2000.
      */
@@ -155,15 +171,17 @@ interface CelestialObject {
 
     fun computeHeliocentricEclipticPosition(o: Observer): Triad
 
-    fun computeHeliocentricEclipticPosition(): Triad
+    fun computeEclipticVelocity(o: Observer): Triad
 
-    fun raDecJ2000(o: Observer): Duad {
+    fun computeHeliocentricEclipticVelocity(o: Observer): Triad
+
+    fun equatorialJ2000(o: Observer): Duad {
         val pos = computeJ2000EquatorialPosition(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
         return Duad(equ[0].deg.in360, equ[1].deg)
     }
 
-    fun raDecOfDate(o: Observer): Duad {
+    fun equatorial(o: Observer): Duad {
         val pos = computeEquinoxEquatorialPosition(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
         return Duad(equ[0].deg.in360, equ[1].deg)
@@ -178,7 +196,7 @@ interface CelestialObject {
         return Duad((Consts.M_2_PI - equ[0]).deg.in360 / 15.0, equ[1].deg)
     }
 
-    fun altAz(
+    fun horizontal(
         o: Observer,
         southAzimuth: Boolean = false,
         apparent: Boolean = false
@@ -211,10 +229,9 @@ interface CelestialObject {
         return Duad(lambda.deg, beta.deg)
     }
 
-    fun eclipticOfDate(o: Observer): Duad {
-        val ecl = o.home.computeRotObliquity(o.jde) + if (o.useNutation) Nutation.compute(o.jde).deltaEpsilon else 0.0
+    fun ecliptic(o: Observer): Duad {
         val (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(o))
-        var (lambda, beta) = Algorithms.equatorialToEcliptic(ra, dec, ecl)
+        var (lambda, beta) = Algorithms.equatorialToEcliptic(ra, dec, o.computeEclipticObliquity())
         if (lambda < 0) lambda += Consts.M_2_PI
         return Duad(lambda.deg, beta.deg)
     }
