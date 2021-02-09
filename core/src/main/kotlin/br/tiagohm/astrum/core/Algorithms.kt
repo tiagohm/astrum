@@ -5,6 +5,7 @@ import br.tiagohm.astrum.core.math.Triad
 import java.lang.Math.cbrt
 import kotlin.math.*
 
+@Suppress("NOTHING_TO_INLINE")
 object Algorithms {
 
     /**
@@ -98,6 +99,12 @@ object Algorithms {
         val dec = asin(sin(beta) * cos(ecl) + cos(beta) * sin(ecl) * sin(lambda))
         return Duad(ra, dec)
     }
+
+    inline fun j2000ToGalactic(a: Triad) = Consts.MAT_J2000_TO_GALACTIC * a
+
+    inline fun j2000ToSupergalactic(a: Triad) = Consts.MAT_J2000_TO_SUPERGALACTIC * a
+
+    inline fun j2000ToJ1875(a: Triad) = Consts.MAT_J2000_TO_J1875 * a
 
     fun computeInterpolatedElements(
         t: Double,

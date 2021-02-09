@@ -64,6 +64,7 @@ abstract class Planet internal constructor(
      */
     open val meanOppositionMagnitude: Double
         get() {
+            // Source: Explanatory Supplement 2013, Table 10.6 and formula (10.5) with semimajorAxis a from Table 8.7
             // TODO: Fixed Mean Opposition Magnitute for some objects.
             // TODO: Testar com luas de Júpiter e asteroides
             if (absoluteMagnitude <= -99.0) return 100.0
@@ -91,6 +92,7 @@ abstract class Planet internal constructor(
         val coeff = abs(sday / siderealPeriod)
 
         // Duration of mean solar day on moon are same as synodic month on this moon
+        // TODO: Testar com luas
         return if (type == PlanetType.MOON) {
             val a = parent!!.siderealPeriod / sday
             sday * (a / (a - 1))
@@ -256,19 +258,16 @@ abstract class Planet internal constructor(
         return m
     }
 
+    /**
+     * Computes the angular size in degrees.
+     */
     override fun angularSize(o: Observer): Double {
         val radius = equatorialRadius // TODO: Saturn Rings
         return atan2(radius, computeJ2000EquatorialPosition(o).length) * Consts.M_180_PI
     }
 
-    // Gets the elongation angle (radians) for an observer at pos obsPos in heliocentric coordinates (in AU)
-    // fun getElongation(obsPos: Triplet): Double
-
     // Get the angular radius (degrees) of the planet spheroid (i.e. without the rings)
     // fun getSpheroidAngularSize(sky: Sky): Double
-
-    // Get the planet phase (illuminated fraction of the planet disk, [0=dark..1=full]) for an observer at pos obsPos in heliocentric coordinates (in AU)
-    // fun getPhase(obsPos: Triplet): Double
 
     /**
      * Computes the obliquity in radians.

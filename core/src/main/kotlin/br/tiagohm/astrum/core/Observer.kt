@@ -192,6 +192,14 @@ data class Observer(
         }
     }
 
+    internal fun equinoxEquatorialToJ2000(a: Triad, refract: Boolean): Triad {
+        return if (refract) {
+            refraction.backward(a.transform(matEquinoxEquToAltAz))
+        } else {
+            matEquinoxEquDateToJ2000 * a
+        }
+    }
+
     internal fun j2000ToAltAz(a: Triad, refract: Boolean): Triad {
         return if (refract) {
             refraction.forward(a.transform(matJ2000ToAltAz))
@@ -199,12 +207,6 @@ data class Observer(
             matJ2000ToAltAz * a
         }
     }
-
-    internal fun j2000ToGalactic(a: Triad) = Consts.MAT_J2000_TO_GALACTIC * a
-
-    internal fun j2000ToSupergalactic(a: Triad) = Consts.MAT_J2000_TO_SUPERGALACTIC * a
-
-    internal fun j2000ToJ1875(a: Triad) = Consts.MAT_J2000_TO_J1875 * a
 
     internal fun altAzToEquinoxEquatorial(a: Triad, refract: Boolean): Triad {
         return if (refract) {

@@ -68,14 +68,14 @@ interface CelestialObject {
      * Computes observer-centered galactic coordinates.
      */
     fun computeGalacticPosition(o: Observer): Triad {
-        return o.j2000ToGalactic(computeJ2000EquatorialPosition(o))
+        return Algorithms.j2000ToGalactic(computeJ2000EquatorialPosition(o))
     }
 
     /**
      * Computes observer-centered supergalactic coordinates.
      */
     fun computeSupergalacticPosition(o: Observer): Triad {
-        return o.j2000ToSupergalactic(computeJ2000EquatorialPosition(o))
+        return Algorithms.j2000ToSupergalactic(computeJ2000EquatorialPosition(o))
     }
 
     /**
@@ -235,6 +235,8 @@ interface CelestialObject {
         if (lambda < 0) lambda += Consts.M_2_PI
         return Duad(lambda.deg, beta.deg)
     }
+
+    fun constellation(o: Observer) = Constellation.find(o, computeEquinoxEquatorialPosition(o))!!
 
     // Returns a key/value map with data about an object's position, magnitude and so on.
     // fun getInfo(o: Observer): Map<String, Any?>

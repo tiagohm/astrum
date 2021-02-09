@@ -827,4 +827,80 @@ class ObserverTest {
             assertEquals(8.10, Neptune(sun).visualMagnitudeWithExtinction(it), 0.01)
         }
     }
+
+    @Test
+    fun constellations() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val dt = DateTime(2021, 2, 5, 9, 0, 0) // 2459251.000000
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            dt,
+        )
+
+        val jupiter = Jupiter(sun)
+
+        assertEquals(Constellation.CAP, jupiter.constellation(o))
+        assertEquals(Constellation.AQR, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2022))))
+        assertEquals(Constellation.PSC, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2023))))
+        assertEquals(Constellation.ARI, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2024))))
+        assertEquals(Constellation.TAU, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2025))))
+        assertEquals(Constellation.GEM, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2026))))
+        assertEquals(Constellation.LEO, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2027))))
+        assertEquals(Constellation.VIR, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2028))))
+        assertEquals(Constellation.LIB, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2030))))
+        assertEquals(Constellation.OPH, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2031))))
+        assertEquals(Constellation.SGR, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2032))))
+        assertEquals(Constellation.CAP, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2033))))
+    }
+
+    @Test
+    fun eclipticObliquity() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val dt = DateTime(2021, 2, 5, 9, 0, 0) // 2459251.000000
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            dt,
+        )
+
+        assertEquals(23.4371, o.computeEclipticObliquity().deg, 0.0001)
+        assertEquals(23.4372, o.copy(dateTime = dt.copy(day = 10)).computeEclipticObliquity().deg, 0.0001)
+        assertEquals(23.6893, o.copy(dateTime = dt.copy(year = 46)).computeEclipticObliquity().deg, 0.0001)
+        assertEquals(24.2108, o.copy(dateTime = dt.copy(year = -6046)).computeEclipticObliquity().deg, 0.0001)
+        assertEquals(22.9481, o.copy(dateTime = dt.copy(year = 6046)).computeEclipticObliquity().deg, 0.0001)
+    }
+
+    @Test
+    fun meanSolarDay() {
+        val sun = Sun()
+        assertEquals(0.4137, Jupiter(sun).meanSolarDay, 0.0001)
+        assertEquals(116.7502, Venus(sun).meanSolarDay, 0.0001)
+    }
+
+    @Test
+    fun angularSize() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val dt = DateTime(2021, 2, 5, 9, 0, 0) // 2459251.000000
+
+        val o = Observer(
+            earth,
+            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            dt,
+        )
+
+        val jupiter = Jupiter(sun)
+
+        assertEquals(0.00903, jupiter.angularSize(o) * 2, 0.00001)
+        assertEquals(0.00904, jupiter.angularSize(o.copy(dateTime = dt.copy(day = 8))) * 2, 0.00001)
+        assertEquals(0.01053, jupiter.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+    }
 }
