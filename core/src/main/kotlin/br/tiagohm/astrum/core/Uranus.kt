@@ -8,6 +8,7 @@ class Uranus(parent: Sun) : Planet(
     null,
     PlanetType.PLANET,
     parent,
+    Ring(26840.0 / AU, 97700.0 / AU),
 ) {
 
     override val siderealDay = -0.71833333334397530864

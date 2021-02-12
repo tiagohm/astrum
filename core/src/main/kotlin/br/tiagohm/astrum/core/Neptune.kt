@@ -8,6 +8,7 @@ class Neptune(parent: Sun) : Planet(
     null,
     PlanetType.PLANET,
     parent,
+    Ring(40900.0 / AU, 62932.0 / AU),
 ) {
 
     override val siderealDay = 0.671249999952453125

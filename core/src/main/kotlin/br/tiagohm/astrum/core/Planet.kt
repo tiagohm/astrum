@@ -18,6 +18,8 @@ abstract class Planet internal constructor(
     final override val type: PlanetType,
     // Parent
     val parent: Planet? = null,
+    // Rings
+    val rings: Ring? = null,
 ) : CelestialObject {
 
     private var rotLocalToParent = Mat4.IDENTITY
@@ -256,12 +258,16 @@ abstract class Planet internal constructor(
      * Computes the angular size in degrees.
      */
     override fun angularSize(o: Observer): Double {
-        val radius = equatorialRadius // TODO: Saturn Rings
-        return atan2(radius, computeJ2000EquatorialPosition(o).length) * M_180_PI
+        val radius = rings?.size ?: equatorialRadius
+        return atan2(radius, computeJ2000EquatorialPosition(o).length).deg
     }
 
-    // Get the angular radius (degrees) of the planet spheroid (i.e. without the rings)
-    // fun getSpheroidAngularSize(sky: Sky): Double
+    /**
+     * Computes the angular radius (degrees) of the planet spheroid (i.e. without the rings)
+     */
+    fun spheroidAngularSize(o: Observer): Double {
+        return atan2(equatorialRadius, computeJ2000EquatorialPosition(o).length).deg
+    }
 
     /**
      * Computes the obliquity in radians.

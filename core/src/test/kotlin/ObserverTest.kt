@@ -891,8 +891,28 @@ class ObserverTest {
         val jupiter = Jupiter(sun)
 
         assertEquals(0.00903, jupiter.angularSize(o) * 2, 0.00001)
-        assertEquals(0.00904, jupiter.angularSize(o.copy(dateTime = dt.copy(day = 8))) * 2, 0.00001)
         assertEquals(0.01053, jupiter.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+
+        val saturn = Saturn(sun)
+
+        assertEquals(0.00982, saturn.angularSize(o) * 2, 0.00001)
+        assertEquals(0.01088, saturn.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+        assertEquals(0.00422, saturn.spheroidAngularSize(o) * 2, 0.00001)
+        assertEquals(0.00467, saturn.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+
+        val uranus = Uranus(sun)
+
+        assertEquals(0.00376, uranus.angularSize(o) * 2, 0.00001)
+        assertEquals(0.00360, uranus.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+        assertEquals(0.00098, uranus.spheroidAngularSize(o) * 2, 0.00001)
+        assertEquals(0.00094, uranus.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+
+        val neptune = Neptune(sun)
+
+        assertEquals(0.00157, neptune.angularSize(o) * 2, 0.00001)
+        assertEquals(0.00158, neptune.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+        assertEquals(0.00062, neptune.spheroidAngularSize(o) * 2, 0.00001)
+        assertEquals(0.00062, neptune.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
     }
 
     companion object {

@@ -11,6 +11,7 @@ class Saturn(parent: Sun) : Planet(
     null,
     PlanetType.PLANET,
     parent,
+    Ring(74510.0 / AU, 140390.0 / AU),
 ) {
 
     override val siderealDay = 0.44400925923884945092
@@ -66,8 +67,8 @@ class Saturn(parent: Sun) : Planet(
     fun ringsIllumination(o: Observer): Double {
         // Implemented from Meeus, Astr.Alg.1992
         val T = (o.jde - 2451545.0) / 36525.0
-        val i = ((0.000004 * T - 0.012998) * T + 28.075216) * M_PI_180
-        val Omega = ((0.000412 * T + 1.394681) * T + 169.508470) * M_PI_180
+        val i = ((0.000004 * T - 0.012998) * T + 28.075216).rad
+        val Omega = ((0.000412 * T + 1.394681) * T + 169.508470).rad
         val se = computeHeliocentricEclipticPosition() - o.home.computeHeliocentricEclipticPosition()
         val lambda = atan2(se[1], se[0])
         val beta = atan2(se[2], sqrt(se[0] * se[0] + se[1] * se[1]))
