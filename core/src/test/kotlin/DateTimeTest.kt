@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.core.time.DateTime
+import br.tiagohm.astrum.core.DateTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

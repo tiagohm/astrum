@@ -20,8 +20,19 @@ test {
     useJUnitPlatform()
 }
 
+kotlin {
+    sourceSets.all {
+        languageSettings.enableLanguageFeature("InlineClasses")
+    }
+}
+
 compileKotlin {
     kotlinOptions {
+        jvmTarget = "11"
         freeCompilerArgs = ["-Xinline-classes"]
     }
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "11"
 }

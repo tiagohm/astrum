@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.core.algorithms.Vsop87
+import br.tiagohm.astrum.core.Vsop87
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

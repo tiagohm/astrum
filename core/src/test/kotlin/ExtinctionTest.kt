@@ -1,5 +1,5 @@
-import br.tiagohm.astrum.core.algorithms.Extinction
-import br.tiagohm.astrum.core.math.Triad
+import br.tiagohm.astrum.core.Extinction
+import br.tiagohm.astrum.core.Triad
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

@@ -1,7 +1,5 @@
 package br.tiagohm.astrum.core
 
-import br.tiagohm.astrum.core.math.Triad
-
 interface Orbit {
 
     fun positionAtTimevInVSOP87Coordinates(jde: Double): Triad

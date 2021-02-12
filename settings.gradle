@@ -3,4 +3,3 @@ plugins {
 }
 
 include ":core"
-include ":cli"

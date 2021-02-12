@@ -1,6 +1,6 @@
-import br.tiagohm.astrum.core.Consts
-import br.tiagohm.astrum.core.math.Mat4
-import br.tiagohm.astrum.core.math.Triad
+import br.tiagohm.astrum.core.M_PI
+import br.tiagohm.astrum.core.Mat4
+import br.tiagohm.astrum.core.Triad
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -47,7 +47,7 @@ class Mat4Test {
 
     @Test
     fun rotation() {
-        val r = Mat4.rotation(v, Consts.M_PI)
+        val r = Mat4.rotation(v, M_PI)
         assertMat4Equals(
             Mat4(
                 0.422222, 0.888889, -0.177778, 0.0, 0.888889,
@@ -59,7 +59,7 @@ class Mat4Test {
 
     @Test
     fun xrotation() {
-        val r = Mat4.xrotation(Consts.M_PI)
+        val r = Mat4.xrotation(M_PI)
         assertMat4Equals(
             Mat4(
                 1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0,
@@ -70,7 +70,7 @@ class Mat4Test {
 
     @Test
     fun yrotation() {
-        val r = Mat4.yrotation(Consts.M_PI)
+        val r = Mat4.yrotation(M_PI)
         assertMat4Equals(
             Mat4(
                 -1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
@@ -81,7 +81,7 @@ class Mat4Test {
 
     @Test
     fun zrotation() {
-        val r = Mat4.zrotation(Consts.M_PI)
+        val r = Mat4.zrotation(M_PI)
         assertMat4Equals(
             Mat4(
                 -1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0,

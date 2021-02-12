@@ -1,6 +1,6 @@
-import br.tiagohm.astrum.core.math.Duad
-import br.tiagohm.astrum.core.math.Mat4
-import br.tiagohm.astrum.core.math.Triad
+import br.tiagohm.astrum.core.Duad
+import br.tiagohm.astrum.core.Mat4
+import br.tiagohm.astrum.core.Triad
 import org.junit.jupiter.api.Assertions.assertEquals
 
 fun assertMat4Equals(expected: Mat4, actual: Mat4, delta: Double = 0.000001) {

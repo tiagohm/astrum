@@ -1,6 +1,5 @@
 package br.tiagohm.astrum.core
 
-import br.tiagohm.astrum.core.math.Triad
 import java.lang.Math.cbrt
 import kotlin.math.*
 
@@ -43,7 +42,7 @@ class KeplerOrbit(
         assert(e < 1.0)
 
         val a = q / (1.0 - e)
-        val M = (n * dt % Consts.M_2_PI).let { if (it < 0.0) it + Consts.M_2_PI else it }
+        val M = (n * dt % M_2_PI).let { if (it < 0.0) it + M_2_PI else it }
 
         //	Comet orbits are quite often near-parabolic, where this may still only converge slowly.
         //	Better always use Laguerre-Conway. See Heafner, Ch. 5.3
@@ -60,7 +59,7 @@ class KeplerOrbit(
 
             E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
 
-            if (abs(E - Ep) < Consts.EPSILON) {
+            if (abs(E - Ep) < EPSILON) {
                 break
             }
 
@@ -98,7 +97,7 @@ class KeplerOrbit(
 
             E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
 
-            if (abs(E - Ep) < Consts.EPSILON) {
+            if (abs(E - Ep) < EPSILON) {
                 break
             }
         }
@@ -169,7 +168,7 @@ class KeplerOrbit(
         val sinNu = rSinNu / r
         val cosNu = rCosNu / r
         val p = q * (1.0 + e) // Heafner: semilatus rectum
-        val sqrtMuP = sqrt(Consts.GAUSS_GRAV_K_SQ * centralMass / p)
+        val sqrtMuP = sqrt(GAUSS_GRAV_K_SQ * centralMass / p)
 
         val s0 = sqrtMuP * ((e + cosNu) * Qx - sinNu * Px) // rdotx (AU/d)
         val s1 = sqrtMuP * ((e + cosNu) * Qy - sinNu * Py) // rdoty (AU/d)
@@ -192,7 +191,7 @@ class KeplerOrbit(
 
         fun computeSiderealPeriod(semiMajorAxis: Double, centralMass: Double): Double {
             // Solution for non-Solar central mass (Moons) we need to take central mass (in Solar units) into account. Tested with comparison of preconfigured Moon data.
-            return if (semiMajorAxis <= 0) 0.0 else Consts.M_2_PI / Consts.GAUSS_GRAV_K * sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / centralMass)
+            return if (semiMajorAxis <= 0) 0.0 else M_2_PI / GAUSS_GRAV_K * sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / centralMass)
         }
     }
 }

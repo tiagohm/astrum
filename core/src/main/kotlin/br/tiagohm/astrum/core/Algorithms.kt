@@ -1,7 +1,5 @@
 package br.tiagohm.astrum.core
 
-import br.tiagohm.astrum.core.math.Duad
-import br.tiagohm.astrum.core.math.Triad
 import java.lang.Math.cbrt
 import kotlin.math.*
 
@@ -17,7 +15,7 @@ object Algorithms {
      * @param n Mean motion = 2*M_PI/(orbit period)
      */
     fun ellipticToRectangular(a: Double, n: Double, elem: DoubleArray, dt: Double): DoubleArray {
-        val L = (elem[1] + n * dt) % Consts.M_2_PI
+        val L = (elem[1] + n * dt) % M_2_PI
         var Le = L - elem[2] * sin(L) + elem[3] * cos(L)
 
         while (true) {
@@ -28,7 +26,7 @@ object Algorithms {
             val dLe = (L - Le + elem[2] * sLe - elem[3] * cLe) / (1.0 - elem[2] * cLe - elem[3] * sLe)
             Le += dLe
 
-            if (abs(dLe) <= Consts.EPSILON) break
+            if (abs(dLe) <= EPSILON) break
         }
 
         val cLe = cos(Le)
@@ -100,11 +98,11 @@ object Algorithms {
         return Duad(ra, dec)
     }
 
-    inline fun j2000ToGalactic(a: Triad) = Consts.MAT_J2000_TO_GALACTIC * a
+    inline fun j2000ToGalactic(a: Triad) = MAT_J2000_TO_GALACTIC * a
 
-    inline fun j2000ToSupergalactic(a: Triad) = Consts.MAT_J2000_TO_SUPERGALACTIC * a
+    inline fun j2000ToSupergalactic(a: Triad) = MAT_J2000_TO_SUPERGALACTIC * a
 
-    inline fun j2000ToJ1875(a: Triad) = Consts.MAT_J2000_TO_J1875 * a
+    inline fun j2000ToJ1875(a: Triad) = MAT_J2000_TO_J1875 * a
 
     fun computeInterpolatedElements(
         t: Double,

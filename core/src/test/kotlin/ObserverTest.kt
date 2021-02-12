@@ -1,13 +1,4 @@
-import br.tiagohm.astrum.core.ObservationSite
-import br.tiagohm.astrum.core.Observer
-import br.tiagohm.astrum.core.algorithms.ApparentMagnitudeAlgorithm
-import br.tiagohm.astrum.core.deg
-import br.tiagohm.astrum.core.math.Duad
-import br.tiagohm.astrum.core.math.Triad
-import br.tiagohm.astrum.core.rad
-import br.tiagohm.astrum.core.sky.*
-import br.tiagohm.astrum.core.time.DateTime
-import br.tiagohm.astrum.core.time.DeltaTAlgorithmType
+import br.tiagohm.astrum.core.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -22,7 +13,7 @@ class ObserverTest {
         // None
         testFrom(
             sun, earth,
-            ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
+            SAO_JOSE_DAS_PALMEIRAS,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
@@ -44,7 +35,7 @@ class ObserverTest {
         // Nutation
         testFrom(
             sun, earth,
-            ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
+            SAO_JOSE_DAS_PALMEIRAS,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
@@ -66,7 +57,7 @@ class ObserverTest {
         // Topocentric Coordinates
         testFrom(
             sun, earth,
-            ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
+            SAO_JOSE_DAS_PALMEIRAS,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
@@ -88,7 +79,7 @@ class ObserverTest {
         // Light Travel Time
         testFrom(
             sun, earth,
-            ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
+            SAO_JOSE_DAS_PALMEIRAS,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
@@ -110,7 +101,7 @@ class ObserverTest {
         // All + Time Correction
         testFrom(
             sun, earth,
-            ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
+            SAO_JOSE_DAS_PALMEIRAS,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
@@ -138,7 +129,7 @@ class ObserverTest {
 
         val o0 = Observer(
             earth,
-            ObservationSite.SAO_JOSE_DAS_PALMEIRAS,
+            SAO_JOSE_DAS_PALMEIRAS,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
             DeltaTAlgorithmType.NONE,
             useTopocentricCoordinates = true,
@@ -204,7 +195,7 @@ class ObserverTest {
 
         val o0 = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0),
         )
 
@@ -214,7 +205,7 @@ class ObserverTest {
 
         val o1 = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 21, 0, 0),
         )
 
@@ -226,7 +217,7 @@ class ObserverTest {
     fun testFrom(
         sun: Sun,
         home: Earth,
-        site: ObservationSite,
+        site: Location,
         dateTime: DateTime,
         positions: List<Duad?>,
         deltaTAlgorithm: DeltaTAlgorithmType = DeltaTAlgorithmType.NONE,
@@ -273,7 +264,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -294,7 +285,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -315,7 +306,7 @@ class ObserverTest {
 
         val o0 = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -330,7 +321,7 @@ class ObserverTest {
 
         val o1 = Observer(
             earth,
-            ObservationSite("Tokyo", 35.689499, 139.691711, 44.0),
+            Location("Tokyo", 35.689499, 139.691711, 44.0),
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -351,7 +342,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -372,7 +363,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -393,7 +384,7 @@ class ObserverTest {
 
         val o0 = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -408,7 +399,7 @@ class ObserverTest {
 
         val o1 = Observer(
             earth,
-            ObservationSite("Tokyo", 35.689499, 139.691711, 44.0),
+            Location("Tokyo", 35.689499, 139.691711, 44.0),
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -429,7 +420,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -450,7 +441,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -471,7 +462,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -492,7 +483,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -513,7 +504,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -534,7 +525,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -557,7 +548,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -578,7 +569,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -600,7 +591,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -621,7 +612,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -642,7 +633,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -663,7 +654,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -686,7 +677,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -707,7 +698,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -722,7 +713,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             DateTime(2021, 2, 5, 13, 0, 0), // All planets in the sky
         )
 
@@ -837,7 +828,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             dt,
         )
 
@@ -866,7 +857,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             dt,
         )
 
@@ -893,7 +884,7 @@ class ObserverTest {
 
         val o = Observer(
             earth,
-            ObservationSite.PICO_DOS_DIAS_OBSERVATORY,
+            PICO_DOS_DIAS_OBSERVATORY,
             dt,
         )
 
@@ -902,5 +893,11 @@ class ObserverTest {
         assertEquals(0.00903, jupiter.angularSize(o) * 2, 0.00001)
         assertEquals(0.00904, jupiter.angularSize(o.copy(dateTime = dt.copy(day = 8))) * 2, 0.00001)
         assertEquals(0.01053, jupiter.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
+    }
+
+    companion object {
+
+        val SAO_JOSE_DAS_PALMEIRAS = Location("São José das Palmeiras - BR", -24.837778, -54.063889, 563.0)
+        val PICO_DOS_DIAS_OBSERVATORY = Location("Pico dos Dias Observatory - BR", -22.534444, -45.5825, 1864.0)
     }
 }

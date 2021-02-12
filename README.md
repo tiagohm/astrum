@@ -25,6 +25,14 @@ val pos = mercury.computeEquinoxEquatorialPosition(o)
 val radec = Algorithms.rectangularToSphericalCoordinates(pos)
 ```
 
+Command Line
+
+`astrum [command] [options|subcommands]`
+
+* `planets`
+  - `list`: List the planets
+    - `--rate=[integer]`: Sets the update rate in seconds
+
 ## Features
 
 ## References and Inspirations

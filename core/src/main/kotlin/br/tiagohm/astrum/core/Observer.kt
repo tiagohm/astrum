@@ -1,20 +1,11 @@
 package br.tiagohm.astrum.core
 
-import br.tiagohm.astrum.core.algorithms.*
-import br.tiagohm.astrum.core.math.Mat4
-import br.tiagohm.astrum.core.math.Quad
-import br.tiagohm.astrum.core.math.Triad
-import br.tiagohm.astrum.core.sky.Earth
-import br.tiagohm.astrum.core.sky.Planet
-import br.tiagohm.astrum.core.sky.Sun
-import br.tiagohm.astrum.core.time.DateTime
-import br.tiagohm.astrum.core.time.DeltaTAlgorithmType
 import kotlin.math.*
 
 @Suppress("PrivatePropertyName")
 data class Observer(
     val home: Earth,
-    val site: ObservationSite,
+    val site: Location,
     val dateTime: DateTime,
     val deltaTAlgorithm: DeltaTAlgorithmType = DeltaTAlgorithmType.ESPEANAK_MEEUS,
     val pressure: Double = 1013.0,
@@ -62,15 +53,15 @@ data class Observer(
         // Multiply static J2000 earth axis tilt (eclipticalJ2000<->equatorialJ2000)
         // in effect, this matrix transforms from VSOP87 ecliptical J2000 to planet-based equatorial coordinates.
         // For earth, matJ2000ToEquinoxEqu is the precession matrix.
-        matEquinoxEquDateToJ2000 = Consts.MAT_VSOP87_TO_J2000 * computeRotEquatorialToVsop87()
+        matEquinoxEquDateToJ2000 = MAT_VSOP87_TO_J2000 * computeRotEquatorialToVsop87()
         matJ2000ToEquinoxEqu = matEquinoxEquDateToJ2000.transpose()
         matJ2000ToAltAz = matEquinoxEquToAltAz * matJ2000ToEquinoxEqu
         matAltAzToJ2000 = matJ2000ToAltAz.transpose()
 
         matHeliocentricEclipticToEquinoxEqu =
-            matJ2000ToEquinoxEqu * Consts.MAT_VSOP87_TO_J2000 * Mat4.translation(-computeCenterVsop87Position())
+            matJ2000ToEquinoxEqu * MAT_VSOP87_TO_J2000 * Mat4.translation(-computeCenterVsop87Position())
 
-        val matAltAzToVsop87 = Consts.MAT_J2000_TO_VSOP87 * matEquinoxEquDateToJ2000 * matAltAzToEquinoxEqu
+        val matAltAzToVsop87 = MAT_J2000_TO_VSOP87 * matEquinoxEquDateToJ2000 * matAltAzToEquinoxEqu
 
         if (useTopocentricCoordinates) {
             val offset = computeTopographicOffsetFromCenter()
@@ -129,14 +120,14 @@ data class Observer(
     /**
      * Computes the distance between observer and home planet center in meters
      */
-    fun computeDistanceFromCenterInMeters() = computeDistanceFromCenter() * Consts.AU
+    fun computeDistanceFromCenterInMeters() = computeDistanceFromCenter() * AU
 
     /**
      * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude
      */
     fun computeTopographicOffsetFromCenter(): Quad {
         if (home.equatorialRadius <= 0.0) {
-            return Quad(0.0, 0.0, site.latitude.rad, site.altitude / (1000.0 * Consts.AU))
+            return Quad(0.0, 0.0, site.latitude.rad, site.altitude / (1000.0 * AU))
         }
 
         val a = home.equatorialRadius
@@ -144,7 +135,7 @@ data class Observer(
 
         val lat = site.latitude.rad
         val u = atan(bByA * tan(lat))
-        val alt = site.altitude / (1000.0 * Consts.AU * a)
+        val alt = site.altitude / (1000.0 * AU * a)
 
         val rhoSinPhiPrime = bByA * sin(u) + alt * sin(lat)
         val rhoCosPhiPrime = cos(u) + alt * cos(lat)
@@ -174,13 +165,13 @@ data class Observer(
 
     fun computeMeanSiderealTime(): Double {
         var time = (home.computeSiderealTime(jd, jde, false) + site.longitude) / 15.0
-        time = posMod(time, 24.0)
+        time = time.pmod(24.0)
         return if (time < 0) time + 24.0 else time
     }
 
     fun computeApparentSiderealTime(): Double {
         var time = (home.computeSiderealTime(jd, jde, true) + site.longitude) / 15.0
-        time = posMod(time, 24.0)
+        time = time.pmod(24.0)
         return if (time < 0) time + 24.0 else time
     }
 
@@ -224,7 +215,7 @@ data class Observer(
         home.computeEclipticPosition(jde, this, false)
         val obsPosJDE = home.computeHeliocentricEclipticPosition()
         val obsDist = obsPosJDE.length
-        home.computeEclipticPosition(jde - obsDist * (Consts.AU / (Consts.SPEED_OF_LIGHT * 86400.0)), this, false)
+        home.computeEclipticPosition(jde - obsDist * (AU / (SPEED_OF_LIGHT * 86400.0)), this, false)
         val obsPosJDEbefore = home.computeHeliocentricEclipticPosition()
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
         home.computeEclipticPosition(jde, this, false)

@@ -1,6 +1,6 @@
+import br.tiagohm.astrum.core.DeltaTByEspenakMeeus
 import br.tiagohm.astrum.core.KeplerOrbit
-import br.tiagohm.astrum.core.time.DeltaTByEspenakMeeus
-import br.tiagohm.astrum.core.time.SiderealTime
+import br.tiagohm.astrum.core.SiderealTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

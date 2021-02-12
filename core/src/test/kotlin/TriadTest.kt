@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.core.math.Triad
+import br.tiagohm.astrum.core.Triad
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
