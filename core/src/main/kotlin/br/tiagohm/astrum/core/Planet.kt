@@ -23,8 +23,6 @@ abstract class Planet internal constructor(
 ) : CelestialObject {
 
     private var rotLocalToParent = Mat4.IDENTITY
-    private var eclipticPos = Triad.ZERO
-    private var eclipticVelocity = Triad.ZERO
     private var axisRotation = 0.0
     private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
 
@@ -142,26 +140,21 @@ abstract class Planet internal constructor(
         rotLocalToParent = internalComputeTransformationMatrix(jd, jde, useNutation)
     }
 
-    internal fun computeEclipticPosition(jde: Double, o: Observer, useLightTravelTime: Boolean) {
+    internal fun computeEclipticPosition(jde: Double, o: Observer, useLightTravelTime: Boolean): Pair<Triad, Triad> {
         val jd = jde - o.computeDeltaT(jde) / 86400.0
 
-        if (useLightTravelTime) {
-            val a = internalComputePosition(jde).first
-            val b = o.home.internalComputePosition(jde).first
-
+        return if (useLightTravelTime) {
             val length =
-                (computeHeliocentricEclipticPosition(a) - o.home.computeHeliocentricEclipticPosition(b)).length
+                (internalComputeHeliocentricEclipticPosition(jde) - o.home.internalComputeHeliocentricEclipticPosition(jde)).length
             val lsc = length * (AU / (SPEED_OF_LIGHT * 86400.0))
 
             val pos = internalComputePosition(jde - lsc)
-            eclipticPos = pos.first
-            eclipticVelocity = pos.second
             computeTransformationMatrix(jd - lsc, jde - lsc, o.useNutation)
+            pos
         } else {
             val pos = internalComputePosition(jde)
-            eclipticPos = pos.first
-            eclipticVelocity = pos.second
             computeTransformationMatrix(jd, jde, o.useNutation)
+            pos
         }
     }
 
@@ -182,16 +175,12 @@ abstract class Planet internal constructor(
         return pos
     }
 
-    internal fun computeHeliocentricEclipticPosition(): Triad {
-        return computeHeliocentricEclipticPosition(eclipticPos)
-    }
-
-    internal fun computeHeliocentricEclipticPosition(a: Triad): Triad {
-        var pos = a
+    internal fun internalComputeHeliocentricEclipticPosition(jde: Double): Triad {
+        var pos = internalComputePosition(jde).first
         var p = parent
 
         while (p != null) {
-            pos += p.eclipticPos
+            pos += p.internalComputePosition(jde).first
             p = p.parent
         }
 
@@ -199,13 +188,11 @@ abstract class Planet internal constructor(
     }
 
     override fun computeEclipticPosition(o: Observer): Triad {
-        computeEclipticPosition(o.jde, o, o.useLightTravelTime)
-        return eclipticPos
+        return computeEclipticPosition(o.jde, o, o.useLightTravelTime).first
     }
 
     override fun computeEclipticVelocity(o: Observer): Triad {
-        computeEclipticPosition(o.jde, o, o.useLightTravelTime)
-        return eclipticVelocity
+        return computeEclipticPosition(o.jde, o, o.useLightTravelTime).second
     }
 
     override fun computeHeliocentricEclipticVelocity(o: Observer): Triad {
@@ -218,22 +205,6 @@ abstract class Planet internal constructor(
         }
 
         return pos
-    }
-
-    internal fun computeHeliocentricEclipticVelocity(a: Triad): Triad {
-        var pos = a
-        var p = parent
-
-        while (p != null) {
-            pos += p.eclipticVelocity
-            p = p.parent
-        }
-
-        return pos
-    }
-
-    internal fun computeHeliocentricEclipticVelocity(): Triad {
-        return computeHeliocentricEclipticVelocity(eclipticVelocity)
     }
 
     fun computeRotEquatorialToVsop87(): Mat4 {
@@ -279,7 +250,6 @@ abstract class Planet internal constructor(
     open fun computeRotObliquity(jde: Double): Double = 0.0
 
     final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
-        // TODO: For Moon: hz = + (0.7275 * 0.95).rad; // horizon parallax factor
         var hz = 0.0
 
         if (hasAtmosphere) {
@@ -288,6 +258,7 @@ abstract class Planet internal constructor(
             hz += asin(o.refraction.backward(zero)[2])
         }
 
+        // TODO: For Moon: hz += (0.7275 * 0.95).rad; // horizon parallax factor
         return internalComputeRTSTime(o, hz, hasAtmosphere)
     }
 
@@ -338,12 +309,12 @@ abstract class Planet internal constructor(
     }
 
     // Used to compute shadows.
-    internal fun computeShadowMatrix(): Mat4 {
-        var res = Mat4.translation(eclipticPos) * rotLocalToParent
+    internal fun computeShadowMatrix(jde: Double): Mat4 {
+        var res = Mat4.translation(internalComputePosition(jde).first) * rotLocalToParent
         var p = parent
 
         while (p?.parent != null) {
-            res = Mat4.translation(p.eclipticPos) * res * p.rotLocalToParent
+            res = Mat4.translation(p.internalComputePosition(jde).first) * res * p.rotLocalToParent
             p = p.parent
         }
 

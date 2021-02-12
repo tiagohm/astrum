@@ -212,13 +212,10 @@ data class Observer(
     }
 
     private fun computeLightTimeSunPosition() {
-        home.computeEclipticPosition(jde, this, false)
-        val obsPosJDE = home.computeHeliocentricEclipticPosition()
+        val obsPosJDE = home.internalComputeHeliocentricEclipticPosition(jde)
         val obsDist = obsPosJDE.length
-        home.computeEclipticPosition(jde - obsDist * (AU / (SPEED_OF_LIGHT * 86400.0)), this, false)
-        val obsPosJDEbefore = home.computeHeliocentricEclipticPosition()
+        val obsPosJDEbefore = home.internalComputeHeliocentricEclipticPosition(jde - obsDist * (AU / (SPEED_OF_LIGHT * 86400.0)))
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
-        home.computeEclipticPosition(jde, this, false)
     }
 
     // TODO: Pass Moon instead of Planet?
@@ -228,7 +225,7 @@ data class Observer(
         val p3 = computeHeliocentricEclipticPosition()
         val RS = sun.equatorialRadius
 
-        val trans = planet.computeShadowMatrix()
+        val trans = planet.computeShadowMatrix(jde)
         val c = trans * Triad.ZERO
         val radius = planet.equatorialRadius
 
