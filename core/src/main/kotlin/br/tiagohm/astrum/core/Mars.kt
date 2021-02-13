@@ -23,7 +23,7 @@ class Mars(parent: Sun) : Planet(
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = 0.46635197613288486295
+    override fun computeRotObliquity(jde: Double) = 0.44338065731385523
 
     override fun computeVisualMagnitude(
         o: Observer,

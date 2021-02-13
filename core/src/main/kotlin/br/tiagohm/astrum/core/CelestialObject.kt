@@ -104,13 +104,15 @@ interface CelestialObject {
 
     /**
      * Returns object's apparent V magnitude as seen from observer, without including extinction.
+     * For Sun, pass Moon instance on extra parameter to take into account solar eclipse.
      */
-    fun visualMagnitude(o: Observer): Double
+    fun visualMagnitude(o: Observer, extra: Any? = null): Double
 
     /**
      * Returns object's apparent V magnitude as seen from observer including extinction.
+     * For Sun, pass Moon instance on extra parameter to take into account solar eclipse.
      */
-    fun visualMagnitudeWithExtinction(o: Observer): Double
+    fun visualMagnitudeWithExtinction(o: Observer, extra: Any? = null): Double
 
     fun airmass(o: Observer): Double {
         val pos = computeAltAzPositionApparent(o)
@@ -174,13 +176,13 @@ interface CelestialObject {
     fun equatorialJ2000(o: Observer): Duad {
         val pos = computeJ2000EquatorialPosition(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Duad(equ[0].deg.ranged(360.0), equ[1].deg)
+        return Duad(equ[0].deg.pmod(360.0), equ[1].deg)
     }
 
     fun equatorial(o: Observer): Duad {
         val pos = computeEquinoxEquatorialPosition(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Duad(equ[0].deg.ranged(360.0), equ[1].deg)
+        return Duad(equ[0].deg.pmod(360.0), equ[1].deg)
     }
 
     fun hourAngle(
@@ -189,7 +191,7 @@ interface CelestialObject {
     ): Duad {
         val pos = if (apparent) computeSiderealPositionApparent(o) else computeSiderealPositionGeometric(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Duad((M_2_PI - equ[0]).deg.ranged(360.0) / 15.0, equ[1].deg)
+        return Duad((M_2_PI - equ[0]).deg.pmod(360.0) / 15.0, equ[1].deg)
     }
 
     fun horizontal(

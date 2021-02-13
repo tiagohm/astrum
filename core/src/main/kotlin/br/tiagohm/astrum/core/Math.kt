@@ -9,20 +9,15 @@ fun remainder(numer: Double, denom: Double): Double {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun bound(a: Double, b: Double, c: Double): Double {
-    return max(a, min(b, c))
-}
+inline fun bound(a: Double, b: Double, c: Double) = max(a, min(b, c))
+
+/**
+ * Modulo where the result is always positive.
+ */
+fun Double.amod(b: Double) = (this % b).let { if (it <= 0.0) it + b else it }
 
 /**
  * Modulo where the result is always nonnegative.
  */
-fun Double.pmod(b: Double): Double {
-    val res = this % b
-    return if (res < 0.0) res + b else res
-}
+fun Double.pmod(b: Double) = (this % b).let { if (it < 0.0) it + b else it }
 
-fun Double.ranged(value: Double): Double {
-    var d = this % value
-    if (d < 0.0) d += value
-    return d
-}

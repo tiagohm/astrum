@@ -163,12 +163,18 @@ data class Observer(
         return (home.computeSiderealTime(jd, jde, useNutation) + site.longitude).rad
     }
 
+    /**
+     * Compute the mean sidereal time in hours of current date shifted by the observer longitude
+     */
     fun computeMeanSiderealTime(): Double {
         var time = (home.computeSiderealTime(jd, jde, false) + site.longitude) / 15.0
         time = time.pmod(24.0)
         return if (time < 0) time + 24.0 else time
     }
 
+    /**
+     * Compute the apparent sidereal time in hours of current date shifted by the observer longitude
+     */
     fun computeApparentSiderealTime(): Double {
         var time = (home.computeSiderealTime(jd, jde, true) + site.longitude) / 15.0
         time = time.pmod(24.0)
@@ -218,21 +224,22 @@ data class Observer(
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
     }
 
-    // TODO: Pass Moon instead of Planet?
     // TODO: Eclipse obscuration and Eclipse magnitude
-    fun computeEclipseFactor(sun: Sun, planet: Planet): Double {
+    fun computeEclipseFactor(moon: Moon): Double {
+        val sun = home.parent!! as Sun
         val lp = lightTimeSunPosition
         val p3 = computeHeliocentricEclipticPosition()
         val RS = sun.equatorialRadius
 
-        val trans = planet.computeShadowMatrix(jde)
+        val trans = moon.computeShadowMatrix(jde)
         val c = trans * Triad.ZERO
-        val radius = planet.equatorialRadius
+        val radius = moon.equatorialRadius
 
         var v1 = lp - p3
         var v2 = c - p3
         val L = v1.length
         val l = v2.length
+
         v1 /= L
         v2 /= l
 
@@ -262,4 +269,6 @@ data class Observer(
             }
         }
     }
+
+    fun eclipseObscuration(moon: Moon) = 100.0 * (1.0 - computeEclipseFactor(moon))
 }

@@ -104,6 +104,43 @@ object Algorithms {
 
     inline fun j2000ToJ1875(a: Triad) = MAT_J2000_TO_J1875 * a
 
+    fun distanceKm(planet: Planet, a: Duad, b: Duad): Double {
+        val f = planet.oblateness // Flattening
+        val radius = planet.equatorialRadius * AU
+
+        val F = ((a[1] + b[1]) * 0.5).rad // Latitude
+        val G = ((a[1] - b[1]) * 0.5).rad
+        val L = ((a[0] - b[0]) * 0.5).rad // Longitude
+
+        val sinG = sin(G)
+        val cosG = cos(G)
+        val sinF = sin(F)
+        val cosF = cos(F)
+        val sinL = sin(L)
+        val cosL = cos(L)
+
+        val S = sinG * sinG * cosL * cosL + cosF * cosF * sinL * sinL
+        val C = cosG * cosG * cosL * cosL + sinF * sinF * sinL * sinL
+        val om = atan(sqrt(S / C))
+        val R = 3.0 * sqrt(S * C) / om
+        val D = 2.0 * om * radius
+        val H1 = (R - 1.0) / (2.0 * C)
+        val H2 = (R + 1.0) / (2.0 * S)
+
+        return D * (1.0 + f * (H1 * sinF * sinF * cosG * cosG - H2 * cosF * cosF * sinG * sinG))
+    }
+
+    fun azimuth(from: Duad, to: Duad, southAzimuth: Boolean = false): Double {
+        val a = from[0].rad
+        val b = from[1].rad
+        val c = to[0].rad
+        val d = to[1].rad
+
+        val az = atan2(sin(c - a), cos(b) * tan(d) - sin(b) * cos(c - a)) + if (southAzimuth) M_PI else 0.0
+
+        return az.pmod(M_2_PI).deg
+    }
+
     fun computeInterpolatedElements(
         t: Double,
         elem: DoubleArray,

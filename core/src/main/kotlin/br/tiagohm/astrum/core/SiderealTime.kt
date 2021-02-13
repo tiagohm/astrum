@@ -21,7 +21,7 @@ object SiderealTime {
         // This is expressed in seconds. We need degrees.
         sidereal *= 1.0 / 240.0
 
-        return sidereal.ranged(360.0)
+        return sidereal.pmod(360.0)
     }
 
     // Compute the apparent sidereal time in degrees at the meridian of Greenwich of a given date

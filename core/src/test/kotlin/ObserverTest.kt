@@ -915,6 +915,44 @@ class ObserverTest {
         assertEquals(0.00062, neptune.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, 0.00001)
     }
 
+    @Test
+    fun moon() {
+
+    }
+
+    @Test
+    fun solarEclipse() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val moon = Moon(earth)
+
+        val site = Location("Rangpur", 25.9896, 87.0868, 14.0)
+
+        val a = Observer(earth, site, DateTime(2009, 7, 22, 5, 57, 28, utcOffset = 6.0))
+        assertDuadEquals(Duad(69.5333, 4.5346), sun.horizontal(a, apparent = true), 0.0001)
+        assertDuadEquals(Duad(69.6924, 5.0652), moon.horizontal(a, apparent = true), 0.0001)
+
+        assertEquals(0.0, a.eclipseObscuration(moon), 0.01)
+        assertEquals(-25.26, sun.visualMagnitudeWithExtinction(a, moon), 0.01)
+
+        val b = Observer(earth, site, DateTime(2009, 7, 22, 6, 37, 28, utcOffset = 6.0))
+        assertEquals(61.73, b.eclipseObscuration(moon), 0.01)
+        assertEquals(-25.09, sun.visualMagnitudeWithExtinction(b, moon), 0.01)
+
+        val c = Observer(earth, site, DateTime(2009, 7, 22, 6, 57, 28, utcOffset = 6.0))
+        assertEquals(100.0, c.eclipseObscuration(moon), 0.01)
+        assertEquals(-16.54, sun.visualMagnitudeWithExtinction(c, moon), 0.01)
+        assertDuadEquals(Duad(75.3662, 17.2661), sun.horizontal(c, apparent = true), 0.0001)
+        assertDuadEquals(Duad(75.3662, 17.2662), moon.horizontal(c, apparent = true), 0.0001)
+
+        val se = SolarEclipse.compute(c, sun, moon)
+
+        assertEquals(87.079, se!!.longitude, 0.001)
+        assertEquals(25.9876, se.latitude, 0.001)
+        assertEquals(1.033, se.magnitude, 0.001)
+        assertEquals(252.769, se.azimuth, 0.001)
+    }
+
     companion object {
 
         val SAO_JOSE_DAS_PALMEIRAS = Location("São José das Palmeiras - BR", -24.837778, -54.063889, 563.0)

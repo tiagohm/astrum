@@ -373,7 +373,7 @@ abstract class Planet internal constructor(
      */
     fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * AU / 86400.0
 
-    override fun visualMagnitude(o: Observer): Double {
+    override fun visualMagnitude(o: Observer, extra: Any?): Double {
         // Compute the phase angle i
         val observerHelioPos = o.computeHeliocentricEclipticPosition()
         val observerRq = observerHelioPos.lengthSquared
@@ -406,10 +406,9 @@ abstract class Planet internal constructor(
 
                 // The satellite is totally inside the inner shadow.
                 if (ds >= equatorialRadius) {
-                    // TODO: Usar is Moon
                     // Fit a more realistic magnitude for the Moon case.
                     // I used some empirical data for fitting. --AW
-                    shadowFactor = if (id == "Moon") 2.718e-5 else 1e-9
+                    shadowFactor = if (this is Moon) 2.718E-5 else 1E-9
                 } else if (ds > -equatorialRadius) {
                     // The satellite is partly inside the inner shadow,
                     // compute a fantasy value for the magnitude:
@@ -459,8 +458,8 @@ abstract class Planet internal constructor(
         return -26.73 - 2.5 * log10(F)
     }
 
-    final override fun visualMagnitudeWithExtinction(o: Observer): Double {
-        val mag = visualMagnitude(o)
+    final override fun visualMagnitudeWithExtinction(o: Observer, extra: Any?): Double {
+        val mag = visualMagnitude(o, extra)
 
         return if (isAboveHorizon(o)) {
             val altAzPos = computeAltAzPositionGeometric(o).normalized
@@ -471,6 +470,19 @@ abstract class Planet internal constructor(
     }
 
     companion object {
+
+        fun computeMoonHeliocentricCoordinates(jd: Double): DoubleArray {
+            val xyz6 = DoubleArray(6)
+            val moon = Elp82b.computeCoordinates(jd)
+
+            xyz6[0] = moon[0]
+            xyz6[1] = moon[1]
+            xyz6[2] = moon[2]
+
+            // TODO: Some meaningful way to get speed?
+
+            return xyz6
+        }
 
         fun computeEarthHeliocentricCoordinates(jd: Double): DoubleArray {
             val xyz6 = Vsop87.computeCoordinates(jd, 2)
