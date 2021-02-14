@@ -1,6 +1,6 @@
 import br.tiagohm.astrum.core.DateTime
-import br.tiagohm.astrum.core.DeltaTByEspenakMeeus
-import br.tiagohm.astrum.core.DeltaTByMeeusSimons
+import br.tiagohm.astrum.core.EspenakMeeus
+import br.tiagohm.astrum.core.MeeusSimons
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -43,7 +43,7 @@ class DeltaTTest {
 
         for (year in data.keys) {
             val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0, 0.0)
-            val deltaT = DeltaTByMeeusSimons.compute(jd)
+            val deltaT = MeeusSimons.compute(jd)
             assertEquals(data[year]!!, deltaT, 1.0)
         }
     }
@@ -107,7 +107,7 @@ class DeltaTTest {
 
         for (year in data.keys) {
             val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0, 0.0)
-            val deltaT = DeltaTByEspenakMeeus.compute(jd)
+            val deltaT = EspenakMeeus.compute(jd)
             val result = data[year]!!.first
             val error = data[year]!!.second
             assertTrue(abs(abs(result) - abs(deltaT)) <= error)

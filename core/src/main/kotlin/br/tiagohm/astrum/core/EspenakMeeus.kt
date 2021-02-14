@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.core
 
-object DeltaTByEspenakMeeus : DeltaTAlgorithm {
+object EspenakMeeus : TimeCorrection {
 
     override fun compute(jd: Double): Double {
         // Note: the method here is adapted from

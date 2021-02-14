@@ -7,7 +7,7 @@ data class Observer(
     val home: Earth,
     val site: Location,
     val dateTime: DateTime,
-    val deltaTAlgorithm: DeltaTAlgorithmType = DeltaTAlgorithmType.ESPEANAK_MEEUS,
+    val deltaTAlgorithm: TimeCorrectionType = TimeCorrectionType.ESPEANAK_MEEUS,
     val pressure: Double = 1013.0,
     val temperature: Celsius = 25.0,
     val extinctionCoefficient: Double = 0.13,

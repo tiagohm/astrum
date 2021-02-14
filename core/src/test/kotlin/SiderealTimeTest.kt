@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.core.DeltaTByEspenakMeeus
+import br.tiagohm.astrum.core.EspenakMeeus
 import br.tiagohm.astrum.core.KeplerOrbit
 import br.tiagohm.astrum.core.SiderealTime
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -50,7 +50,7 @@ class SiderealTimeTest {
 
         for (d in data) {
             val jd = d[0]
-            val jde = jd - DeltaTByEspenakMeeus.compute(jd) / 86400.0
+            val jde = jd - EspenakMeeus.compute(jd) / 86400.0
             val h = d[1]
             val m = d[2]
             val s = d[3]
@@ -77,7 +77,7 @@ class SiderealTimeTest {
 
         for (d in data) {
             val jd = d[0]
-            val jde = jd - DeltaTByEspenakMeeus.compute(jd) / 86400.0
+            val jde = jd - EspenakMeeus.compute(jd) / 86400.0
             val h = d[1]
             val m = d[2]
             val s = d[3]

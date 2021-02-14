@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.core
 
-object DeltaTByMeeusSimons : DeltaTAlgorithm {
+object MeeusSimons : TimeCorrection {
 
     override fun compute(jd: Double): Double {
         val year = DateTime.fromJulianDay(jd).year

@@ -1,25 +1,25 @@
 package br.tiagohm.astrum.core
 
 @Suppress("NOTHING_TO_INLINE")
-enum class DeltaTAlgorithmType(
+enum class TimeCorrectionType(
     val deltaTnDot: Double,
     val deltaTStart: Int,
     val deltaTFinish: Int,
-    val algorithm: DeltaTAlgorithm,
+    val algorithm: TimeCorrection,
     val deltaTdontUseMoon: Boolean = false,
 ) {
     // Without correction, DeltaT is Zero. Like Stellarium versions before 0.12.
-    NONE(-26.0, Int.MIN_VALUE, Int.MAX_VALUE, DeltaTWithoutCorrection, true),
+    NONE(-26.0, Int.MIN_VALUE, Int.MAX_VALUE, TimeCorrection.NONE, true),
 
     // Meeus & Simons (2000) algorithm for DeltaT
-    MEEUS_SIMONS(-25.7376, 1620, 2000, DeltaTByMeeusSimons),
+    MEEUS_SIMONS(-25.7376, 1620, 2000, MeeusSimons),
 
     // Espenak & Meeus (2006) algorithm for DeltaT (Recommended)
-    ESPEANAK_MEEUS(-25.858, -1999, 3000, DeltaTByEspenakMeeus),
+    ESPEANAK_MEEUS(-25.858, -1999, 3000, EspenakMeeus),
 
     // This is a trying area. Something is wrong with DeltaT, maybe ndot is still not applied correctly
     // Espenak & Meeus (2006) algorithm for DeltaT
-    ESPEANAK_MEEUS_ZERO_MOON_ACCEL(-25.858, -1999, 3000, DeltaTByEspenakMeeus, true),
+    ESPEANAK_MEEUS_ZERO_MOON_ACCEL(-25.858, -1999, 3000, EspenakMeeus, true),
 
     ;
 
