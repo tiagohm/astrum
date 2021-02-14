@@ -27,6 +27,10 @@ class Moon(parent: Earth) : Planet(
 
     override fun computeRotObliquity(jde: Double) = 3.7723828609181886E-4
 
+    override fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
+        return super.internalComputeRTSTime(o, hz + 0.7275 * 0.95 * M_PI_180, hasAtmosphere)
+    }
+
     private fun computeMoonAge(o: Observer): Double {
         val op = o.copy(useTopocentricCoordinates = false)
         val eclJDE = parent!!.computeRotObliquity(o.jde)

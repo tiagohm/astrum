@@ -539,6 +539,7 @@ class ObserverTest {
         assertEquals(Triad(4.933, 11.55, 18.15), Saturn(sun).rts(o), 0.01)
         assertEquals(Triad(11.65, 17.317, 23.0), Uranus(sun).rts(o), 0.01)
         assertEquals(Triad(8.183, 14.383, 20.583), Neptune(sun).rts(o), 0.01)
+        assertEquals(Triad(0.1, 6.6167, 13.1167), Moon(earth).rts(o), 0.01)
     }
 
     @Test

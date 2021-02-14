@@ -245,7 +245,7 @@ abstract class Planet internal constructor(
     open fun computeRotObliquity(jde: Double): Radians = 0.0
 
     final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
-        var hz = 0.0
+        var hz = 0.0 // Horizon parallax factor
 
         if (hasAtmosphere) {
             // Canonical refraction at horizon is -34'. Replace by pressure-dependent value here!
@@ -253,7 +253,6 @@ abstract class Planet internal constructor(
             hz += asin(o.refraction.backward(zero)[2])
         }
 
-        // TODO: For Moon: hz += (0.7275 * 0.95).rad; // horizon parallax factor
         return internalComputeRTSTime(o, hz, hasAtmosphere)
     }
 
