@@ -310,14 +310,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(90.7432, 43.3413), sun.horizontal(o0), 0.0001)
-        assertEquals(Duad(86.5517, 36.8015), Mercury(sun).horizontal(o0), 0.0001)
-        assertEquals(Duad(92.5681, 55.3030), Venus(sun).horizontal(o0), 0.0001)
-        assertEquals(Duad(87.1402, -44.6719), Mars(sun).horizontal(o0), 0.0001)
-        assertEquals(Duad(91.7507, 49.0952), Jupiter(sun).horizontal(o0), 0.0001)
-        assertEquals(Duad(91.8896, 54.4151), Saturn(sun).horizontal(o0), 0.0001)
-        assertEquals(Duad(89.7587, -36.6858), Uranus(sun).horizontal(o0), 0.0001)
-        assertEquals(Duad(91.1530, 10.8117), Neptune(sun).horizontal(o0), 0.0001)
+        assertEquals(Duad(90.7432, 43.3413), sun.horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(86.5517, 36.8015), Mercury(sun).horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(92.5681, 55.3030), Venus(sun).horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(87.1402, -44.6719), Mars(sun).horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(91.7507, 49.0952), Jupiter(sun).horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(91.8896, 54.4151), Saturn(sun).horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(89.7587, -36.6858), Uranus(sun).horizontal(o0, apparent = false), 0.0001)
+        assertEquals(Duad(91.1530, 10.8117), Neptune(sun).horizontal(o0, apparent = false), 0.0001)
 
         val o1 = Observer(
             earth,
@@ -325,14 +325,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(285.4773, -46.2733), sun.horizontal(o1), 0.0001)
-        assertEquals(Duad(286.8195, -39.0608), Mercury(sun).horizontal(o1), 0.0001)
-        assertEquals(Duad(291.0016, -57.8109), Venus(sun).horizontal(o1), 0.0001)
-        assertEquals(Duad(263.6072, 39.5997), Mars(sun).horizontal(o1), 0.0001)
-        assertEquals(Duad(287.5396, -51.9072), Jupiter(sun).horizontal(o1), 0.0001)
-        assertEquals(Duad(290.97, -56.8399), Saturn(sun).horizontal(o1), 0.0001)
-        assertEquals(Duad(264.0623, 31.3826), Uranus(sun).horizontal(o1), 0.0001)
-        assertEquals(Duad(274.4963, -15.0647), Neptune(sun).horizontal(o1), 0.0001)
+        assertEquals(Duad(285.4773, -46.2733), sun.horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(286.8195, -39.0608), Mercury(sun).horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(291.0016, -57.8109), Venus(sun).horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(263.6072, 39.5997), Mars(sun).horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(287.5396, -51.9072), Jupiter(sun).horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(290.97, -56.8399), Saturn(sun).horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(264.0623, 31.3826), Uranus(sun).horizontal(o1, apparent = false), 0.0001)
+        assertEquals(Duad(274.4963, -15.0647), Neptune(sun).horizontal(o1, apparent = false), 0.0001)
     }
 
     @Test
@@ -346,14 +346,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(90.7432, 43.3584), sun.horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(86.5517, 36.8230), Mercury(sun).horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(92.5681, 55.3141), Venus(sun).horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(87.1402, -44.6719), Mars(sun).horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(91.7507, 49.1092), Jupiter(sun).horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(91.8896, 54.4267), Saturn(sun).horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(89.7587, -36.6858), Uranus(sun).horizontal(o, apparent = true), 0.0001)
-        assertEquals(Duad(91.1530, 10.8916), Neptune(sun).horizontal(o, apparent = true), 0.0001)
+        assertEquals(Duad(90.7432, 43.3584), sun.horizontal(o), 0.0001)
+        assertEquals(Duad(86.5517, 36.8230), Mercury(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(92.5681, 55.3141), Venus(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(87.1402, -44.6719), Mars(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(91.7507, 49.1092), Jupiter(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(91.8896, 54.4267), Saturn(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(89.7587, -36.6858), Uranus(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(91.1530, 10.8916), Neptune(sun).horizontal(o), 0.0001)
     }
 
     @Test
@@ -367,14 +367,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(270.7432, 43.3584), sun.horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(266.5517, 36.8230), Mercury(sun).horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(272.5681, 55.3141), Venus(sun).horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(267.1402, -44.6719), Mars(sun).horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(271.7507, 49.1092), Jupiter(sun).horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(271.8896, 54.4267), Saturn(sun).horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(269.7587, -36.6858), Uranus(sun).horizontal(o, true, apparent = true), 0.0001)
-        assertEquals(Duad(271.1530, 10.8916), Neptune(sun).horizontal(o, true, apparent = true), 0.0001)
+        assertEquals(Duad(270.7432, 43.3584), sun.horizontal(o, true), 0.0001)
+        assertEquals(Duad(266.5517, 36.8230), Mercury(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(272.5681, 55.3141), Venus(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(267.1402, -44.6719), Mars(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(271.7507, 49.1092), Jupiter(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(271.8896, 54.4267), Saturn(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(269.7587, -36.6858), Uranus(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(271.1530, 10.8916), Neptune(sun).horizontal(o, true), 0.0001)
     }
 
     @Test
@@ -924,8 +924,8 @@ class ObserverTest {
         val site = Location("Rangpur", 25.9896, 87.0868, 14.0)
 
         val a = Observer(earth, site, DateTime(2009, 7, 22, 5, 57, 28, utcOffset = 6.0))
-        assertEquals(Duad(69.5333, 4.5346), sun.horizontal(a, apparent = true), 0.0001)
-        assertEquals(Duad(69.6924, 5.0652), moon.horizontal(a, apparent = true), 0.0001)
+        assertEquals(Duad(69.5333, 4.5346), sun.horizontal(a), 0.0001)
+        assertEquals(Duad(69.6924, 5.0652), moon.horizontal(a), 0.0001)
 
         assertEquals(0.0, a.eclipseObscuration(moon), 0.01)
         assertEquals(-25.26, sun.visualMagnitudeWithExtinction(a, moon), 0.01)
@@ -937,8 +937,8 @@ class ObserverTest {
         val c = Observer(earth, site, DateTime(2009, 7, 22, 6, 57, 28, utcOffset = 6.0))
         assertEquals(100.0, c.eclipseObscuration(moon), 0.01)
         assertEquals(-16.54, sun.visualMagnitudeWithExtinction(c, moon), 0.01)
-        assertEquals(Duad(75.3662, 17.2661), sun.horizontal(c, apparent = true), 0.0001)
-        assertEquals(Duad(75.3662, 17.2662), moon.horizontal(c, apparent = true), 0.0001)
+        assertEquals(Duad(75.3662, 17.2661), sun.horizontal(c), 0.0001)
+        assertEquals(Duad(75.3662, 17.2662), moon.horizontal(c), 0.0001)
 
         val se = SolarEclipse.compute(c, sun, moon)
 
@@ -954,46 +954,104 @@ class ObserverTest {
         val earth = Earth(sun)
         val moon = Moon(earth)
 
-        val dt = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, DateTime(2021, 2, 11, 15, 0, 0))
+        val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, DateTime(2021, 2, 11, 15, 0, 0))
 
-        dt.copy(dateTime = DateTime(2021, 2, 11, 16, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 2, 11, 16, 0, 0)).let {
             assertEquals(LunarPhase.NEW_MOON, moon.lunarPhase(it))
             assertEquals(29.5, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 2, 11, 18, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 2, 11, 18, 0, 0)).let {
             assertEquals(LunarPhase.WAXING_CRESCENT, moon.lunarPhase(it))
             assertEquals(0.1, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 2, 19, 15, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 2, 19, 15, 0, 0)).let {
             assertEquals(LunarPhase.FIRST_QUARTER, moon.lunarPhase(it))
             assertEquals(7.4, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 2, 20, 21, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 2, 20, 21, 0, 0)).let {
             assertEquals(LunarPhase.WAXING_GIBBOUS, moon.lunarPhase(it))
             assertEquals(8.5, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 2, 27, 5, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 2, 27, 5, 0, 0)).let {
             assertEquals(LunarPhase.FULL_MOON, moon.lunarPhase(it))
             assertEquals(14.8, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 2, 27, 21, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 2, 27, 21, 0, 0)).let {
             assertEquals(LunarPhase.WANING_GIBBOUS, moon.lunarPhase(it))
             assertEquals(15.5, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 3, 5, 23, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 3, 5, 23, 0, 0)).let {
             assertEquals(LunarPhase.THIRD_QUARTER, moon.lunarPhase(it))
             assertEquals(22.2, moon.age(it), 0.1)
         }
 
-        dt.copy(dateTime = DateTime(2021, 3, 7, 2, 0, 0)).let {
+        o.copy(dateTime = DateTime(2021, 3, 7, 2, 0, 0)).let {
             assertEquals(LunarPhase.WANING_CRESCENT, moon.lunarPhase(it))
             assertEquals(23.4, moon.age(it), 0.1)
+        }
+    }
+
+    @Test
+    fun lunarEclipse() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val moon = Moon(earth)
+
+        val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, DateTime(2022, 5, 15, 22, 31, 0))
+
+        // https://www.timeanddate.com/eclipse/lunar/2022-may-16
+
+        // Not started
+        o.copy().let {
+            assertEquals(LunarPhase.WAXING_GIBBOUS, moon.lunarPhase(it))
+            assertEquals(14.6, moon.age(it), 0.1)
+            assertEquals(Duad(82.5454, 70.3246), moon.horizontal(it), 0.001)
+            assertEquals(1.0, moon.phase(it), 0.1)
+            assertTrue(moon.lunarEclipse(it) == Duad.ZERO)
+        }
+
+        // Penumbral Eclipse begins
+        o.copy(dateTime = DateTime(2022, 5, 15, 22, 32, 5)).let {
+            assertEquals(Duad(82.366, 70.567), moon.horizontal(it), 0.001)
+            assertEquals(Duad(0.00003, 0.0), moon.lunarEclipse(it), 0.00001)
+        }
+
+        // Full Eclipse begins
+        o.copy(dateTime = DateTime(2022, 5, 15, 23, 27, 52)).let {
+            assertEquals(Duad(61.3293, 82.7327), moon.horizontal(it), 0.001)
+            assertEquals(Duad(0.95943, 0.00002), moon.lunarEclipse(it), 0.00001)
+        }
+
+        // Maximum Eclipse
+        o.copy(dateTime = DateTime(2022, 5, 16, 1, 11, 20)).let {
+            assertEquals(LunarPhase.FULL_MOON, moon.lunarPhase(it))
+            assertEquals(Duad(277.2745, 72.3696), moon.horizontal(it), 0.001)
+            assertEquals(Duad(2.37272, 1.41382), moon.lunarEclipse(it), 0.00001)
+        }
+
+        // Full Eclipse ends
+        o.copy(dateTime = DateTime(2022, 5, 16, 1, 53, 57)).let {
+            assertEquals(Duad(271.2277, 62.8147), moon.horizontal(it), 0.001)
+            assertEquals(Duad(1.95858, 0.99988), moon.lunarEclipse(it), 0.00001)
+        }
+
+        // Partial Eclipse ends
+        o.copy(dateTime = DateTime(2022, 5, 16, 2, 55, 8)).let {
+            assertEquals(LunarPhase.WANING_GIBBOUS, moon.lunarPhase(it))
+            assertEquals(Duad(265.7446, 49.0918), moon.horizontal(it), 0.001)
+            assertEquals(Duad(0.95841, 0.0), moon.lunarEclipse(it), 0.00001)
+        }
+
+        // Penumbral Eclipse ends
+        o.copy(dateTime = DateTime(2022, 5, 16, 3, 50, 51)).let {
+            assertEquals(Duad(261.6425, 36.7049), moon.horizontal(it), 0.001)
+            assertTrue(moon.lunarEclipse(it) == Duad.ZERO)
         }
     }
 

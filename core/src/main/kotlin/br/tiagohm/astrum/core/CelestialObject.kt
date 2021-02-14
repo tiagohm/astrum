@@ -203,7 +203,7 @@ interface CelestialObject {
     fun horizontal(
         o: Observer,
         southAzimuth: Boolean = false,
-        apparent: Boolean = false
+        apparent: Boolean = true
     ): Duad {
         val pos = if (apparent) computeAltAzPositionApparent(o) else computeAltAzPositionGeometric(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
