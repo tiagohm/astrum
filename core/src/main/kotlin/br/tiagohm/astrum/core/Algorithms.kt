@@ -76,10 +76,7 @@ object Algorithms {
         return ellipticToRectangular(a, n, elem, dt)
     }
 
-    fun rectangularToSphericalCoordinates(a: Triad): Duad {
-        val r = a.length
-        return Duad(atan2(a[1], a[0]), asin(a[2] / r))
-    }
+    inline fun rectangularToSphericalCoordinates(a: Triad) =  Duad(a.longitude, a.latitude)
 
     fun sphericalToRectangularCoordinates(lon: Radians, lat: Radians): Triad {
         val cosLat = cos(lat)

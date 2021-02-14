@@ -69,7 +69,7 @@ class Saturn(parent: Sun) : Planet(
         val i = ((0.000004 * T - 0.012998) * T + 28.075216).rad
         val Omega = ((0.000412 * T + 1.394681) * T + 169.508470).rad
         val se = computeHeliocentricEclipticPosition(o) - o.home.computeHeliocentricEclipticPosition(o)
-        val lambda = atan2(se[1], se[0])
+        val lambda = se.longitude
         val beta = atan2(se[2], sqrt(se[0] * se[0] + se[1] * se[1]))
         val sinx = sin(i) * cos(beta) * sin(lambda - Omega) - cos(i) * sin(beta)
         return -2.6 * abs(sinx) + 1.25 * sinx * sinx // ExplSup2013: added term as (10.81)
