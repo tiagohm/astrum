@@ -379,7 +379,7 @@ abstract class Planet internal constructor(
         var shadowFactor = 1.0
         val d = 5.0 * log10(dr)
 
-        // TODO: Testar com satélites!!
+        // TODO: Testar com luas de Júpiter?
         // Check if the satellite is inside the inner shadow of the parent planet
         if (parent!!.parent != null) {
             val parentHelioPos = parent.computeHeliocentricEclipticPosition(o)

@@ -2,7 +2,6 @@ package br.tiagohm.astrum.core
 
 import kotlin.math.*
 
-// TODO: Saturn has rings!!!
 class Saturn(parent: Sun) : Planet(
     "Saturn",
     60268.0 / AU,
