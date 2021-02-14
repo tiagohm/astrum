@@ -31,7 +31,7 @@ class Moon(parent: Earth) : Planet(
         return super.internalComputeRTSTime(o, hz + 0.7275 * 0.95 * M_PI_180, hasAtmosphere)
     }
 
-    private fun computeMoonAge(o: Observer): Double {
+    private fun computeAge(o: Observer): Double {
         val op = o.copy(useTopocentricCoordinates = false)
         val eclJDE = parent!!.computeRotObliquity(o.jde)
         val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))
@@ -42,7 +42,7 @@ class Moon(parent: Earth) : Planet(
     }
 
     fun lunarPhase(o: Observer): LunarPhase {
-        val delta = computeMoonAge(o).deg
+        val delta = computeAge(o).deg
 
         return when {
             delta < 0.5 || delta > 359.5 -> LunarPhase.NEW_MOON
@@ -124,5 +124,5 @@ class Moon(parent: Earth) : Planet(
         return Duad.ZERO
     }
 
-    fun age(o: Observer) = computeMoonAge(o) * 29.530588853 / M_2_PI
+    fun age(o: Observer) = computeAge(o) * 29.530588853 / M_2_PI
 }

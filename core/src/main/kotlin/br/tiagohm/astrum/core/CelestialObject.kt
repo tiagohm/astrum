@@ -193,7 +193,7 @@ interface CelestialObject {
 
     fun hourAngle(
         o: Observer,
-        apparent: Boolean = false
+        apparent: Boolean = true
     ): Duad {
         val pos = if (apparent) computeSiderealPositionApparent(o) else computeSiderealPositionGeometric(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)

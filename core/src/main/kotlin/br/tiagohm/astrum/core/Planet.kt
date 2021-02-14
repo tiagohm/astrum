@@ -437,7 +437,7 @@ abstract class Planet internal constructor(
         shadowFactor: Double,
     ): Double {
         if (o.apparentMagnitudeAlgorithm == ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013 &&
-            id != "Moon" &&
+            this !is Moon &&
             absoluteMagnitude != -99.0
         ) {
             return absoluteMagnitude + d
