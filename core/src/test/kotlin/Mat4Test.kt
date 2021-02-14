@@ -27,10 +27,10 @@ class Mat4Test {
         )
 
         val m0 = a * v
-        assertTriadEquals(Triad(38.0, 46.0, 62.0), m0)
+        assertEquals(Triad(38.0, 46.0, 62.0), m0)
 
         val m1 = a.multiplyWithoutTranslation(v)
-        assertTriadEquals(Triad(37.0, 38.0, 57.0), m1)
+        assertEquals(Triad(37.0, 38.0, 57.0), m1)
     }
 
     @Test
@@ -42,58 +42,58 @@ class Mat4Test {
     @Test
     fun translation() {
         val t = Mat4.translation(v)
-        assertMat4Equals(Mat4(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 8.0, 5.0, -1.0, 1.0), t)
+        assertEquals(Mat4(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 8.0, 5.0, -1.0, 1.0), t)
     }
 
     @Test
     fun rotation() {
         val r = Mat4.rotation(v, M_PI)
-        assertMat4Equals(
+        assertEquals(
             Mat4(
                 0.422222, 0.888889, -0.177778, 0.0, 0.888889,
                 -0.444444, -0.111111, 0.0, -0.177778, -0.111111, -0.977778,
                 0.0, 0.0, 0.0, 0.0, 1.0
-            ), r
+            ), r, 0.01
         )
     }
 
     @Test
     fun xrotation() {
         val r = Mat4.xrotation(M_PI)
-        assertMat4Equals(
+        assertEquals(
             Mat4(
                 1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0,
                 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0
-            ), r
+            ), r, 0.01
         )
     }
 
     @Test
     fun yrotation() {
         val r = Mat4.yrotation(M_PI)
-        assertMat4Equals(
+        assertEquals(
             Mat4(
                 -1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
                 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0
-            ), r
+            ), r, 0.01
         )
     }
 
     @Test
     fun zrotation() {
         val r = Mat4.zrotation(M_PI)
-        assertMat4Equals(
+        assertEquals(
             Mat4(
                 -1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0
-            ), r
+            ), r, 0.01
         )
     }
 
     @Test
     fun scaling() {
         val r = Mat4.scaling(v)
-        assertMat4Equals(
+        assertEquals(
             Mat4(
                 8.0, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0, 0.0,
                 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 1.0
@@ -108,8 +108,8 @@ class Mat4Test {
             6.0, 2.0, 1.0, 5.0, 1.0, 0.0, 4.0, 6.0
         )
 
-        assertMat4Equals(a.transpose(), n)
-        assertMat4Equals(a.transpose().transpose(), a)
+        assertEquals(a.transpose(), n)
+        assertEquals(a.transpose().transpose(), a)
     }
 
     @Test
@@ -136,7 +136,7 @@ class Mat4Test {
     fun inverse() {
         val m = Mat4(4.0, 1.0, 2.0, 3.0, 1.0, 5.0, 7.0, 7.0, 8.0, 6.0, 9.0, 11.0, 12.0, 13.0, 14.0, 15.0)
         val mi = m.inverse()
-        assertMat4Equals(
+        assertEquals(
             Mat4(
                 1.25, 0.3333333333333333, -0.6666666666666666, 0.08333333333333333, -2.583333333333333,
                 -1.1111111111111112, 1.222222222222222, 0.1388888888888889, 6.416666666666666, 2.888888888888889,
@@ -144,6 +144,6 @@ class Mat4Test {
             ), mi
         )
 
-        assertMat4Equals(m.transpose().inverse(), m.inverse().transpose())
+        assertEquals(m.transpose().inverse(), m.inverse().transpose())
     }
 }

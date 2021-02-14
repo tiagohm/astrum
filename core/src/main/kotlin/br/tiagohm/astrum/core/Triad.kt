@@ -49,7 +49,7 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     /**
      * Angle in radian between two vectors
      */
-    fun angle(a: Triad): Double {
+    fun angle(a: Triad): Radians {
         val cosAngle = dot(a) / sqrt(lengthSquared * a.lengthSquared)
         return if (cosAngle >= 1.0) 0.0 else if (cosAngle <= -1) M_PI else acos(cosAngle)
     }
@@ -57,7 +57,7 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     /**
      * Angle in radian between two normalized vectors
      */
-    fun angleNormalized(a: Triad): Double {
+    fun angleNormalized(a: Triad): Radians {
         return dot(a).let { if (it >= 1.0) 0.0 else if (it <= -1) M_PI else acos(it) }
     }
 

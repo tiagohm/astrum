@@ -41,7 +41,7 @@ class Sun : Planet(
         // Hint: Absolute Magnitude of the Sun in Several Bands: http://mips.as.arizona.edu/~cnaw/sun.html
         val dist = sqrt(o.computeHeliocentricEclipticPosition().lengthSquared) * AU / PARSEC
         // Check how much of it is visible
-        val shadowFactor = max(0.000128, if (extra is Moon) o.computeEclipseFactor(extra) else 0.0)
+        val shadowFactor = max(0.000128, if (extra is Moon) o.computeEclipseFactor(extra) else 1.0)
         // See: Hughes, D. W., Brightness during a solar eclipse, Journal of the British Astronomical Association, vol.110, no.4, p.203-205
         // URL: http://adsabs.harvard.edu/abs/2000JBAA..110..203H
         return 4.83 + 5.0 * (log10(dist) - 1.0) - 2.5 * (log10(shadowFactor))

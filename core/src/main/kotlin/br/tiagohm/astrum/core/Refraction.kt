@@ -4,12 +4,12 @@ import kotlin.math.*
 
 data class Refraction(
     val pressure: Double = 1013.0,
-    val temperature: Double = 25.0,
+    val temperature: Celsius = 25.0,
 ) {
 
-    private val pressTempCorr = pressure / 1010.0 * 283.0 / (273.0 + temperature) / 60.0
+    private val ptc = pressure / 1010.0 * 283.0 / (273.0 + temperature) / 60.0
 
-    fun innerForward(altAzPos: Triad): Triad {
+    fun forward(altAzPos: Triad): Triad {
         val length = altAzPos.length
 
         if (length == 0.0) return altAzPos
@@ -19,7 +19,7 @@ data class Refraction(
 
         if (geomAlt > MIN_GEO_ALTITUDE_DEG) {
             // Refraction from Saemundsson, S&T1986 p70 / in Meeus, Astr.Alg.
-            val r = pressTempCorr * (1.02 / tan((geomAlt + 10.3 / (geomAlt + 5.11)).rad) + 0.0019279)
+            val r = ptc * (1.02 / tan((geomAlt + 10.3 / (geomAlt + 5.11)).rad) + 0.0019279)
 
             geomAlt += r
 
@@ -27,7 +27,7 @@ data class Refraction(
         } else if (geomAlt > MIN_GEO_ALTITUDE_DEG - TRANSITION_WIDTH_GEO_DEG) {
             // Avoids the jump below -5 by interpolating linearly between MIN_GEO_ALTITUDE_DEG and bottom of transition zone
             val rm5 =
-                pressTempCorr * (1.02 / tan((MIN_GEO_ALTITUDE_DEG + 10.3 / (MIN_GEO_ALTITUDE_DEG + 5.11)).rad) + 0.0019279)
+                ptc * (1.02 / tan((MIN_GEO_ALTITUDE_DEG + 10.3 / (MIN_GEO_ALTITUDE_DEG + 5.11)).rad) + 0.0019279)
 
             geomAlt += rm5 * (geomAlt - (MIN_GEO_ALTITUDE_DEG - TRANSITION_WIDTH_GEO_DEG)) / TRANSITION_WIDTH_GEO_DEG
         } else {
@@ -40,7 +40,7 @@ data class Refraction(
         return Triad(altAzPos[0] * s, altAzPos[1] * s, sinRef * length)
     }
 
-    private fun innerBackward(altAzPos: Triad): Triad {
+    fun backward(altAzPos: Triad): Triad {
         val length = altAzPos.length
 
         if (length == 0.0) return altAzPos
@@ -50,20 +50,20 @@ data class Refraction(
 
         if (obsAlt > 0.22879) {
             // Refraction from Bennett, in Meeus, Astr.Alg.
-            val r = pressTempCorr * (1.0 / tan((obsAlt + 7.31 / (obsAlt + 4.4)).rad) + 0.0013515)
+            val r = ptc * (1.0 / tan((obsAlt + 7.31 / (obsAlt + 4.4)).rad) + 0.0013515)
             obsAlt -= r
         } else if (obsAlt > MIN_APP_ALTITUDE_DEG) {
             // Backward refraction from polynomial fit against Saemundson[-5...-0.3]
             val r = (((((0.0444 * obsAlt + 0.7662) * obsAlt + 4.9746) * obsAlt + 13.599) *
                     obsAlt + 8.052) * obsAlt - 11.308) * obsAlt + 34.341
-            obsAlt -= pressTempCorr * r
+            obsAlt -= ptc * r
         } else if (obsAlt > MIN_APP_ALTITUDE_DEG - TRANSITION_WIDTH_APP_DEG) {
             // Compute top value from polynome, apply linear interpolation
             val rMin = (((((0.0444 * MIN_APP_ALTITUDE_DEG + .7662) * MIN_APP_ALTITUDE_DEG
                     + 4.9746) * MIN_APP_ALTITUDE_DEG + 13.599) * MIN_APP_ALTITUDE_DEG
                     + 8.052) * MIN_APP_ALTITUDE_DEG - 11.308) * MIN_APP_ALTITUDE_DEG + 34.341
 
-            obsAlt -= rMin * pressTempCorr * (obsAlt - (MIN_APP_ALTITUDE_DEG - TRANSITION_WIDTH_APP_DEG)) / TRANSITION_WIDTH_APP_DEG
+            obsAlt -= rMin * ptc * (obsAlt - (MIN_APP_ALTITUDE_DEG - TRANSITION_WIDTH_APP_DEG)) / TRANSITION_WIDTH_APP_DEG
         } else {
             return altAzPos
         }
@@ -73,10 +73,6 @@ data class Refraction(
 
         return Triad(altAzPos[0] * s, altAzPos[1] * s, sinGeo * length)
     }
-
-    fun forward(altAzPos: Triad) = innerForward(altAzPos)
-
-    fun backward(altAzPos: Triad) = innerBackward(altAzPos)
 
     companion object {
 

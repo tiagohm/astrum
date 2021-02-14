@@ -5,10 +5,10 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 data class Precession(
-    val psi: Double = 0.0,
-    val omega: Double = 0.0,
-    val chi: Double = 0.0,
-    val epsilon: Double = 0.0,
+    val psi: Radians = 0.0,
+    val omega: Radians = 0.0,
+    val chi: Radians = 0.0,
+    val epsilon: Radians = 0.0,
 ) {
 
     companion object {

@@ -106,12 +106,7 @@ abstract class Planet internal constructor(
     // On Earth, sidereal time on the other hand is the angle along the planet equator from RA0 to the meridian, i.e. hour angle of the first point of Aries.
     // For Earth (of course) it is sidereal time at Greenwich.
     // For planets and Moons, in this context this is the rotation angle W of the Prime meridian from the ascending node of the planet equator on the ICRF equator.
-    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean) = 0.0
-
-    // Returns angle between axis and normal of ecliptic plane (or, for a moon, equatorial/reference plane defined by parent).
-    // For Earth, this is the angle between axis and normal to current ecliptic of date, i.e. the ecliptic obliquity of date JDE.
-    // Note: The only place where this is not used for Earth is to build up orbits for planet moons w.r.t. the parent planet orientation.
-    // fun getRotObliquity(JDE: Double): Double = 0.0
+    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Degrees = 0.0
 
     protected open fun computePosition(jde: Double): Pair<Triad, Triad> {
         return orbit!!.let { it.positionAtTimevInVSOP87Coordinates(jde) to it.velocity }
@@ -228,7 +223,7 @@ abstract class Planet internal constructor(
     /**
      * Computes the angular size in degrees.
      */
-    override fun angularSize(o: Observer): Double {
+    override fun angularSize(o: Observer): Degrees {
         val radius = rings?.size ?: equatorialRadius
         return atan2(radius, computeJ2000EquatorialPosition(o).length).deg
     }
@@ -236,7 +231,7 @@ abstract class Planet internal constructor(
     /**
      * Computes the angular radius (degrees) of the planet spheroid (i.e. without the rings)
      */
-    fun spheroidAngularSize(o: Observer): Double {
+    fun spheroidAngularSize(o: Observer): Degrees {
         return atan2(equatorialRadius, computeJ2000EquatorialPosition(o).length).deg
     }
 
@@ -247,7 +242,7 @@ abstract class Planet internal constructor(
      * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
      * For moons, it may be the obliquity against its planet's equatorial plane.
      */
-    open fun computeRotObliquity(jde: Double): Double = 0.0
+    open fun computeRotObliquity(jde: Double): Radians = 0.0
 
     final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
         var hz = 0.0
@@ -262,8 +257,7 @@ abstract class Planet internal constructor(
         return internalComputeRTSTime(o, hz, hasAtmosphere)
     }
 
-    // "hz" is in radians
-    internal open fun internalComputeRTSTime(o: Observer, hz: Double, hasAtmosphere: Boolean): Triad {
+    internal open fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
         val phi = o.site.latitude.rad
         val coeff = o.home.computeMeanSolarDay() / o.home.siderealDay
 
@@ -327,7 +321,7 @@ abstract class Planet internal constructor(
     /**
      * Computes the elongation angle (radians) for an observer.
      */
-    fun elongation(o: Observer): Double {
+    fun elongation(o: Observer): Radians {
         val obsPos = o.computeHeliocentricEclipticPosition()
         val observerRq = obsPos.lengthSquared
         val planetHelioPos = computeHeliocentricEclipticPosition(o)
@@ -433,10 +427,9 @@ abstract class Planet internal constructor(
         )
     }
 
-    // phaseAngle is in radians
     protected open fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Double,
+        phaseAngle: Radians,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

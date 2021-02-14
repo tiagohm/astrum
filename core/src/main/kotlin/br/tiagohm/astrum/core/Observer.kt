@@ -9,7 +9,7 @@ data class Observer(
     val dateTime: DateTime,
     val deltaTAlgorithm: DeltaTAlgorithmType = DeltaTAlgorithmType.ESPEANAK_MEEUS,
     val pressure: Double = 1013.0,
-    val temperature: Double = 25.0,
+    val temperature: Celsius = 25.0,
     val extinctionCoefficient: Double = 0.13,
     val useTopocentricCoordinates: Boolean = true,
     val useNutation: Boolean = true,
@@ -151,15 +151,15 @@ data class Observer(
      * For Earth we need JD(UT), for other planets JDE! To be general, just have both in here!
      */
     fun computeRotAltAzToEquatorial(): Mat4 {
-        return Mat4.zrotation(computeLocalSiderealTime()) * Mat4.yrotation((90.0 - site.latitude).rad)
+        return Mat4.zrotation(computeSiderealTime()) * Mat4.yrotation((90.0 - site.latitude).rad)
     }
 
     fun computeRotEquatorialToVsop87() = home.computeRotEquatorialToVsop87()
 
     /**
-     * Computes the sidereal time of the prime meridian (i.e. Rotation Angle) shifted by the observer longitude.
+     * Computes the sidereal time in radians of the prime meridian (i.e. Rotation Angle) shifted by the observer longitude.
      */
-    fun computeLocalSiderealTime(): Double {
+    fun computeSiderealTime(): Radians {
         return (home.computeSiderealTime(jd, jde, useNutation) + site.longitude).rad
     }
 
@@ -224,7 +224,6 @@ data class Observer(
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
     }
 
-    // TODO: Eclipse obscuration and Eclipse magnitude
     fun computeEclipseFactor(moon: Moon): Double {
         val sun = home.parent!! as Sun
         val lp = lightTimeSunPosition

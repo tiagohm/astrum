@@ -44,34 +44,34 @@ class TriadTest {
 
     @Test
     fun plus() {
-        assertTriadEquals(Triad(10.4, 1.24, 2.8), a + b)
+        assertEquals(Triad(10.4, 1.24, 2.8), a + b, 0.01)
     }
 
     @Test
     fun minus() {
-        assertTriadEquals(Triad(-1.4, 1.16, -4.2), a - b)
-        assertTriadEquals(Triad(1.4, -1.16, 4.2), b - a)
+        assertEquals(Triad(-1.4, 1.16, -4.2), a - b, 0.01)
+        assertEquals(Triad(1.4, -1.16, 4.2), b - a, 0.01)
     }
 
     @Test
     fun unaryMinus() {
-        assertTriadEquals(Triad(-4.5, -1.2, 0.7), -a)
+        assertEquals(Triad(-4.5, -1.2, 0.7), -a, 0.01)
     }
 
     @Test
     fun times() {
-        assertTriadEquals(Triad(4.228, -19.88, -6.9), a * b)
-        assertTriadEquals(Triad(13.5, 3.6, -2.1), a * 3)
+        assertEquals(Triad(4.228, -19.88, -6.9), a * b, 0.01)
+        assertEquals(Triad(13.5, 3.6, -2.1), a * 3, 0.01)
     }
 
     @Test
     fun div() {
-        assertTriadEquals(Triad(2.25, 0.6, -0.35), a / 2)
+        assertEquals(Triad(2.25, 0.6, -0.35), a / 2, 0.01)
     }
 
     @Test
     fun normalized() {
-        assertTriadEquals(Triad(0.9555023133800681, 0.2548006169013515, -0.14863369319245504), a.normalized)
+        assertEquals(Triad(0.9555023133800681, 0.2548006169013515, -0.14863369319245504), a.normalized, 1E-9)
     }
 
     companion object {

@@ -1,6 +1,5 @@
 package br.tiagohm.astrum.core
 
-// TODO: Lunar phase names, libration, or axis orientation/rotation data
 class Moon(parent: Earth) : Planet(
     "Moon",
     1737.4 / AU,
@@ -25,4 +24,32 @@ class Moon(parent: Earth) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = 3.7723828609181886E-4
+
+    private fun computeMoonAge(o: Observer): Double {
+        val op = o.copy(useTopocentricCoordinates = false)
+        val eclJDE = parent!!.computeRotObliquity(o.jde)
+        val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))
+        val (lambdaMoon) = Algorithms.equatorialToEcliptic(raMoon, decMoon, eclJDE)
+        val (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(parent.parent!!.computeEquinoxEquatorialPosition(op))
+        val (lambdaSun) = Algorithms.equatorialToEcliptic(raSun, decSun, eclJDE)
+        return (lambdaMoon - lambdaSun).pmod(M_2_PI)
+    }
+
+    fun lunarPhase(o: Observer): LunarPhase {
+        val delta = computeMoonAge(o).deg
+
+        return when {
+            delta < 0.5 || delta > 359.5 -> LunarPhase.NEW_MOON
+            delta < 89.5 -> LunarPhase.WAXING_CRESCENT
+            delta < 90.5 -> LunarPhase.FIRST_QUARTER
+            delta < 179.5 -> LunarPhase.WAXING_GIBBOUS
+            delta < 180.5 -> LunarPhase.FULL_MOON
+            delta < 269.5 -> LunarPhase.WANING_GIBBOUS
+            delta < 270.5 -> LunarPhase.THIRD_QUARTER
+            delta < 359.5 -> LunarPhase.WANING_CRESCENT
+            else -> throw IllegalStateException("Error in lunar phase")
+        }
+    }
+
+    fun age(o: Observer) = computeMoonAge(o) * 29.530588853 / M_2_PI
 }

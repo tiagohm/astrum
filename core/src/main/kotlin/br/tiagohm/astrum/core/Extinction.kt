@@ -4,11 +4,13 @@ import kotlin.math.exp
 import kotlin.math.min
 
 data class Extinction(
-    val coefficient: Double = 0.2,
+    val coefficient: Double = 0.13,
     val mode: UndergroundExtinctionMode = UndergroundExtinctionMode.MIRROR,
 ) {
 
-    // Airmass computation for cosine of zenith angle z
+    /**
+     * Airmass computation for cosine of zenith angle z
+     */
     fun airmass(cosZ: Double, apparentZ: Boolean = true): Double {
         var cz = cosZ
 

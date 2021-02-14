@@ -48,7 +48,7 @@ interface CelestialObject {
      * The frame has its Z axis at the planet's current rotation axis.
      */
     fun computeSiderealPositionGeometric(o: Observer): Triad {
-        return Mat4.zrotation(-o.computeLocalSiderealTime()) * computeEquinoxEquatorialPosition(o)
+        return Mat4.zrotation(-o.computeSiderealTime()) * computeEquinoxEquatorialPosition(o)
     }
 
     /**
@@ -57,7 +57,7 @@ interface CelestialObject {
      */
     fun computeSiderealPositionApparent(o: Observer): Triad {
         val v = o.altAzToEquinoxEquatorial(computeAltAzPositionApparent(o), false)
-        return Mat4.zrotation(-o.computeLocalSiderealTime()) * v
+        return Mat4.zrotation(-o.computeSiderealTime()) * v
     }
 
     /**
@@ -77,7 +77,7 @@ interface CelestialObject {
     /**
      * Computes parallactic angle in radians, which is the deviation between zenith angle and north angle.
      */
-    fun parallacticAngle(o: Observer): Double {
+    fun parallacticAngle(o: Observer): Radians {
         val phi = o.site.latitude * M_PI_180
         val siderealPos = computeSiderealPositionApparent(o)
         var (ha, delta) = Algorithms.rectangularToSphericalCoordinates(siderealPos)
@@ -114,6 +114,9 @@ interface CelestialObject {
      */
     fun visualMagnitudeWithExtinction(o: Observer, extra: Any? = null): Double
 
+    /**
+     * Airmass computation at observer.
+     */
     fun airmass(o: Observer): Double {
         val pos = computeAltAzPositionApparent(o)
         val (_, az) = Algorithms.rectangularToSphericalCoordinates(pos)
@@ -126,16 +129,16 @@ interface CelestialObject {
     }
 
     /**
-     * Computes the angular radius in degree of a circle containing the object as seen from the observer
+     * Computes the angular radius in degrees of a circle containing the object as seen from the observer
      * with the circle center assumed to be at computeJ2000EquatorialPosition().
      * This value is the apparent angular size of the object, and is independent of the current FOV.
      */
-    fun angularSize(o: Observer): Double
+    fun angularSize(o: Observer): Degrees
 
     /**
      * Computes the phase angle (radians) for an observer.
      */
-    fun phaseAngle(o: Observer): Double {
+    fun phaseAngle(o: Observer): Radians {
         val obsPos = o.computeHeliocentricEclipticPosition()
         val observerRq = obsPos.lengthSquared
         val planetHelioPos = computeHeliocentricEclipticPosition(o)
@@ -145,13 +148,16 @@ interface CelestialObject {
     }
 
     /**
-     * Computes the distance to the given observer.
+     * Computes the distance in AU to the given observer.
      */
     fun distance(o: Observer): Double {
         val obsHelioPos = o.computeHeliocentricEclipticPosition()
         return (obsHelioPos - computeHeliocentricEclipticPosition(o)).length
     }
 
+    /**
+     * Computes the distance from Sun in AU to the given observer.
+     */
     fun distanceFromSun(o: Observer) = computeHeliocentricEclipticPosition(o).length
 
     /**
@@ -201,9 +207,8 @@ interface CelestialObject {
     ): Duad {
         val pos = if (apparent) computeAltAzPositionApparent(o) else computeAltAzPositionGeometric(o)
         val equ = Algorithms.rectangularToSphericalCoordinates(pos)
-        val direction = if (southAzimuth) 2.0 else 3.0 // N is zero, E is 90 degrees
-        var az = direction * M_PI - equ[0]
-        if (az > M_2_PI) az -= M_2_PI
+        val direction = if (southAzimuth) M_2_PI else M_3_PI // N is zero, E is 90 degrees
+        val az = (direction - equ[0]).let { if (it > M_2_PI) it - M_2_PI else it }
         return Duad(az.deg, equ[1].deg)
     }
 

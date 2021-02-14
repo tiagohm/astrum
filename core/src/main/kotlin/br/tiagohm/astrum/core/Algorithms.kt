@@ -81,18 +81,18 @@ object Algorithms {
         return Duad(atan2(a[1], a[0]), asin(a[2] / r))
     }
 
-    fun sphericalToRectangularCoordinates(lon: Double, lat: Double): Triad {
+    fun sphericalToRectangularCoordinates(lon: Radians, lat: Radians): Triad {
         val cosLat = cos(lat)
         return Triad(cos(lon) * cosLat, sin(lon) * cosLat, sin(lat))
     }
 
-    fun equatorialToEcliptic(ra: Double, dec: Double, ecl: Double): Duad {
+    fun equatorialToEcliptic(ra: Radians, dec: Radians, ecl: Radians): Duad {
         val lambda = atan2(sin(ra) * cos(ecl) + tan(dec) * sin(ecl), cos(ra))
         val beta = asin(sin(dec) * cos(ecl) - cos(dec) * sin(ecl) * sin(ra))
         return Duad(lambda, beta)
     }
 
-    fun eclipticToEquatorial(lambda: Double, beta: Double, ecl: Double): Duad {
+    fun eclipticToEquatorial(lambda: Radians, beta: Radians, ecl: Radians): Duad {
         val ra = atan2(sin(lambda) * cos(ecl) - tan(beta) * sin(ecl), cos(lambda))
         val dec = asin(sin(beta) * cos(ecl) + cos(beta) * sin(ecl) * sin(lambda))
         return Duad(ra, dec)
@@ -130,7 +130,7 @@ object Algorithms {
         return D * (1.0 + f * (H1 * sinF * sinF * cosG * cosG - H2 * cosF * cosF * sinG * sinG))
     }
 
-    fun azimuth(from: Duad, to: Duad, southAzimuth: Boolean = false): Double {
+    fun azimuth(from: Duad, to: Duad, southAzimuth: Boolean = false): Degrees {
         val a = from[0].rad
         val b = from[1].rad
         val c = to[0].rad

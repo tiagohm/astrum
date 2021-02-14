@@ -27,7 +27,7 @@ class Jupiter(parent: Sun) : Planet(
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Double,
+        phaseAngle: Radians,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

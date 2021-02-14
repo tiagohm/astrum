@@ -20,7 +20,7 @@ class Earth(parent: Sun) : Planet(
 
     override var absoluteMagnitude = -3.86
 
-    override fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Double {
+    override fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Degrees {
         return if (useNutation) SiderealTime.computeApparent(jd, jde)
         else SiderealTime.computeMean(jd, jde)
     }
@@ -57,13 +57,13 @@ class Earth(parent: Sun) : Planet(
         return rotLocalToParent
     }
 
-    override fun computeRotObliquity(jde: Double): Double {
+    override fun computeRotObliquity(jde: Double): Radians {
         return Precession.computeVondrakEpsilon(jde)
     }
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Double,
+        phaseAngle: Radians,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,
