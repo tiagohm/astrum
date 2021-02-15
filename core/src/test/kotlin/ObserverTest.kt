@@ -1,4 +1,5 @@
 import br.tiagohm.astrum.core.*
+import br.tiagohm.astrum.core.sky.planets.minor.pluto.Pluto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

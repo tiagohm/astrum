@@ -1,5 +1,6 @@
-package br.tiagohm.astrum.core
+package br.tiagohm.astrum.core.sky.planets.minor.pluto
 
+import br.tiagohm.astrum.core.*
 import kotlin.math.cos
 import kotlin.math.sin
 

@@ -3,7 +3,7 @@ package br.tiagohm.astrum.core
 object Rotation {
 
     /**
-     * Computes rotation obliquity and ascending node WGCCRE elements
+     * Computes rotation obliquity and ascending node from WGCCRE elements.
      */
     fun compute(ra: Double, dec: Double): Duad {
         val pole = Algorithms.sphericalToRectangularCoordinates(ra, dec)
