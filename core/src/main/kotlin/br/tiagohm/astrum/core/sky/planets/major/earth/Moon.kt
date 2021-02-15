@@ -35,7 +35,7 @@ class Moon(parent: Earth) : Planet(
         return super.internalComputeRTSTime(o, hz + 0.7275 * 0.95 * M_PI_180, hasAtmosphere)
     }
 
-    private fun computeAge(o: Observer): Double {
+    private fun computeAge(o: Observer): Radians {
         val op = o.copy(useTopocentricCoordinates = false)
         val eclJDE = parent!!.computeRotObliquity(o.jde)
         val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))

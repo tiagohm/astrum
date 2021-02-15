@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.core.algorithms.time
 
 import br.tiagohm.astrum.core.Degrees
+import br.tiagohm.astrum.core.SECONDS_PER_DAY
 import br.tiagohm.astrum.core.algorithms.nutation.Nutation
 import br.tiagohm.astrum.core.algorithms.precession.Precession
 import br.tiagohm.astrum.core.deg
@@ -15,7 +16,7 @@ object SiderealTime {
      */
     fun computeMean(jd: Double, jde: Double): Degrees {
         // Time in seconds
-        val UT1 = (jd - floor(jd) + 0.5) * 86400
+        val UT1 = (jd - floor(jd) + 0.5) * SECONDS_PER_DAY
         val t = (jde - 2451545.0) / 36525
         val tu = (jd - 2451545.0) / 36525
 

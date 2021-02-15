@@ -27,7 +27,8 @@ const val JD_SECOND = 1.0 / 86400.0
 const val JD_MINUTE = 1.0 / 1440.0
 const val JD_HOUR = 1.0 / 24.0
 const val JD_DAY = 1.0
-const val ONE_OVER_JD_SECOND = 86400.0
+const val SECONDS_PER_DAY = 86400.0
+const val ONE_OVER_JD_SECOND = SECONDS_PER_DAY
 const val TZ_ERA_BEGINNING = 2395996.5 // December 1, 1847
 const val M_ARCSEC_RAD = M_2_PI / (360.0 * 3600.0)
 

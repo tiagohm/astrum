@@ -8,7 +8,9 @@ import br.tiagohm.astrum.core.sky.constellations.Constellation
 import br.tiagohm.astrum.core.sky.planets.Sun
 import br.tiagohm.astrum.core.sky.planets.major.earth.*
 import br.tiagohm.astrum.core.sky.planets.major.jupiter.Jupiter
+import br.tiagohm.astrum.core.sky.planets.major.mars.Deimos
 import br.tiagohm.astrum.core.sky.planets.major.mars.Mars
+import br.tiagohm.astrum.core.sky.planets.major.mars.Phobos
 import br.tiagohm.astrum.core.sky.planets.major.mercury.Mercury
 import br.tiagohm.astrum.core.sky.planets.major.neptune.Neptune
 import br.tiagohm.astrum.core.sky.planets.major.saturn.Saturn
@@ -1106,6 +1108,66 @@ class ObserverTest {
             assertTrue(!LunarEclipse.compute(it, moon).isEclipsing)
             assertEquals(-12.17, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
+    }
+
+    @Test
+    fun phobosAndDeimos() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val mars = Mars(sun)
+        val phobos = Phobos(mars)
+        val deimos = Deimos(mars)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        // Phobos
+        assertEquals(14.96, phobos.visualMagnitude(o), 0.01)
+        assertEquals(15.43, phobos.visualMagnitudeWithExtinction(o), 0.01)
+        assertEquals(11.31, phobos.meanOppositionMagnitude, 0.01)
+        assertEquals(Duad(156.17778, 11.0762), phobos.equatorialJ2000(o), 0.0001)
+        assertEquals(Duad(156.46029, 10.9679), phobos.equatorial(o), 0.0001)
+        assertEquals(Duad(19.48436, 10.9422), phobos.hourAngle(o), 0.0001)
+        assertEquals(Duad(70.7166, 15.7154), phobos.horizontal(o), 0.0001)
+        assertEquals(Duad(-129.2972, 52.0034), phobos.galactic(o), 0.0001)
+        assertEquals(Duad(92.4084, -31.6069), phobos.supergalactic(o), 0.0001)
+        assertEquals(Duad(153.8858, 1.0653), phobos.eclipticJ2000(o), 0.0001)
+        assertEquals(Duad(154.1835, 1.0664), phobos.ecliptic(o), 0.0001)
+        assertEquals((-117.3806).rad, phobos.parallacticAngle(o), 0.0001)
+        assertEquals(Constellation.LEO, phobos.constellation(o))
+        assertEquals(20.9156.rad, phobos.elongation(o), 0.0001)
+        assertEquals(12.5759.rad, phobos.phaseAngle(o), 0.0001)
+        assertEquals(98.8, 100 * phobos.phase(o), 0.1)
+        assertEquals(2.571, phobos.distance(o), 0.001)
+        assertEquals(1.663, phobos.distanceFromSun(o), 0.001)
+        assertEquals(2.136, phobos.orbitalVelocity(o), 0.001)
+        assertEquals(21.272, phobos.heliocentricVelocity(o), 0.001)
+        assertEquals(0.000003, phobos.angularSize(o) * 2, 0.000001)
+
+        // Phobos
+        assertEquals(16.05, deimos.visualMagnitude(o), 0.01)
+        assertEquals(16.52, deimos.visualMagnitudeWithExtinction(o), 0.01)
+        assertEquals(12.40, deimos.meanOppositionMagnitude, 0.01)
+        assertEquals(Duad(156.17394, 11.0781), deimos.equatorialJ2000(o), 0.0001)
+        assertEquals(Duad(156.45645, 10.9699), deimos.equatorial(o), 0.0001)
+        assertEquals(Duad(19.48462, 10.9442), deimos.hourAngle(o), 0.0001)
+        assertEquals(Duad(70.7130, 15.7179), deimos.horizontal(o), 0.0001)
+        assertEquals(Duad(-129.3031, 52.0010), deimos.galactic(o), 0.0001)
+        assertEquals(Duad(92.4044, -31.6095), deimos.supergalactic(o), 0.0001)
+        assertEquals(Duad(153.8815, 1.0657), deimos.eclipticJ2000(o), 0.0001)
+        assertEquals(Duad(154.1792, 1.0668), deimos.ecliptic(o), 0.0001)
+        assertEquals((-117.3823).rad, deimos.parallacticAngle(o), 0.0001)
+        assertEquals(Constellation.LEO, deimos.constellation(o))
+        assertEquals(20.9113.rad, deimos.elongation(o), 0.0001)
+        assertEquals(12.5729.rad, deimos.phaseAngle(o), 0.0001)
+        assertEquals(98.8, 100 * deimos.phase(o), 0.1)
+        assertEquals(2.571, deimos.distance(o), 0.001)
+        assertEquals(1.663, deimos.distanceFromSun(o), 0.001)
+        assertEquals(1.350, deimos.orbitalVelocity(o), 0.001)
+        assertEquals(22.289, deimos.heliocentricVelocity(o), 0.001)
     }
 
     companion object {

@@ -33,7 +33,7 @@ data class Observer(
     val refraction = Refraction(pressure, temperature)
     val extinction = Extinction(extinctionCoefficient)
 
-    val jde by lazy { JD[0] + JD[1] / 86400.0 }
+    val jde by lazy { JD[0] + JD[1] / SECONDS_PER_DAY }
 
     val jd by lazy { JD[0] }
 
@@ -233,7 +233,7 @@ data class Observer(
     private fun computeLightTimeSunPosition() {
         val obsPosJDE = home.internalComputeHeliocentricEclipticPosition(jde)
         val obsDist = obsPosJDE.length
-        val obsPosJDEbefore = home.internalComputeHeliocentricEclipticPosition(jde - obsDist * (AU / (SPEED_OF_LIGHT * 86400.0)))
+        val obsPosJDEbefore = home.internalComputeHeliocentricEclipticPosition(jde - obsDist * (AU / (SPEED_OF_LIGHT * SECONDS_PER_DAY)))
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
     }
 

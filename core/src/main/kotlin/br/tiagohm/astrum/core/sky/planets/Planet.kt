@@ -3,6 +3,7 @@ package br.tiagohm.astrum.core.sky.planets
 import br.tiagohm.astrum.core.*
 import br.tiagohm.astrum.core.algorithms.Algorithms
 import br.tiagohm.astrum.core.algorithms.ephemeris.Elp82b
+import br.tiagohm.astrum.core.algorithms.ephemeris.MarsSat
 import br.tiagohm.astrum.core.algorithms.ephemeris.Vsop87
 import br.tiagohm.astrum.core.algorithms.math.Mat4
 import br.tiagohm.astrum.core.algorithms.math.Triad
@@ -12,6 +13,12 @@ import br.tiagohm.astrum.core.sky.CelestialObject
 import br.tiagohm.astrum.core.sky.PlanetType
 import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
+import br.tiagohm.astrum.core.sky.planets.major.jupiter.Jupiter
+import br.tiagohm.astrum.core.sky.planets.major.mars.Mars
+import br.tiagohm.astrum.core.sky.planets.major.neptune.Neptune
+import br.tiagohm.astrum.core.sky.planets.major.saturn.Saturn
+import br.tiagohm.astrum.core.sky.planets.major.uranus.Uranus
+import br.tiagohm.astrum.core.sky.planets.minor.pluto.Pluto
 import kotlin.math.*
 
 abstract class Planet internal constructor(
@@ -71,12 +78,19 @@ abstract class Planet internal constructor(
     open val meanOppositionMagnitude: Double
         get() {
             // Source: Explanatory Supplement 2013, Table 10.6 and formula (10.5) with semimajorAxis a from Table 8.7
-            // TODO: Fixed Mean Opposition Magnitute for some objects.
-            // TODO: Testar com luas de Júpiter e asteroides
+            // TODO: Fixed Mean Opposition Magnitute for Jupiter's moons.
+            // TODO: Testar com luas e asteroides
             if (absoluteMagnitude <= -99.0) return 100.0
 
             val a = parent?.orbit?.semiMajorAxis
-                ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis else return 100.0
+                ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis
+                else if(parent is Mars) 1.52371034
+                else if(parent is Jupiter) 5.202887
+                else if(parent is Saturn) 9.53667594
+                else if(parent is Uranus) 19.18916464
+                else if(parent is Neptune) 30.06992276
+                else if(parent is Pluto) 39.48211675
+                else return 100.0
 
             return if (a > 0.0) absoluteMagnitude + 5.0 * log10(a * (a - 1.0)) else 100.0
         }
@@ -148,12 +162,12 @@ abstract class Planet internal constructor(
     }
 
     internal fun computeEclipticPosition(jde: Double, o: Observer, useLightTravelTime: Boolean): Pair<Triad, Triad> {
-        val jd = jde - o.computeDeltaT(jde) / 86400.0
+        val jd = jde - o.computeDeltaT(jde) / SECONDS_PER_DAY
 
         return if (useLightTravelTime) {
             val length =
                 (internalComputeHeliocentricEclipticPosition(jde) - o.home.internalComputeHeliocentricEclipticPosition(jde)).length
-            val lsc = length * (AU / (SPEED_OF_LIGHT * 86400.0))
+            val lsc = length * (AU / (SPEED_OF_LIGHT * SECONDS_PER_DAY))
 
             val pos = internalComputePosition(jde - lsc)
             computeTransformationMatrix(jd - lsc, jde - lsc, o.useNutation)
@@ -371,12 +385,12 @@ abstract class Planet internal constructor(
     /**
      * Returns the orbital velocity in km/s
      */
-    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * AU / 86400.0
+    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * AU / SECONDS_PER_DAY
 
     /**
      * Returns the heliocentric velocity in km/s
      */
-    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * AU / 86400.0
+    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * AU / SECONDS_PER_DAY
 
     override fun visualMagnitude(o: Observer, extra: Any?): Double {
         // Compute the phase angle i
@@ -477,11 +491,11 @@ abstract class Planet internal constructor(
 
         fun computeMoonHeliocentricCoordinates(jd: Double): DoubleArray {
             val xyz6 = DoubleArray(6)
-            val moon = Elp82b.computeCoordinates(jd)
+            val c = Elp82b.computeCoordinates(jd)
 
-            xyz6[0] = moon[0]
-            xyz6[1] = moon[1]
-            xyz6[2] = moon[2]
+            xyz6[0] = c[0]
+            xyz6[1] = c[1]
+            xyz6[2] = c[2]
 
             // TODO: Some meaningful way to get speed?
 
@@ -499,6 +513,10 @@ abstract class Planet internal constructor(
             // TODO: HOW TO FIX EARTH SPEED?
 
             return xyz6
+        }
+
+        fun computeMarsSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+            return MarsSat.computeCoordinates(jd, body)
         }
 
         fun computePlanetHeliocentricCoordinates(jd: Double, planet: Int): DoubleArray {
