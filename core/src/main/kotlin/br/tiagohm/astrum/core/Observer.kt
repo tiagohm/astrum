@@ -1,5 +1,7 @@
 package br.tiagohm.astrum.core
 
+import br.tiagohm.astrum.core.sky.planets.major.earth.Earth
+import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
 import kotlin.math.*
 
 @Suppress("PrivatePropertyName")

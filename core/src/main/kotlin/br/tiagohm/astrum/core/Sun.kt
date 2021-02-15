@@ -1,5 +1,6 @@
 package br.tiagohm.astrum.core
 
+import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
 import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.sqrt

@@ -1,4 +1,6 @@
-package br.tiagohm.astrum.core
+package br.tiagohm.astrum.core.sky.planets.major.earth
+
+import br.tiagohm.astrum.core.*
 
 class Earth(parent: Sun) : Planet(
     "Earth",

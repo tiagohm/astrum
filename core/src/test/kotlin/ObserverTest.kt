@@ -1,4 +1,7 @@
 import br.tiagohm.astrum.core.*
+import br.tiagohm.astrum.core.sky.planets.major.earth.Earth
+import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
+import br.tiagohm.astrum.core.sky.planets.major.earth.SolarEclipse
 import br.tiagohm.astrum.core.sky.planets.minor.pluto.Pluto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
