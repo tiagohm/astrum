@@ -19,11 +19,11 @@ data class SolarEclipse(
 
         fun compute(
             o: Observer,
-            sun: Sun,
             moon: Moon,
             southAzimuth: Boolean = false,
         ): SolarEclipse? {
             val op = o.copy(useTopocentricCoordinates = false)
+            val sun = moon.parent!!.parent!! as Sun
             val sEquPos = sun.computeEquinoxEquatorialPosition(op)
             val mEquPos = moon.computeEquinoxEquatorialPosition(op)
             var (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(sEquPos)

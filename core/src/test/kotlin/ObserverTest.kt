@@ -6,10 +6,7 @@ import br.tiagohm.astrum.core.algorithms.time.TimeCorrectionType
 import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.constellations.Constellation
 import br.tiagohm.astrum.core.sky.planets.Sun
-import br.tiagohm.astrum.core.sky.planets.major.earth.Earth
-import br.tiagohm.astrum.core.sky.planets.major.earth.LunarPhase
-import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
-import br.tiagohm.astrum.core.sky.planets.major.earth.SolarEclipse
+import br.tiagohm.astrum.core.sky.planets.major.earth.*
 import br.tiagohm.astrum.core.sky.planets.major.jupiter.Jupiter
 import br.tiagohm.astrum.core.sky.planets.major.mars.Mars
 import br.tiagohm.astrum.core.sky.planets.major.mercury.Mercury
@@ -979,7 +976,7 @@ class ObserverTest {
         assertEquals(Duad(75.3662, 17.2661), sun.horizontal(c), 0.0001)
         assertEquals(Duad(75.3662, 17.2662), moon.horizontal(c), 0.0001)
 
-        val se = SolarEclipse.compute(c, sun, moon)
+        val se = SolarEclipse.compute(c, moon)
 
         assertEquals(87.079, se!!.longitude, 0.001)
         assertEquals(25.9876, se.latitude, 0.001)
@@ -1052,21 +1049,25 @@ class ObserverTest {
             assertEquals(14.6, moon.age(it), 0.1)
             assertEquals(Duad(82.5454, 70.3246), moon.horizontal(it), 0.001)
             assertEquals(1.0, moon.phase(it), 0.1)
-            assertTrue(moon.lunarEclipse(it) == Duad.ZERO)
+            assertTrue(!LunarEclipse.compute(it, moon).isEclipsing)
             assertEquals(-12.26, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
 
         // Penumbral Eclipse begins
         o.copy(dateTime = DateTime(2022, 5, 15, 22, 32, 5)).let {
             assertEquals(Duad(82.366, 70.567), moon.horizontal(it), 0.001)
-            assertEquals(Duad(0.00003, 0.0), moon.lunarEclipse(it), 0.00001)
+            val le = LunarEclipse.compute(it, moon)
+            assertEquals(0.00003, le.penumbralMagnitude, 0.00001)
+            assertTrue(le.umbralMagnitude < 1E-6)
             assertEquals(-12.26, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
 
         // Full Eclipse begins
         o.copy(dateTime = DateTime(2022, 5, 15, 23, 27, 52)).let {
             assertEquals(Duad(61.3293, 82.7327), moon.horizontal(it), 0.001)
-            assertEquals(Duad(0.95943, 0.00002), moon.lunarEclipse(it), 0.00001)
+            val le = LunarEclipse.compute(it, moon)
+            assertEquals(0.95943, le.penumbralMagnitude, 0.00001)
+            assertEquals(0.00002, le.umbralMagnitude, 0.00001)
             assertEquals(-12.27, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
 
@@ -1074,14 +1075,18 @@ class ObserverTest {
         o.copy(dateTime = DateTime(2022, 5, 16, 1, 11, 20)).let {
             assertEquals(LunarPhase.FULL_MOON, moon.lunarPhase(it))
             assertEquals(Duad(277.2745, 72.3696), moon.horizontal(it), 0.001)
-            assertEquals(Duad(2.37272, 1.41382), moon.lunarEclipse(it), 0.00001)
+            val le = LunarEclipse.compute(it, moon)
+            assertEquals(2.37272, le.penumbralMagnitude, 0.00001)
+            assertEquals(1.41382, le.umbralMagnitude, 0.00001)
             assertEquals(-0.85, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
 
         // Full Eclipse ends
         o.copy(dateTime = DateTime(2022, 5, 16, 1, 53, 57)).let {
             assertEquals(Duad(271.2277, 62.8147), moon.horizontal(it), 0.001)
-            assertEquals(Duad(1.95858, 0.99988), moon.lunarEclipse(it), 0.00001)
+            val le = LunarEclipse.compute(it, moon)
+            assertEquals(1.95858, le.penumbralMagnitude, 0.00001)
+            assertEquals(0.99988, le.umbralMagnitude, 0.00001)
             assertEquals(-5.01, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
 
@@ -1089,14 +1094,16 @@ class ObserverTest {
         o.copy(dateTime = DateTime(2022, 5, 16, 2, 55, 8)).let {
             assertEquals(LunarPhase.WANING_GIBBOUS, moon.lunarPhase(it))
             assertEquals(Duad(265.7446, 49.0918), moon.horizontal(it), 0.001)
-            assertEquals(Duad(0.95841, 0.0), moon.lunarEclipse(it), 0.00001)
+            val le = LunarEclipse.compute(it, moon)
+            assertEquals(0.95841, le.penumbralMagnitude, 0.00001)
+            assertTrue(le.umbralMagnitude < 1E-6)
             assertEquals(-12.22, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
 
         // Penumbral Eclipse ends
         o.copy(dateTime = DateTime(2022, 5, 16, 3, 50, 51)).let {
             assertEquals(Duad(261.6425, 36.7049), moon.horizontal(it), 0.001)
-            assertTrue(moon.lunarEclipse(it) == Duad.ZERO)
+            assertTrue(!LunarEclipse.compute(it, moon).isEclipsing)
             assertEquals(-12.17, moon.visualMagnitudeWithExtinction(it), 0.01)
         }
     }
