@@ -1,6 +1,12 @@
 package br.tiagohm.astrum.core.sky.planets.major.earth
 
 import br.tiagohm.astrum.core.*
+import br.tiagohm.astrum.core.algorithms.Algorithms
+import br.tiagohm.astrum.core.algorithms.math.Duad
+import br.tiagohm.astrum.core.algorithms.math.Triad
+import br.tiagohm.astrum.core.sky.PlanetType
+import br.tiagohm.astrum.core.sky.planets.Planet
+import br.tiagohm.astrum.core.sky.planets.Sun
 import kotlin.math.*
 
 class Moon(parent: Earth) : Planet(

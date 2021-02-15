@@ -1,5 +1,16 @@
 package br.tiagohm.astrum.core
 
+import br.tiagohm.astrum.core.algorithms.math.Mat4
+import br.tiagohm.astrum.core.algorithms.math.Quad
+import br.tiagohm.astrum.core.algorithms.math.Triad
+import br.tiagohm.astrum.core.algorithms.nutation.Nutation
+import br.tiagohm.astrum.core.algorithms.time.DateTime
+import br.tiagohm.astrum.core.algorithms.time.MoonSecularAcceleration
+import br.tiagohm.astrum.core.algorithms.time.TimeCorrectionType
+import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.core.sky.atmosphere.Extinction
+import br.tiagohm.astrum.core.sky.atmosphere.Refraction
+import br.tiagohm.astrum.core.sky.planets.Sun
 import br.tiagohm.astrum.core.sky.planets.major.earth.Earth
 import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
 import kotlin.math.*

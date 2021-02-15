@@ -1,6 +1,6 @@
 import br.tiagohm.astrum.core.M_PI
-import br.tiagohm.astrum.core.Mat4
-import br.tiagohm.astrum.core.Triad
+import br.tiagohm.astrum.core.algorithms.math.Mat4
+import br.tiagohm.astrum.core.algorithms.math.Triad
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

@@ -1,6 +1,10 @@
 package br.tiagohm.astrum.core.sky.planets.major.earth
 
 import br.tiagohm.astrum.core.*
+import br.tiagohm.astrum.core.algorithms.Algorithms
+import br.tiagohm.astrum.core.algorithms.math.Duad
+import br.tiagohm.astrum.core.algorithms.time.SiderealTime
+import br.tiagohm.astrum.core.sky.planets.Sun
 import kotlin.math.*
 
 data class SolarEclipse(
