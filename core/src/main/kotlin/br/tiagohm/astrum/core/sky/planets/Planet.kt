@@ -84,12 +84,12 @@ abstract class Planet internal constructor(
 
             val a = parent?.orbit?.semiMajorAxis
                 ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis
-                else if(parent is Mars) 1.52371034
-                else if(parent is Jupiter) 5.202887
-                else if(parent is Saturn) 9.53667594
-                else if(parent is Uranus) 19.18916464
-                else if(parent is Neptune) 30.06992276
-                else if(parent is Pluto) 39.48211675
+                else if (parent is Mars) 1.52371034
+                else if (parent is Jupiter) 5.202887
+                else if (parent is Saturn) 9.53667594
+                else if (parent is Uranus) 19.18916464
+                else if (parent is Neptune) 30.06992276
+                else if (parent is Pluto) 39.48211675
                 else return 100.0
 
             return if (a > 0.0) absoluteMagnitude + 5.0 * log10(a * (a - 1.0)) else 100.0

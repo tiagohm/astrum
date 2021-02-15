@@ -7,7 +7,7 @@ import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
-@Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS")
+@Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")
 inline class Triad(val data: DoubleArray) : Iterable<Double> {
 
     constructor(

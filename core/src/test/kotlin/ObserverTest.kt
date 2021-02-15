@@ -286,14 +286,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(-106.3198, sun.parallacticAngle(o).deg, 0.0001)
-        assertEquals(-110.2467, Mercury(sun).parallacticAngle(o).deg, 0.0001)
-        assertEquals(-101.2811, Venus(sun).parallacticAngle(o).deg, 0.0001)
+        assertEquals(-106.3196, sun.parallacticAngle(o).deg, 0.0001)
+        assertEquals(-110.2466, Mercury(sun).parallacticAngle(o).deg, 0.0001)
+        assertEquals(-101.2810, Venus(sun).parallacticAngle(o).deg, 0.0001)
         assertEquals(-104.5911, Mars(sun).parallacticAngle(o).deg, 0.0001)
-        assertEquals(-103.9626, Jupiter(sun).parallacticAngle(o).deg, 0.0001)
-        assertEquals(-102.1160, Saturn(sun).parallacticAngle(o).deg, 0.0001)
+        assertEquals(-103.9624, Jupiter(sun).parallacticAngle(o).deg, 0.0001)
+        assertEquals(-102.1158, Saturn(sun).parallacticAngle(o).deg, 0.0001)
         assertEquals(-108.2743, Uranus(sun).parallacticAngle(o).deg, 0.0001)
-        assertEquals(-111.9851, Neptune(sun).parallacticAngle(o).deg, 0.0001)
+        assertEquals(-111.9848, Neptune(sun).parallacticAngle(o).deg, 0.0001)
         assertEquals(-95.8256, Pluto(sun).parallacticAngle(o).deg, 0.0001)
     }
 
@@ -367,15 +367,15 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(90.7432, 43.3584), sun.horizontal(o), 0.0001)
-        assertEquals(Duad(86.5517, 36.8230), Mercury(sun).horizontal(o), 0.0001)
-        assertEquals(Duad(92.5681, 55.3141), Venus(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(90.7432, 43.3589), sun.horizontal(o), 0.0001)
+        assertEquals(Duad(86.5517, 36.8238), Mercury(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(92.5681, 55.3145), Venus(sun).horizontal(o), 0.0001)
         assertEquals(Duad(87.1402, -44.6719), Mars(sun).horizontal(o), 0.0001)
-        assertEquals(Duad(91.7507, 49.1092), Jupiter(sun).horizontal(o), 0.0001)
-        assertEquals(Duad(91.8896, 54.4267), Saturn(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(91.7507, 49.1097), Jupiter(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(91.8896, 54.4271), Saturn(sun).horizontal(o), 0.0001)
         assertEquals(Duad(89.7587, -36.6858), Uranus(sun).horizontal(o), 0.0001)
-        assertEquals(Duad(91.1530, 10.8916), Neptune(sun).horizontal(o), 0.0001)
-        assertEquals(Duad(94.7489, 64.8103), Pluto(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(91.1530, 10.8944), Neptune(sun).horizontal(o), 0.0001)
+        assertEquals(Duad(94.7489, 64.8106), Pluto(sun).horizontal(o), 0.0001)
     }
 
     @Test
@@ -389,15 +389,15 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(270.7432, 43.3584), sun.horizontal(o, true), 0.0001)
-        assertEquals(Duad(266.5517, 36.8230), Mercury(sun).horizontal(o, true), 0.0001)
-        assertEquals(Duad(272.5681, 55.3141), Venus(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(270.7432, 43.3589), sun.horizontal(o, true), 0.0001)
+        assertEquals(Duad(266.5517, 36.8238), Mercury(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(272.5681, 55.3145), Venus(sun).horizontal(o, true), 0.0001)
         assertEquals(Duad(267.1402, -44.6719), Mars(sun).horizontal(o, true), 0.0001)
-        assertEquals(Duad(271.7507, 49.1092), Jupiter(sun).horizontal(o, true), 0.0001)
-        assertEquals(Duad(271.8896, 54.4267), Saturn(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(271.7507, 49.1097), Jupiter(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(271.8896, 54.4271), Saturn(sun).horizontal(o, true), 0.0001)
         assertEquals(Duad(269.7587, -36.6858), Uranus(sun).horizontal(o, true), 0.0001)
-        assertEquals(Duad(271.1530, 10.8916), Neptune(sun).horizontal(o, true), 0.0001)
-        assertEquals(Duad(274.7489, 64.8103), Pluto(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(271.1530, 10.8944), Neptune(sun).horizontal(o, true), 0.0001)
+        assertEquals(Duad(274.7489, 64.8106), Pluto(sun).horizontal(o, true), 0.0001)
     }
 
     @Test
@@ -433,14 +433,14 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Duad(20.72897, -15.7730), sun.hourAngle(o), 0.0001)
-        assertEquals(Duad(20.37326, -10.6740), Mercury(sun).hourAngle(o), 0.0001)
+        assertEquals(Duad(20.72897, -15.7732), sun.hourAngle(o), 0.0001)
+        assertEquals(Duad(20.37326, -10.6742), Mercury(sun).hourAngle(o), 0.0001)
         assertEquals(Duad(21.52187, -19.7967), Venus(sun).hourAngle(o), 0.0001)
         assertEquals(Duad(15.21116, 17.5901), Mars(sun).hourAngle(o), 0.0001)
-        assertEquals(Duad(21.10296, -17.9498), Jupiter(sun).hourAngle(o), 0.0001)
+        assertEquals(Duad(21.10296, -17.9499), Jupiter(sun).hourAngle(o), 0.0001)
         assertEquals(Duad(21.46598, -19.2344), Saturn(sun).hourAngle(o), 0.0001)
         assertEquals(Duad(15.70202, 13.4193), Uranus(sun).hourAngle(o), 0.0001)
-        assertEquals(Duad(18.64338, -5.2018), Neptune(sun).hourAngle(o), 0.0001)
+        assertEquals(Duad(18.64356, -5.2029), Neptune(sun).hourAngle(o), 0.0001)
         assertEquals(Duad(22.18102, -22.2929), Pluto(sun).hourAngle(o), 0.0001)
     }
 
@@ -962,8 +962,8 @@ class ObserverTest {
         val site = Location("Rangpur", 25.9896, 87.0868, 14.0)
 
         val a = Observer(earth, site, DateTime(2009, 7, 22, 5, 57, 28, utcOffset = 6.0))
-        assertEquals(Duad(69.5333, 4.5346), sun.horizontal(a), 0.0001)
-        assertEquals(Duad(69.6924, 5.0652), moon.horizontal(a), 0.0001)
+        assertEquals(Duad(69.5333, 4.5405), sun.horizontal(a), 0.0001)
+        assertEquals(Duad(69.6924, 5.0706), moon.horizontal(a), 0.0001)
 
         assertEquals(0.0, a.eclipseObscuration(moon), 0.01)
         assertEquals(-25.26, sun.visualMagnitudeWithExtinction(a, moon), 0.01)
@@ -975,8 +975,8 @@ class ObserverTest {
         val c = Observer(earth, site, DateTime(2009, 7, 22, 6, 57, 28, utcOffset = 6.0))
         assertEquals(100.0, c.eclipseObscuration(moon), 0.01)
         assertEquals(-16.54, sun.visualMagnitudeWithExtinction(c, moon), 0.01)
-        assertEquals(Duad(75.3662, 17.2661), sun.horizontal(c), 0.0001)
-        assertEquals(Duad(75.3662, 17.2662), moon.horizontal(c), 0.0001)
+        assertEquals(Duad(75.3662, 17.2680), sun.horizontal(c), 0.0001)
+        assertEquals(Duad(75.3662, 17.2680), moon.horizontal(c), 0.0001)
 
         val se = SolarEclipse.compute(c, moon)
 
@@ -1057,7 +1057,7 @@ class ObserverTest {
 
         // Penumbral Eclipse begins
         o.copy(dateTime = DateTime(2022, 5, 15, 22, 32, 5)).let {
-            assertEquals(Duad(82.366, 70.567), moon.horizontal(it), 0.001)
+            assertEquals(Duad(82.366, 70.5680), moon.horizontal(it), 0.001)
             val le = LunarEclipse.compute(it, moon)
             assertEquals(0.00003, le.penumbralMagnitude, 0.00001)
             assertTrue(le.umbralMagnitude < 1E-6)
@@ -1130,8 +1130,8 @@ class ObserverTest {
         assertEquals(11.31, phobos.meanOppositionMagnitude, 0.01)
         assertEquals(Duad(156.17778, 11.0762), phobos.equatorialJ2000(o), 0.0001)
         assertEquals(Duad(156.46029, 10.9679), phobos.equatorial(o), 0.0001)
-        assertEquals(Duad(19.48436, 10.9422), phobos.hourAngle(o), 0.0001)
-        assertEquals(Duad(70.7166, 15.7154), phobos.horizontal(o), 0.0001)
+        assertEquals(Duad(19.48448, 10.9414), phobos.hourAngle(o), 0.0001)
+        assertEquals(Duad(70.7166, 15.7174), phobos.horizontal(o), 0.0001)
         assertEquals(Duad(-129.2972, 52.0034), phobos.galactic(o), 0.0001)
         assertEquals(Duad(92.4084, -31.6069), phobos.supergalactic(o), 0.0001)
         assertEquals(Duad(153.8858, 1.0653), phobos.eclipticJ2000(o), 0.0001)
@@ -1153,8 +1153,8 @@ class ObserverTest {
         assertEquals(12.40, deimos.meanOppositionMagnitude, 0.01)
         assertEquals(Duad(156.17394, 11.0781), deimos.equatorialJ2000(o), 0.0001)
         assertEquals(Duad(156.45645, 10.9699), deimos.equatorial(o), 0.0001)
-        assertEquals(Duad(19.48462, 10.9442), deimos.hourAngle(o), 0.0001)
-        assertEquals(Duad(70.7130, 15.7179), deimos.horizontal(o), 0.0001)
+        assertEquals(Duad(19.48474, 10.9433), deimos.hourAngle(o), 0.0001)
+        assertEquals(Duad(70.7130, 15.7199), deimos.horizontal(o), 0.0001)
         assertEquals(Duad(-129.3031, 52.0010), deimos.galactic(o), 0.0001)
         assertEquals(Duad(92.4044, -31.6095), deimos.supergalactic(o), 0.0001)
         assertEquals(Duad(153.8815, 1.0657), deimos.eclipticJ2000(o), 0.0001)
@@ -1168,6 +1168,7 @@ class ObserverTest {
         assertEquals(1.663, deimos.distanceFromSun(o), 0.001)
         assertEquals(1.350, deimos.orbitalVelocity(o), 0.001)
         assertEquals(22.289, deimos.heliocentricVelocity(o), 0.001)
+        assertEquals(0.000001, deimos.angularSize(o) * 2, 0.000001)
     }
 
     companion object {

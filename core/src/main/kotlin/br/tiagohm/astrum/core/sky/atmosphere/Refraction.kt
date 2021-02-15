@@ -8,17 +8,17 @@ import kotlin.math.*
 
 data class Refraction(
     val pressure: Double = 1013.0,
-    val temperature: Celsius = 25.0,
+    val temperature: Celsius = 15.0,
 ) {
 
     private val ptc = pressure / 1010.0 * 283.0 / (273.0 + temperature) / 60.0
 
-    fun forward(altAzPos: Triad): Triad {
-        val length = altAzPos.length
+    fun forward(pos: Triad): Triad {
+        val length = pos.length
 
-        if (length == 0.0) return altAzPos
+        if (length == 0.0) return pos
 
-        val sinGeo = altAzPos[2] / length
+        val sinGeo = pos[2] / length
         var geomAlt = asin(sinGeo).deg
 
         if (geomAlt > MIN_GEO_ALTITUDE_DEG) {
@@ -35,21 +35,21 @@ data class Refraction(
 
             geomAlt += rm5 * (geomAlt - (MIN_GEO_ALTITUDE_DEG - TRANSITION_WIDTH_GEO_DEG)) / TRANSITION_WIDTH_GEO_DEG
         } else {
-            return altAzPos
+            return pos
         }
 
         val sinRef = sin(geomAlt.rad)
 
         val s = (if (abs(sinGeo) >= 1.0) 1.0 else sqrt((1.0 - sinRef * sinRef) / (1.0 - sinGeo * sinGeo)))
-        return Triad(altAzPos[0] * s, altAzPos[1] * s, sinRef * length)
+        return Triad(pos[0] * s, pos[1] * s, sinRef * length)
     }
 
-    fun backward(altAzPos: Triad): Triad {
-        val length = altAzPos.length
+    fun backward(pos: Triad): Triad {
+        val length = pos.length
 
-        if (length == 0.0) return altAzPos
+        if (length == 0.0) return pos
 
-        val sinObs = altAzPos[2] / length
+        val sinObs = pos[2] / length
         var obsAlt = asin(sinObs).deg
 
         if (obsAlt > 0.22879) {
@@ -69,13 +69,13 @@ data class Refraction(
 
             obsAlt -= rMin * ptc * (obsAlt - (MIN_APP_ALTITUDE_DEG - TRANSITION_WIDTH_APP_DEG)) / TRANSITION_WIDTH_APP_DEG
         } else {
-            return altAzPos
+            return pos
         }
 
         val sinGeo = sin(obsAlt.rad)
         val s = if (abs(sinObs) >= 1.0) 1.0 else sqrt((1.0 - sinGeo * sinGeo) / (1.0 - sinObs * sinObs))
 
-        return Triad(altAzPos[0] * s, altAzPos[1] * s, sinGeo * length)
+        return Triad(pos[0] * s, pos[1] * s, sinGeo * length)
     }
 
     companion object {

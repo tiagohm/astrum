@@ -2,7 +2,7 @@ package br.tiagohm.astrum.core.algorithms.math
 
 import kotlin.math.sqrt
 
-@Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS")
+@Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")
 inline class Quad(val data: DoubleArray) : Iterable<Double> {
 
     constructor(

@@ -3,7 +3,7 @@ package br.tiagohm.astrum.core.algorithms.math
 import kotlin.math.cos
 import kotlin.math.sin
 
-@Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS")
+@Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")
 inline class Mat4(val data: DoubleArray) : Iterable<Double> {
 
     constructor(

@@ -9,7 +9,7 @@ import kotlin.math.round
 
 // Constants
 
-const val AU = 149597870.691
+const val AU = 1.495978706996262E+08
 const val PARSEC = 30.857E+12
 const val EPSILON = 1E-10
 const val M_PI = Math.PI

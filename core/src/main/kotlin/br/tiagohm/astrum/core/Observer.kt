@@ -22,7 +22,7 @@ data class Observer(
     val dateTime: DateTime,
     val deltaTAlgorithm: TimeCorrectionType = TimeCorrectionType.ESPEANAK_MEEUS,
     val pressure: Double = 1013.0,
-    val temperature: Celsius = 25.0,
+    val temperature: Celsius = 15.0,
     val extinctionCoefficient: Double = 0.13,
     val useTopocentricCoordinates: Boolean = true,
     val useNutation: Boolean = true,
