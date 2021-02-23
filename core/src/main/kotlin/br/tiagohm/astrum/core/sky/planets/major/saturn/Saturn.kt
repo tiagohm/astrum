@@ -3,7 +3,7 @@ package br.tiagohm.astrum.core.sky.planets.major.saturn
 import br.tiagohm.astrum.core.*
 import br.tiagohm.astrum.core.algorithms.math.Triad
 import br.tiagohm.astrum.core.sky.PlanetType
-import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.core.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.planets.Planet
 import br.tiagohm.astrum.core.sky.planets.Ring
 import br.tiagohm.astrum.core.sky.planets.Sun
@@ -51,10 +51,10 @@ class Saturn(parent: Sun) : Planet(
             ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013,
             ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_1992,
             ApparentMagnitudeAlgorithm.ASTRONOMICAL_ALMANAC_1984 -> {
-                -8.88 + d + 0.044 * phaseDeg + ringsIllumination(o)
+                -8.88 + d + 0.044 * phaseDeg + computeRingsIllumination(o)
             }
             ApparentMagnitudeAlgorithm.MUELLER_1893 -> {
-                -8.68 + d + 0.044 * phaseDeg + ringsIllumination(o)
+                -8.68 + d + 0.044 * phaseDeg + computeRingsIllumination(o)
             }
             // Calculate the visual magnitude from phase angle and albedo of the planet
             else -> super.computeVisualMagnitude(
@@ -70,7 +70,7 @@ class Saturn(parent: Sun) : Planet(
         }
     }
 
-    fun ringsIllumination(o: Observer): Double {
+    fun computeRingsIllumination(o: Observer): Double {
         // Implemented from Meeus, Astr.Alg.1992
         val T = (o.jde - 2451545.0) / 36525.0
         val i = ((0.000004 * T - 0.012998) * T + 28.075216).rad

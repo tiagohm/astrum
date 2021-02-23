@@ -5,7 +5,7 @@ import br.tiagohm.astrum.core.Observer
 import br.tiagohm.astrum.core.algorithms.math.Triad
 import br.tiagohm.astrum.core.deg
 import br.tiagohm.astrum.core.sky.PlanetType
-import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.core.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.planets.Planet
 import br.tiagohm.astrum.core.sky.planets.Sun
 

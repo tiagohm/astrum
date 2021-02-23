@@ -3,7 +3,7 @@ import br.tiagohm.astrum.core.algorithms.math.Duad
 import br.tiagohm.astrum.core.algorithms.math.Triad
 import br.tiagohm.astrum.core.algorithms.time.DateTime
 import br.tiagohm.astrum.core.algorithms.time.TimeCorrectionType
-import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.core.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.constellations.Constellation
 import br.tiagohm.astrum.core.sky.planets.Sun
 import br.tiagohm.astrum.core.sky.planets.major.earth.*

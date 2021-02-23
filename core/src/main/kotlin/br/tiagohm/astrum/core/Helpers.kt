@@ -3,6 +3,7 @@ package br.tiagohm.astrum.core
 import br.tiagohm.astrum.core.algorithms.math.Mat4
 import br.tiagohm.astrum.core.algorithms.precession.Precession
 import br.tiagohm.astrum.core.algorithms.time.DateTime
+import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -78,9 +79,7 @@ inline val Radians.deg: Double
 
 // Math
 
-fun remainder(numer: Double, denom: Double): Double {
-    return numer - round(numer / denom) * denom
-}
+fun remainder(numer: Double, denom: Double) = numer - round(numer / denom) * denom
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun bound(a: Double, b: Double, c: Double) = max(a, min(b, c))
@@ -95,16 +94,12 @@ fun Double.amod(b: Double) = (this % b).let { if (it <= 0.0) it + b else it }
  */
 fun Double.pmod(b: Double) = (this % b).let { if (it < 0.0) it + b else it }
 
-fun fuzzyEquals(a: Double, b: Double, eps: Double = EPSILON): Boolean {
-    if (a == b) return true
-    if (((a + eps) < b) || ((a - eps) > b)) return false
-    return true
-}
-
 // Misc
 
+fun getResourceAsStream(name: String): InputStream? = Thread.currentThread().contextClassLoader.getResourceAsStream(name)
+
 fun readDoubleArrayFromResources(name: String): DoubleArray {
-    return Thread.currentThread().contextClassLoader.getResourceAsStream(name)?.let {
+    return getResourceAsStream(name)?.let {
         val bytes = it.readBytes()
         val res = DoubleArray(bytes.size / 8)
         for (i in bytes.indices step 8) {
@@ -123,7 +118,7 @@ fun readDoubleArrayFromResources(name: String): DoubleArray {
 }
 
 fun readIntArrayFromResources(name: String): IntArray {
-    return Thread.currentThread().contextClassLoader.getResourceAsStream(name)?.let {
+    return getResourceAsStream(name)?.let {
         val bytes = it.readBytes()
         val res = IntArray(bytes.size / 4)
         for (i in bytes.indices step 4) {
@@ -138,7 +133,7 @@ fun readIntArrayFromResources(name: String): IntArray {
 }
 
 fun readByteArrayFromResources(name: String): ByteArray {
-    return Thread.currentThread().contextClassLoader.getResourceAsStream(name)?.readBytes() ?: ByteArray(0)
+    return getResourceAsStream(name)?.readBytes() ?: ByteArray(0)
 }
 
 

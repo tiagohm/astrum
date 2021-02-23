@@ -11,7 +11,6 @@ import br.tiagohm.astrum.core.algorithms.orbit.KeplerOrbit
 import br.tiagohm.astrum.core.algorithms.orbit.Orbit
 import br.tiagohm.astrum.core.sky.CelestialObject
 import br.tiagohm.astrum.core.sky.PlanetType
-import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.planets.major.earth.Moon
 import br.tiagohm.astrum.core.sky.planets.major.jupiter.Jupiter
 import br.tiagohm.astrum.core.sky.planets.major.mars.Mars

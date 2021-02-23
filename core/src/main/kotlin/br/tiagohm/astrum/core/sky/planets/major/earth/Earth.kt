@@ -7,7 +7,7 @@ import br.tiagohm.astrum.core.algorithms.nutation.Nutation
 import br.tiagohm.astrum.core.algorithms.precession.Precession
 import br.tiagohm.astrum.core.algorithms.time.SiderealTime
 import br.tiagohm.astrum.core.sky.PlanetType
-import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.core.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.planets.Planet
 import br.tiagohm.astrum.core.sky.planets.Sun
 

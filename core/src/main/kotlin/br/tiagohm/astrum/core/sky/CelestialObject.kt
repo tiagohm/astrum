@@ -127,11 +127,8 @@ interface CelestialObject {
         val pos = computeAltAzPositionApparent(o)
         val (_, az) = Algorithms.rectangularToSphericalCoordinates(pos)
 
-        return if (az > -2.0 * M_PI_180) {
-            o.extinction.airmass(cos(M_PI_2 - az), true)
-        } else {
-            0.0
-        }
+        return if (az > -2.0 * M_PI_180) o.extinction.airmass(cos(M_PI_2 - az), true)
+        else 0.0
     }
 
     /**

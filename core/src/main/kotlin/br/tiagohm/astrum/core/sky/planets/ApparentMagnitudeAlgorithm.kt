@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.core.sky.atmosphere
+package br.tiagohm.astrum.core.sky.planets
 
 enum class ApparentMagnitudeAlgorithm {
     MUELLER_1893,                // G. Mueller, based on visual observations 1877-91. [Explanatory Supplement to the Astronomical Almanac, 1961]

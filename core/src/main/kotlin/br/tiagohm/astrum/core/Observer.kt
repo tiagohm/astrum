@@ -7,7 +7,7 @@ import br.tiagohm.astrum.core.algorithms.nutation.Nutation
 import br.tiagohm.astrum.core.algorithms.time.DateTime
 import br.tiagohm.astrum.core.algorithms.time.MoonSecularAcceleration
 import br.tiagohm.astrum.core.algorithms.time.TimeCorrectionType
-import br.tiagohm.astrum.core.sky.atmosphere.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.core.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.core.sky.atmosphere.Extinction
 import br.tiagohm.astrum.core.sky.atmosphere.Refraction
 import br.tiagohm.astrum.core.sky.planets.Sun
