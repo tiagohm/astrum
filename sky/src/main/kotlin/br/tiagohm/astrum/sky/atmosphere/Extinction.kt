@@ -9,32 +9,23 @@ data class Extinction(
 ) {
 
     /**
-     * Airmass computation for cosine of zenith angle z.
-     */
-    fun airmass(cosZ: Double, apparentZ: Boolean = true): Double {
-        return computeAirmass(cosZ, apparentZ)
-    }
-
-    /**
      * Computes extinction effect for given position vector and magnitude.
      */
-    fun forward(altAzPos: Triad, mag: Double): Double {
-        return mag + airmass(altAzPos[2], false) * coefficient
-    }
+    fun forward(altAzPos: Triad, mag: Double) = mag + airmass(altAzPos[2], false) * coefficient
 
     /**
      * Computes inverse extinction effect for given position vector and magnitude.
      */
-    fun backward(altAzPos: Triad, mag: Double): Double {
-        return mag - airmass(altAzPos[2], false) * coefficient
-    }
+    fun backward(altAzPos: Triad, mag: Double) = mag - airmass(altAzPos[2], false) * coefficient
 
     companion object {
 
-        @JvmStatic
-        private fun computeAirmass(
+        /**
+         * Computes airmass for cosine of zenith angle z.
+         */
+        fun airmass(
             cosZ: Double,
-            apparentZ: Boolean,
+            apparentZ: Boolean = true,
         ): Double {
             var cz = cosZ
 

@@ -4,6 +4,7 @@ import br.tiagohm.astrum.sky.algorithms.Algorithms
 import br.tiagohm.astrum.sky.algorithms.math.Duad
 import br.tiagohm.astrum.sky.algorithms.math.Mat4
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.constellations.Constellation
 import kotlin.math.*
 
@@ -126,7 +127,7 @@ interface CelestialObject {
         val pos = computeAltAzPositionApparent(o)
         val (_, az) = Algorithms.rectangularToSphericalCoordinates(pos)
 
-        return if (az > -2.0 * M_PI_180) o.extinction.airmass(cos(M_PI_2 - az), true)
+        return if (az > -2.0 * M_PI_180) Extinction.airmass(cos(M_PI_2 - az), true)
         else 0.0
     }
 
