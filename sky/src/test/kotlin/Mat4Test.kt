@@ -1,6 +1,6 @@
-import br.tiagohm.astrum.sky.M_PI
 import br.tiagohm.astrum.sky.algorithms.math.Mat4
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Radians
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -47,7 +47,7 @@ class Mat4Test {
 
     @Test
     fun rotation() {
-        val r = Mat4.rotation(v, M_PI)
+        val r = Mat4.rotation(v, Radians.PI)
         assertEquals(
             Mat4(
                 0.422222, 0.888889, -0.177778, 0.0, 0.888889,
@@ -59,7 +59,7 @@ class Mat4Test {
 
     @Test
     fun xrotation() {
-        val r = Mat4.xrotation(M_PI)
+        val r = Mat4.xrotation(Radians.PI)
         assertEquals(
             Mat4(
                 1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0,
@@ -70,7 +70,7 @@ class Mat4Test {
 
     @Test
     fun yrotation() {
-        val r = Mat4.yrotation(M_PI)
+        val r = Mat4.yrotation(Radians.PI)
         assertEquals(
             Mat4(
                 -1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
@@ -81,7 +81,7 @@ class Mat4Test {
 
     @Test
     fun zrotation() {
-        val r = Mat4.zrotation(M_PI)
+        val r = Mat4.zrotation(Radians.PI)
         assertEquals(
             Mat4(
                 -1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0,

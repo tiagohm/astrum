@@ -1,11 +1,15 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.Observer
+import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.algorithms.math.Mat4
 import br.tiagohm.astrum.sky.algorithms.math.Triad
 import br.tiagohm.astrum.sky.algorithms.nutation.Nutation
 import br.tiagohm.astrum.sky.algorithms.precession.Precession
 import br.tiagohm.astrum.sky.algorithms.time.SiderealTime
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
@@ -81,7 +85,7 @@ class Earth(parent: Sun) : Planet(
         d: Double,
         shadowFactor: Double,
     ): Double {
-        val phaseDeg = phaseAngle.deg
+        val phaseDeg = phaseAngle.degrees.value
 
         return when (o.apparentMagnitudeAlgorithm) {
             ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013 -> {

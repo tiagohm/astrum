@@ -56,7 +56,7 @@ class SiderealTimeTest {
             val s = d[3]
 
             val est = h + m / 60.0 + s / 3600.0
-            var ast = (SiderealTime.computeMean(jd, jde) / 15.0) % 24.0
+            var ast = (SiderealTime.computeMean(jd, jde) / 15.0).value % 24.0
             if (ast < 0.0) ast += 24.0
 
             assertTrue(abs(abs(est) - abs(ast)) <= 0.0002)
@@ -83,7 +83,7 @@ class SiderealTimeTest {
             val s = d[3]
 
             val est = h + m / 60.0 + s / 3600.0
-            var ast = (SiderealTime.computeApparent(jd, jde) / 15.0) % 24.0
+            var ast = (SiderealTime.computeApparent(jd, jde) / 15.0).value % 24.0
             if (ast < 0.0) ast += 24.0
 
             assertTrue(abs(abs(est) - abs(ast)) <= 0.0002)

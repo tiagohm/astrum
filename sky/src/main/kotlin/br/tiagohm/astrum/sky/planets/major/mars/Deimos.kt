@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.mars
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Deimos(parent: Mars) : Planet(
@@ -21,7 +22,7 @@ class Deimos(parent: Mars) : Planet(
 
     override val absoluteMagnitude = 12.89
 
-    override fun computeRotObliquity(jde: Double) = 1.4450075283699964
+    override fun computeRotObliquity(jde: Double) = Radians(1.4450075283699964)
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computeMarsSatHeliocentricCoordinates(jde, 1)

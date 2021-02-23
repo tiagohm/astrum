@@ -9,6 +9,7 @@ import br.tiagohm.astrum.sky.algorithms.math.Mat4
 import br.tiagohm.astrum.sky.algorithms.math.Triad
 import br.tiagohm.astrum.sky.algorithms.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.algorithms.orbit.Orbit
+import br.tiagohm.astrum.sky.core.units.*
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import br.tiagohm.astrum.sky.planets.major.jupiter.Jupiter
 import br.tiagohm.astrum.sky.planets.major.mars.Mars
@@ -39,7 +40,7 @@ abstract class Planet internal constructor(
 ) : CelestialObject {
 
     private var rotLocalToParent = Mat4.IDENTITY
-    private var axisRotation = 0.0
+    private var axisRotation = Degrees.ZERO
     private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
 
     val oneMinusOblateness = 1.0 - oblateness
@@ -129,7 +130,7 @@ abstract class Planet internal constructor(
     // On Earth, sidereal time on the other hand is the angle along the planet equator from RA0 to the meridian, i.e. hour angle of the first point of Aries.
     // For Earth (of course) it is sidereal time at Greenwich.
     // For planets and Moons, in this context this is the rotation angle W of the Prime meridian from the ascending node of the planet equator on the ICRF equator.
-    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Degrees = 0.0
+    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean) = Degrees.ZERO
 
     protected open fun computePosition(jde: Double): Pair<Triad, Triad> {
         return orbit!!.let { it.positionAtTimevInVSOP87Coordinates(jde) to it.velocity }
@@ -178,7 +179,7 @@ abstract class Planet internal constructor(
 
     protected open fun internalComputeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean): Mat4 {
         // return Mat4.zrotation(rotation.ascendingNode) * Mat4.xrotation(rotation.obliquity)
-        return Mat4.zrotation(0.0) * Mat4.xrotation(0.0)
+        return Mat4.zrotation(Radians.ZERO) * Mat4.xrotation(Radians.ZERO)
     }
 
     override fun computeHeliocentricEclipticPosition(o: Observer): Triad {
@@ -248,14 +249,14 @@ abstract class Planet internal constructor(
      */
     override fun angularSize(o: Observer): Degrees {
         val radius = rings?.size ?: equatorialRadius
-        return atan2(radius, computeJ2000EquatorialPosition(o).length).deg
+        return Radians(atan2(radius, computeJ2000EquatorialPosition(o).length)).degrees
     }
 
     /**
      * Computes the angular radius (degrees) of the planet spheroid (i.e. without the rings)
      */
     fun spheroidAngularSize(o: Observer): Degrees {
-        return atan2(equatorialRadius, computeJ2000EquatorialPosition(o).length).deg
+        return Radians(atan2(equatorialRadius, computeJ2000EquatorialPosition(o).length)).degrees
     }
 
     /**
@@ -265,10 +266,10 @@ abstract class Planet internal constructor(
      * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
      * For moons, it may be the obliquity against its planet's equatorial plane.
      */
-    open fun computeRotObliquity(jde: Double): Radians = 0.0
+    open fun computeRotObliquity(jde: Double) = Radians.ZERO
 
     final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
-        var hz = 0.0 // Horizon parallax factor
+        var hz = Radians.ZERO // Horizon parallax factor
 
         if (hasAtmosphere) {
             // Canonical refraction at horizon is -34'. Replace by pressure-dependent value here!
@@ -280,13 +281,13 @@ abstract class Planet internal constructor(
     }
 
     internal open fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
-        val phi = o.site.latitude.rad
+        val phi = o.site.latitude.radians
         val coeff = o.home.computeMeanSolarDay() / o.home.siderealDay
 
         var (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeSiderealPositionGeometric(o))
         ra = M_2_PI - ra
 
-        var ha = ra * 12.0 / M_PI
+        var ha = ra.value * 12.0 / M_PI
         if (ha > 24.0) ha -= 24.0
         // It seems necessary to have ha in [-12,12]!
         if (ha > 12.0) ha -= 24.0
@@ -334,7 +335,7 @@ abstract class Planet internal constructor(
             p = p.parent
         }
 
-        return res * Mat4.zrotation((axisRotation + 90.0).rad)
+        return res * Mat4.zrotation((axisRotation + 90.0).radians)
     }
 
     inline val isRotatingRetrograde: Boolean
@@ -349,7 +350,7 @@ abstract class Planet internal constructor(
         val planetHelioPos = computeHeliocentricEclipticPosition(o)
         val planetRq = planetHelioPos.lengthSquared
         val observerPlanetRq = (obsPos - planetHelioPos).lengthSquared
-        return acos((observerPlanetRq + observerRq - planetRq) / (2.0 * sqrt(observerPlanetRq * observerRq)))
+        return Radians(acos((observerPlanetRq + observerRq - planetRq) / (2.0 * sqrt(observerPlanetRq * observerRq))))
     }
 
     /**
@@ -398,7 +399,7 @@ abstract class Planet internal constructor(
         val observerPlanetRq = (observerHelioPos - planetHelioPos).lengthSquared
         val dr = sqrt(observerPlanetRq * planetRq)
         val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * dr)
-        val phaseAngle = acos(cosChi)
+        val phaseAngle = Radians(acos(cosChi))
         var shadowFactor = 1.0
         val d = 5.0 * log10(dr)
 
@@ -467,7 +468,7 @@ abstract class Planet internal constructor(
         }
 
         // This formula source is unknown. But this is actually used even for the Moon!
-        val p = (1.0 - phaseAngle / M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / M_PI
+        val p = (1.0 - phaseAngle.value / M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / M_PI
         val F = 2.0 * albedo * equatorialRadius * equatorialRadius * p /
                 (3.0 * observerPlanetRq * planetRq) * shadowFactor
         return -26.73 - 2.5 * log10(F)

@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import kotlin.math.log10
 import kotlin.math.max
@@ -33,10 +34,10 @@ class Sun : Planet(
 
     override fun computePosition(jde: Double) = Triad.ZERO to Triad.ZERO
 
-    override fun computeRotObliquity(jde: Double) = 0.12653637076958889433
+    override fun computeRotObliquity(jde: Double) = Radians(0.12653637076958889433)
 
-    override fun internalComputeRTSTime(o: Observer, hz: Double, hasAtmosphere: Boolean): Triad {
-        return super.internalComputeRTSTime(o, hz - angularSize(o).rad, hasAtmosphere)
+    override fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
+        return super.internalComputeRTSTime(o, hz - angularSize(o).radians, hasAtmosphere)
     }
 
     override fun visualMagnitude(o: Observer, extra: Any?): Double {

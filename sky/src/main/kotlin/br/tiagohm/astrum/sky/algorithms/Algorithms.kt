@@ -1,8 +1,13 @@
 package br.tiagohm.astrum.sky.algorithms
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.algorithms.math.Duad
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.coordinates.Geographic
+import br.tiagohm.astrum.sky.core.coordinates.Horizontal
+import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.cos
+import br.tiagohm.astrum.sky.core.units.sin
+import br.tiagohm.astrum.sky.core.units.tan
 import br.tiagohm.astrum.sky.planets.Planet
 import java.lang.Math.cbrt
 import kotlin.math.*
@@ -80,23 +85,11 @@ object Algorithms {
         return ellipticToRectangular(a, n, elem, dt)
     }
 
-    inline fun rectangularToSphericalCoordinates(a: Triad) = Duad(a.longitude, a.latitude)
+    inline fun rectangularToSphericalCoordinates(a: Triad) = a.longitude to a.latitude
 
-    fun sphericalToRectangularCoordinates(lon: Radians, lat: Radians): Triad {
-        val cosLat = cos(lat)
-        return Triad(cos(lon) * cosLat, sin(lon) * cosLat, sin(lat))
-    }
-
-    fun equatorialToEcliptic(ra: Radians, dec: Radians, ecl: Radians): Duad {
-        val lambda = atan2(sin(ra) * cos(ecl) + tan(dec) * sin(ecl), cos(ra))
-        val beta = asin(sin(dec) * cos(ecl) - cos(dec) * sin(ecl) * sin(ra))
-        return Duad(lambda, beta)
-    }
-
-    fun eclipticToEquatorial(lambda: Radians, beta: Radians, ecl: Radians): Duad {
-        val ra = atan2(sin(lambda) * cos(ecl) - tan(beta) * sin(ecl), cos(lambda))
-        val dec = asin(sin(beta) * cos(ecl) + cos(beta) * sin(ecl) * sin(lambda))
-        return Duad(ra, dec)
+    fun sphericalToRectangularCoordinates(longitude: Radians, latitude: Radians): Triad {
+        val cosLat = cos(latitude)
+        return Triad(cos(longitude) * cosLat, sin(longitude) * cosLat, sin(latitude))
     }
 
     inline fun j2000ToGalactic(a: Triad) = MAT_J2000_TO_GALACTIC * a
@@ -105,13 +98,13 @@ object Algorithms {
 
     inline fun j2000ToJ1875(a: Triad) = MAT_J2000_TO_J1875 * a
 
-    fun distanceKm(planet: Planet, a: Duad, b: Duad): Double {
+    fun distanceKm(planet: Planet, a: Geographic, b: Geographic): Double {
         val f = planet.oblateness // Flattening
         val radius = planet.equatorialRadius * AU
 
-        val F = ((a[1] + b[1]) * 0.5).rad // Latitude
-        val G = ((a[1] - b[1]) * 0.5).rad
-        val L = ((a[0] - b[0]) * 0.5).rad // Longitude
+        val F = ((a.latitude + b.latitude) * 0.5) // Latitude
+        val G = ((a.latitude - b.latitude) * 0.5)
+        val L = ((a.longitude - b.longitude) * 0.5) // Longitude
 
         val sinG = sin(G)
         val cosG = cos(G)
@@ -131,15 +124,20 @@ object Algorithms {
         return D * (1.0 + f * (H1 * sinF * sinF * cosG * cosG - H2 * cosF * cosF * sinG * sinG))
     }
 
-    fun azimuth(from: Duad, to: Duad, southAzimuth: Boolean = false): Degrees {
-        val a = from[0].rad
-        val b = from[1].rad
-        val c = to[0].rad
-        val d = to[1].rad
+    fun azimuth(from: Horizontal, to: Horizontal, southAzimuth: Boolean = false): Radians {
+        val (a, b) = from
+        val (c, d) = to
 
         val az = atan2(sin(c - a), cos(b) * tan(d) - sin(b) * cos(c - a)) + if (southAzimuth) M_PI else 0.0
+        return Radians(az.pmod(M_2_PI))
+    }
 
-        return az.pmod(M_2_PI).deg
+    fun azimuth(from: Geographic, to: Geographic, southAzimuth: Boolean = false): Radians {
+        val (a, b) = from
+        val (c, d) = to
+
+        val az = atan2(sin(c - a), cos(b) * tan(d) - sin(b) * cos(c - a)) + if (southAzimuth) M_PI else 0.0
+        return Radians(az.pmod(M_2_PI))
     }
 
     fun computeInterpolatedElements(

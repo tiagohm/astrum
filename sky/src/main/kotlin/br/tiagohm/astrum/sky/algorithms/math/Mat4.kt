@@ -1,7 +1,8 @@
 package br.tiagohm.astrum.sky.algorithms.math
 
-import kotlin.math.cos
-import kotlin.math.sin
+import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.cos
+import br.tiagohm.astrum.sky.core.units.sin
 
 @Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")
 inline class Mat4(val data: DoubleArray) : Iterable<Double> {
@@ -236,7 +237,7 @@ inline class Mat4(val data: DoubleArray) : Iterable<Double> {
 
         val EMPTY = Mat4()
 
-        fun rotation(a: Triad, angle: Double): Mat4 {
+        fun rotation(a: Triad, angle: Radians): Mat4 {
             val an = a.normalized
             val c = cos(angle)
             val s = sin(angle)
@@ -251,19 +252,19 @@ inline class Mat4(val data: DoubleArray) : Iterable<Double> {
 
         }
 
-        fun xrotation(angle: Double): Mat4 {
+        fun xrotation(angle: Radians): Mat4 {
             val c = cos(angle)
             val s = sin(angle)
             return Mat4(a0 = 1.0, b1 = c, b2 = s, c1 = -s, c2 = c, d3 = 1.0)
         }
 
-        fun yrotation(angle: Double): Mat4 {
+        fun yrotation(angle: Radians): Mat4 {
             val c = cos(angle)
             val s = sin(angle)
             return Mat4(a0 = c, a2 = -s, b1 = 1.0, c0 = s, c2 = c, d3 = 1.0)
         }
 
-        fun zrotation(angle: Double): Mat4 {
+        fun zrotation(angle: Radians): Mat4 {
             val c = cos(angle)
             val s = sin(angle)
             return Mat4(a0 = c, a1 = s, b0 = -s, b1 = c, c2 = 1.0, d3 = 1.0)

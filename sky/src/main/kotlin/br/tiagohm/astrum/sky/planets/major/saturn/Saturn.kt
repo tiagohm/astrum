@@ -1,7 +1,13 @@
 package br.tiagohm.astrum.sky.planets.major.saturn
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.Observer
+import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.cos
+import br.tiagohm.astrum.sky.core.units.sin
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Ring
@@ -32,7 +38,7 @@ class Saturn(parent: Sun) : Planet(
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = 0.4896026430986047
+    override fun computeRotObliquity(jde: Double) = Radians(0.4896026430986047)
 
     override fun computeVisualMagnitude(
         o: Observer,
@@ -44,7 +50,7 @@ class Saturn(parent: Sun) : Planet(
         d: Double,
         shadowFactor: Double,
     ): Double {
-        val phaseDeg = phaseAngle.deg
+        val phaseDeg = phaseAngle.degrees.value
 
         return when (o.apparentMagnitudeAlgorithm) {
             ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013,
@@ -72,8 +78,8 @@ class Saturn(parent: Sun) : Planet(
     fun computeRingsIllumination(o: Observer): Double {
         // Implemented from Meeus, Astr.Alg.1992
         val T = (o.jde - 2451545.0) / 36525.0
-        val i = ((0.000004 * T - 0.012998) * T + 28.075216).rad
-        val Omega = ((0.000412 * T + 1.394681) * T + 169.508470).rad
+        val i = Degrees((0.000004 * T - 0.012998) * T + 28.075216).radians
+        val Omega = Degrees((0.000412 * T + 1.394681) * T + 169.508470).radians
         val se = computeHeliocentricEclipticPosition(o) - o.home.computeHeliocentricEclipticPosition(o)
         val lambda = se.longitude
         val beta = atan2(se[2], sqrt(se[0] * se[0] + se[1] * se[1]))

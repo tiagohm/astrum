@@ -3,16 +3,16 @@ package br.tiagohm.astrum.sky.algorithms.precession
 import br.tiagohm.astrum.sky.JD_DAY
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD
-import br.tiagohm.astrum.sky.Radians
+import br.tiagohm.astrum.sky.core.units.Radians
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
 data class Precession(
-    val psi: Radians = 0.0,
-    val omega: Radians = 0.0,
-    val chi: Radians = 0.0,
-    val epsilon: Radians = 0.0,
+    val psi: Radians = Radians.ZERO,
+    val omega: Radians = Radians.ZERO,
+    val chi: Radians = Radians.ZERO,
+    val epsilon: Radians = Radians.ZERO,
 ) {
 
     companion object {
@@ -66,10 +66,10 @@ data class Precession(
                 epsilon += ((-110E-9 * T - 0.00004039) * T + 0.3624445) * T + 84028.206305
 
                 precession = Precession(
-                    psi * M_ARCSEC_RAD,
-                    omega * M_ARCSEC_RAD,
-                    chi * M_ARCSEC_RAD,
-                    epsilon * M_ARCSEC_RAD
+                    Radians(psi * M_ARCSEC_RAD),
+                    Radians(omega * M_ARCSEC_RAD),
+                    Radians(chi * M_ARCSEC_RAD),
+                    Radians(epsilon * M_ARCSEC_RAD)
                 )
             }
 

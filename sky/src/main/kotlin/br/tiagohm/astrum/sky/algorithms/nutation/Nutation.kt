@@ -2,13 +2,14 @@ package br.tiagohm.astrum.sky.algorithms.nutation
 
 import br.tiagohm.astrum.sky.JD_HOUR
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD
+import br.tiagohm.astrum.sky.core.units.Radians
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
 data class Nutation(
-    val deltaPsi: Double = 0.0,
-    val deltaEpsilon: Double = 0.0,
+    val deltaPsi: Radians = Radians.ZERO,
+    val deltaEpsilon: Radians = Radians.ZERO,
 ) {
 
     companion object {
@@ -66,7 +67,7 @@ data class Nutation(
                 else -> 1.0
             }
 
-            return Nutation(deltaPsi * limiter, deltaEpsilon * limiter)
+            return Nutation(Radians(deltaPsi * limiter), Radians(deltaEpsilon * limiter))
         }
 
         private const val NUT_BEGIN = 2268932.5

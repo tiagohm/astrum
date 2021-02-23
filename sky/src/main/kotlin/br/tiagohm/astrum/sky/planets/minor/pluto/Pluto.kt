@@ -1,8 +1,12 @@
 package br.tiagohm.astrum.sky.planets.minor.pluto
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.M_PI_180
+import br.tiagohm.astrum.sky.Observer
+import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.algorithms.Algorithms
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
@@ -48,24 +52,24 @@ class Pluto(parent: Sun) : Planet(
         // Calc periodic terms in table 37.A
         for (i in 0..42) {
             val a = ARGUMENT[i][0] * J + ARGUMENT[i][1] * S + ARGUMENT[i][2] * P
-            val sinA = sin(a.rad)
-            val cosA = cos(a.rad)
+            val sinA = sin(a * M_PI_180)
+            val cosA = cos(a * M_PI_180)
 
             longitude += LONGITUDE[i][0] * sinA + LONGITUDE[i][1] * cosA
             latitude += LATITUDE[i][0] * sinA + LATITUDE[i][1] * cosA
             radius += RADIUS[i][0] * sinA + RADIUS[i][1] * cosA
         }
 
-        val L = (238.958116 + 144.96 * t + longitude * 0.000001).rad
-        val B = (-3.908239 + latitude * 0.000001).rad
+        val L = (238.958116 + 144.96 * t + longitude * 0.000001) * M_PI_180
+        val B = (-3.908239 + latitude * 0.000001) * M_PI_180
         val R = 40.7241346 + radius * 0.0000001
 
-        val pos = Algorithms.sphericalToRectangularCoordinates(L, B)
+        val pos = Algorithms.sphericalToRectangularCoordinates(Radians(L), Radians(B))
 
         return Triad(R * pos[0], R * pos[1], R * pos[2]) to Triad.ZERO
     }
 
-    override fun computeRotObliquity(jde: Double) = 3.96802141178535
+    override fun computeRotObliquity(jde: Double) = Radians(3.96802141178535)
 
     override fun computeVisualMagnitude(
         o: Observer,
@@ -77,7 +81,7 @@ class Pluto(parent: Sun) : Planet(
         d: Double,
         shadowFactor: Double,
     ): Double {
-        val phaseDeg = phaseAngle.deg
+        val phaseDeg = phaseAngle.degrees.value
 
         return when (o.apparentMagnitudeAlgorithm) {
             ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013,

@@ -1,9 +1,9 @@
 package br.tiagohm.astrum.sky.atmosphere
 
 import br.tiagohm.astrum.sky.Celsius
+import br.tiagohm.astrum.sky.M_180_PI
+import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.algorithms.math.Triad
-import br.tiagohm.astrum.sky.deg
-import br.tiagohm.astrum.sky.rad
 import kotlin.math.*
 
 data class Refraction(
@@ -19,11 +19,11 @@ data class Refraction(
         if (length == 0.0) return pos
 
         val sinGeo = pos[2] / length
-        var geomAlt = asin(sinGeo).deg
+        var geomAlt = asin(sinGeo) * M_180_PI
 
         if (geomAlt > MIN_GEO_ALTITUDE_DEG) {
             // Refraction from Saemundsson, S&T1986 p70 / in Meeus, Astr.Alg.
-            val r = ptc * (1.02 / tan((geomAlt + 10.3 / (geomAlt + 5.11)).rad) + 0.0019279)
+            val r = ptc * (1.02 / tan((geomAlt + 10.3 / (geomAlt + 5.11)) * M_PI_180) + 0.0019279)
 
             geomAlt += r
 
@@ -31,14 +31,14 @@ data class Refraction(
         } else if (geomAlt > MIN_GEO_ALTITUDE_DEG - TRANSITION_WIDTH_GEO_DEG) {
             // Avoids the jump below -5 by interpolating linearly between MIN_GEO_ALTITUDE_DEG and bottom of transition zone
             val rm5 =
-                ptc * (1.02 / tan((MIN_GEO_ALTITUDE_DEG + 10.3 / (MIN_GEO_ALTITUDE_DEG + 5.11)).rad) + 0.0019279)
+                ptc * (1.02 / tan((MIN_GEO_ALTITUDE_DEG + 10.3 / (MIN_GEO_ALTITUDE_DEG + 5.11)) * M_PI_180) + 0.0019279)
 
             geomAlt += rm5 * (geomAlt - (MIN_GEO_ALTITUDE_DEG - TRANSITION_WIDTH_GEO_DEG)) / TRANSITION_WIDTH_GEO_DEG
         } else {
             return pos
         }
 
-        val sinRef = sin(geomAlt.rad)
+        val sinRef = sin(geomAlt * M_PI_180)
 
         val s = (if (abs(sinGeo) >= 1.0) 1.0 else sqrt((1.0 - sinRef * sinRef) / (1.0 - sinGeo * sinGeo)))
         return Triad(pos[0] * s, pos[1] * s, sinRef * length)
@@ -50,11 +50,11 @@ data class Refraction(
         if (length == 0.0) return pos
 
         val sinObs = pos[2] / length
-        var obsAlt = asin(sinObs).deg
+        var obsAlt = asin(sinObs) * M_180_PI
 
         if (obsAlt > 0.22879) {
             // Refraction from Bennett, in Meeus, Astr.Alg.
-            val r = ptc * (1.0 / tan((obsAlt + 7.31 / (obsAlt + 4.4)).rad) + 0.0013515)
+            val r = ptc * (1.0 / tan((obsAlt + 7.31 / (obsAlt + 4.4)) * M_PI_180) + 0.0013515)
             obsAlt -= r
         } else if (obsAlt > MIN_APP_ALTITUDE_DEG) {
             // Backward refraction from polynomial fit against Saemundson[-5...-0.3]
@@ -72,7 +72,7 @@ data class Refraction(
             return pos
         }
 
-        val sinGeo = sin(obsAlt.rad)
+        val sinGeo = sin(obsAlt * M_PI_180)
         val s = if (abs(sinObs) >= 1.0) 1.0 else sqrt((1.0 - sinGeo * sinGeo) / (1.0 - sinObs * sinObs))
 
         return Triad(pos[0] * s, pos[1] * s, sinGeo * length)

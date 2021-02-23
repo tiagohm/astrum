@@ -105,22 +105,22 @@ enum class Constellation(
 
         fun find(o: Observer, pos: Triad): Constellation? {
             val pos1875 = Algorithms.j2000ToJ1875(o.equinoxEquatorialToJ2000(pos, false))
-            var (ra1875, dec1875) = Algorithms.rectangularToSphericalCoordinates(pos1875)
+            val (ra1875, dec1875) = Algorithms.rectangularToSphericalCoordinates(pos1875)
 
-            ra1875 *= 12.0 / M_PI // hours
-            if (ra1875 < 0.0) ra1875 += 24.0
-            dec1875 *= M_180_PI // degrees
+            var ra1875InHours = ra1875.value * 12.0 / M_PI
+            if (ra1875InHours < 0.0) ra1875InHours += 24.0
+            val dec1875InDeg = dec1875.value * M_180_PI
 
             val lines = ConstellationLine.lines
 
             var entry = 0
 
-            while (lines[entry].decLow > dec1875) entry++
+            while (lines[entry].decLow > dec1875InDeg) entry++
 
             while (entry < lines.size) {
-                while (lines[entry].raHigh <= ra1875) entry++
-                while (lines[entry].raLow >= ra1875) entry++
-                if (lines[entry].raHigh > ra1875) return lines[entry].constellation else entry++
+                while (lines[entry].raHigh <= ra1875InHours) entry++
+                while (lines[entry].raLow >= ra1875InHours) entry++
+                if (lines[entry].raHigh > ra1875InHours) return lines[entry].constellation else entry++
             }
 
             return null

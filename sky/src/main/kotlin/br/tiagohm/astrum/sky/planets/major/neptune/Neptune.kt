@@ -3,8 +3,8 @@ package br.tiagohm.astrum.sky.planets.major.neptune
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
-import br.tiagohm.astrum.sky.Radians
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Ring
@@ -34,7 +34,7 @@ class Neptune(parent: Sun) : Planet(
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = 0.489152978736078
+    override fun computeRotObliquity(jde: Double) = Radians(0.489152978736078)
 
     override fun computeVisualMagnitude(
         o: Observer,

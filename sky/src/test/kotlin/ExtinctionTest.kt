@@ -1,6 +1,6 @@
+import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.algorithms.math.Triad
 import br.tiagohm.astrum.sky.atmosphere.Extinction
-import br.tiagohm.astrum.sky.rad
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,14 +19,14 @@ class ExtinctionTest {
 
     @Test
     fun airmass() {
-        assertEquals(1.0, Extinction.airmass(cos(0.0.rad)), 0.05)
-        assertEquals(1.02, Extinction.airmass(cos(10.0.rad)), 0.05)
-        assertEquals(1.06, Extinction.airmass(cos(20.0.rad)), 0.05)
-        assertEquals(1.15, Extinction.airmass(cos(30.0.rad)), 0.05)
-        assertEquals(1.30, Extinction.airmass(cos(40.0.rad)), 0.05)
-        assertEquals(1.55, Extinction.airmass(cos(50.0.rad)), 0.05)
-        assertEquals(2.0, Extinction.airmass(cos(60.0.rad)), 0.05)
-        assertEquals(2.90, Extinction.airmass(cos(70.0.rad)), 0.05)
-        assertEquals(5.60, Extinction.airmass(cos(80.0.rad)), 0.05)
+        assertEquals(1.0, Extinction.airmass(cos(0.0 * M_PI_180)), 0.05)
+        assertEquals(1.02, Extinction.airmass(cos(10.0 * M_PI_180)), 0.05)
+        assertEquals(1.06, Extinction.airmass(cos(20.0 * M_PI_180)), 0.05)
+        assertEquals(1.15, Extinction.airmass(cos(30.0 * M_PI_180)), 0.05)
+        assertEquals(1.30, Extinction.airmass(cos(40.0 * M_PI_180)), 0.05)
+        assertEquals(1.55, Extinction.airmass(cos(50.0 * M_PI_180)), 0.05)
+        assertEquals(2.0, Extinction.airmass(cos(60.0 * M_PI_180)), 0.05)
+        assertEquals(2.90, Extinction.airmass(cos(70.0 * M_PI_180)), 0.05)
+        assertEquals(5.60, Extinction.airmass(cos(80.0 * M_PI_180)), 0.05)
     }
 }

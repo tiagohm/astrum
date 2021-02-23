@@ -3,6 +3,8 @@ package br.tiagohm.astrum.sky
 import br.tiagohm.astrum.sky.algorithms.math.Mat4
 import br.tiagohm.astrum.sky.algorithms.precession.Precession
 import br.tiagohm.astrum.sky.algorithms.time.DateTime
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.Radians
 import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
@@ -21,7 +23,7 @@ const val GAUSS_GRAV_K = 0.01720209895
 const val GAUSS_GRAV_K_SQ = GAUSS_GRAV_K * GAUSS_GRAV_K
 const val J2000 = 2451545.0 // epoch J2000: 12 UT on 1 Jan 2000
 const val SPEED_OF_LIGHT = 299792.458 // (km/sec)
-const val EPS_0: Degrees = 23.4392803055555555555556 // Ecliptic obliquity of J2000.0, degrees
+val EPS_0 = Degrees(23.4392803055555555555556) // Ecliptic obliquity of J2000.0, degrees
 const val M_PI_180 = M_PI / 180.0
 const val M_180_PI = 180.0 / M_PI
 const val JD_SECOND = 1.0 / 86400.0
@@ -33,7 +35,8 @@ const val ONE_OVER_JD_SECOND = SECONDS_PER_DAY
 const val TZ_ERA_BEGINNING = 2395996.5 // December 1, 1847
 const val M_ARCSEC_RAD = M_2_PI / (360.0 * 3600.0)
 
-val MAT_J2000_TO_VSOP87 = Mat4.xrotation(-23.4392803055555555556 * M_PI_180) * Mat4.zrotation(0.0000275 * M_PI_180)
+val MAT_J2000_TO_VSOP87 = Mat4.xrotation(Radians(-23.4392803055555555556 * M_PI_180)) *
+        Mat4.zrotation(Radians(0.0000275 * M_PI_180))
 
 val MAT_VSOP87_TO_J2000 = MAT_J2000_TO_VSOP87.transpose()
 
@@ -59,7 +62,7 @@ val MAT_J2000_TO_J1875 by lazy {
     val jdB1875 = DateTime.computeJDFromBesselianEpoch(1875.0)
     val p = Precession.computeVondrak(jdB1875)
 
-    (Mat4.xrotation(84381.406 * 1.0 / 3600.0 * M_PI / 180.0) *
+    (Mat4.xrotation(Radians(84381.406 * 1.0 / 3600.0 * M_PI / 180.0)) *
             Mat4.zrotation(-p.psi) *
             Mat4.xrotation(-p.omega) *
             Mat4.zrotation(p.chi)).transpose()
@@ -67,15 +70,7 @@ val MAT_J2000_TO_J1875 by lazy {
 
 // Units
 
-typealias Degrees = Double
-typealias Radians = Double
 typealias Celsius = Double
-
-inline val Degrees.rad: Double
-    get() = this * M_PI_180
-
-inline val Radians.deg: Double
-    get() = this * M_180_PI
 
 // Math
 

@@ -1,18 +1,24 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.M_180_PI
+import br.tiagohm.astrum.sky.M_2_PI
+import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.algorithms.math.Duad
 import br.tiagohm.astrum.sky.algorithms.time.SiderealTime
+import br.tiagohm.astrum.sky.core.coordinates.Geographic
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.cos
+import br.tiagohm.astrum.sky.core.units.sin
+import br.tiagohm.astrum.sky.core.units.times
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.*
 
 data class SolarEclipse(
-    val longitude: Double,
-    val latitude: Double,
+    val position: Geographic,
     val magnitude: Double,
     val distance: Double,
-    val azimuth: Double,
+    val azimuth: Degrees,
 ) {
 
     companion object {
@@ -29,14 +35,14 @@ data class SolarEclipse(
             var (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(sEquPos)
             var (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(mEquPos)
 
-            val raDiff = (raMoon - raSun).deg.pmod(360.0)
+            val raDiff = (raMoon - raSun).degrees.normalized.value
 
             return if (raDiff < 3.0 || raDiff > 357.0) {
                 var lon = 0.0
                 var lat = 0.0
                 var mag = 0.0
                 var distance = 0.0
-                var azimuth = 0.0
+                var azimuth = Degrees.ZERO
 
                 val sdistanceAu = sEquPos.length
                 // Moon's distance in Earth's radius
@@ -69,7 +75,7 @@ data class SolarEclipse(
                 val tf2 = tan(f2)
                 var L1 = z * tf1 + (0.272488 / cos(f1))
                 var L2 = z * tf2 - (0.272281 / cos(f2))
-                var mu = gast - a.deg
+                var mu = (gast - a.degrees).value
 
                 // Find Lat./Long. of center line on Earth's surface
                 val cd = cos(d)
@@ -91,7 +97,7 @@ data class SolarEclipse(
                     // val  sd2 = sd * 1.0033641 / rho2
                     L2 -= zeta * tf2
                     b = -y * sd + zeta * cd
-                    var theta = atan2(xi, b).deg
+                    var theta = atan2(xi, b) * M_180_PI
                     if (theta < 0) theta += 360
                     if (mu > 360) mu -= 360
                     lon = mu - theta
@@ -101,22 +107,23 @@ data class SolarEclipse(
                     val sfn1 = y1 * cd1 + zeta1 * sd1
                     val cfn1 = sqrt(1 - sfn1 * sfn1)
                     lat = 1.0033641 * sfn1 / cfn1
-                    lat = atan(lat).deg
+                    lat = atan(lat) * M_180_PI
                     L1 -= zeta * tf1
                     // Magnitude of eclipse
                     // mag < 1 = annular
                     mag = L1 / (L1 + L2)
                 }
 
+                val target = Geographic(Degrees(lon), Degrees(lat))
+
                 // Shadow axis is touching Earth
                 if (lat < 90.0) {
-                    val obs = Duad(op.site.longitude, op.site.latitude)
-                    val target = Duad(lon, lat)
+                    val obs = Geographic(op.site.longitude, op.site.latitude)
                     distance = Algorithms.distanceKm(op.home, obs, target)
-                    azimuth = Algorithms.azimuth(obs, target, southAzimuth)
+                    azimuth = Algorithms.azimuth(obs, target, southAzimuth).degrees
                 }
 
-                SolarEclipse(lon, lat, mag, distance, azimuth)
+                SolarEclipse(target, mag, distance, azimuth)
             } else {
                 null
             }

@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.mars
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Phobos(parent: Mars) : Planet(
@@ -21,7 +22,7 @@ class Phobos(parent: Mars) : Planet(
 
     override val absoluteMagnitude = 11.8
 
-    override fun computeRotObliquity(jde: Double) = 1.4468158007959493
+    override fun computeRotObliquity(jde: Double) = Radians(1.4468158007959493)
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computeMarsSatHeliocentricCoordinates(jde, 0)

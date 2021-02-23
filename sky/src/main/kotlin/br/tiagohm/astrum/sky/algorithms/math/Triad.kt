@@ -1,7 +1,6 @@
 package br.tiagohm.astrum.sky.algorithms.math
 
-import br.tiagohm.astrum.sky.M_PI
-import br.tiagohm.astrum.sky.Radians
+import br.tiagohm.astrum.sky.core.units.Radians
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan2
@@ -35,11 +34,11 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     inline val length: Double
         get() = sqrt(lengthSquared)
 
-    inline val latitude: Double
-        get() = asin(this[2] / length)
+    inline val latitude: Radians
+        get() = Radians(asin(this[2] / length))
 
-    inline val longitude: Double
-        get() = atan2(this[1], this[0])
+    inline val longitude: Radians
+        get() = Radians(atan2(this[1], this[0]))
 
     val normalized: Triad
         get() = (1.0 / length).let { Triad(this[0] * it, this[1] * it, this[2] * it) }
@@ -49,18 +48,23 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     }
 
     /**
-     * Angle in radian between two vectors
+     * Angle in radians between two vectors
      */
     fun angle(a: Triad): Radians {
         val cosAngle = dot(a) / sqrt(lengthSquared * a.lengthSquared)
-        return if (cosAngle >= 1.0) 0.0 else if (cosAngle <= -1) M_PI else acos(cosAngle)
+        return if (cosAngle >= 1.0) Radians.ZERO
+        else if (cosAngle <= -1) Radians.PI
+        else Radians(acos(cosAngle))
     }
 
     /**
      * Angle in radian between two normalized vectors
      */
     fun angleNormalized(a: Triad): Radians {
-        return dot(a).let { if (it >= 1.0) 0.0 else if (it <= -1) M_PI else acos(it) }
+        val cosAngle = dot(a)
+        return if (cosAngle >= 1.0) Radians.ZERO
+        else if (cosAngle <= -1) Radians.PI
+        else Radians(acos(cosAngle))
     }
 
     inline operator fun plus(a: Triad): Triad {

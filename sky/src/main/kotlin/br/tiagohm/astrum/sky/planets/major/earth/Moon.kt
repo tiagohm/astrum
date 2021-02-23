@@ -3,6 +3,8 @@ package br.tiagohm.astrum.sky.planets.major.earth
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.algorithms.Algorithms
 import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.coordinates.Equatorial
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Moon(parent: Earth) : Planet(
@@ -28,7 +30,7 @@ class Moon(parent: Earth) : Planet(
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = 3.7723828609181886E-4
+    override fun computeRotObliquity(jde: Double) = Radians(3.7723828609181886E-4)
 
     override fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
         return super.internalComputeRTSTime(o, hz + 0.7275 * 0.95 * M_PI_180, hasAtmosphere)
@@ -38,14 +40,16 @@ class Moon(parent: Earth) : Planet(
         val op = o.copy(useTopocentricCoordinates = false)
         val eclJDE = parent!!.computeRotObliquity(o.jde)
         val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))
-        val (lambdaMoon) = Algorithms.equatorialToEcliptic(raMoon, decMoon, eclJDE)
+        val equMoon = Equatorial(raMoon, decMoon)
+        val (lambdaMoon) = equMoon.toEcliptic(eclJDE)
         val (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(parent.parent!!.computeEquinoxEquatorialPosition(op))
-        val (lambdaSun) = Algorithms.equatorialToEcliptic(raSun, decSun, eclJDE)
-        return (lambdaMoon - lambdaSun).pmod(M_2_PI)
+        val equSun = Equatorial(raSun, decSun)
+        val (lambdaSun) = equSun.toEcliptic(eclJDE)
+        return (lambdaMoon - lambdaSun).normalized
     }
 
     fun lunarPhase(o: Observer): LunarPhase {
-        val delta = computeAge(o).deg
+        val delta = computeAge(o).degrees.value
 
         return when {
             delta < 0.5 || delta > 359.5 -> LunarPhase.NEW_MOON

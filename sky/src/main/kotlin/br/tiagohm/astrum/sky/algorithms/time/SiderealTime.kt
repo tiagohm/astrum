@@ -1,12 +1,10 @@
 package br.tiagohm.astrum.sky.algorithms.time
 
-import br.tiagohm.astrum.sky.Degrees
 import br.tiagohm.astrum.sky.SECONDS_PER_DAY
 import br.tiagohm.astrum.sky.algorithms.nutation.Nutation
 import br.tiagohm.astrum.sky.algorithms.precession.Precession
-import br.tiagohm.astrum.sky.deg
-import br.tiagohm.astrum.sky.pmod
-import kotlin.math.cos
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.cos
 import kotlin.math.floor
 
 object SiderealTime {
@@ -29,7 +27,7 @@ object SiderealTime {
         // This is expressed in seconds. We need degrees.
         sidereal *= 1.0 / 240.0
 
-        return sidereal.pmod(360.0)
+        return Degrees(sidereal).normalized
     }
 
     /**
@@ -41,6 +39,6 @@ object SiderealTime {
         // Add corrections for nutation in longitude and for the true obliquity of the ecliptic
         val nut = Nutation.compute(jde)
 
-        return meanSidereal + nut.deltaPsi * cos(Precession.computeVondrakEpsilon(jde) + nut.deltaEpsilon).deg
+        return meanSidereal + (nut.deltaPsi * cos(Precession.computeVondrakEpsilon(jde) + nut.deltaEpsilon)).degrees
     }
 }

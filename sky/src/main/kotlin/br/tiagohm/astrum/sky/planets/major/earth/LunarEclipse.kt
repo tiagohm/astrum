@@ -2,10 +2,10 @@ package br.tiagohm.astrum.sky.planets.major.earth
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.algorithms.Algorithms
+import br.tiagohm.astrum.sky.core.units.cos
+import br.tiagohm.astrum.sky.core.units.sin
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.asin
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class LunarEclipse(
@@ -38,7 +38,7 @@ data class LunarEclipse(
 
             raMoon = if (raMoon < 0) raMoon + M_2_PI else raMoon
 
-            val raDiff = (raMoon - raShadow).deg.let { if (it < 0) it + 360.0 else it }
+            val raDiff = (raMoon - raShadow).degrees.value.let { if (it < 0) it + 360.0 else it }
 
             if (raDiff < 3 || raDiff > 357) {
                 val sdistanceAu = sEquPos.length
@@ -47,14 +47,14 @@ data class LunarEclipse(
                 val mdistanceER = mdistanceKm / 6378.1366
 
                 // Sun's horizontal parallax
-                val sHP = 3600.0 * asin(6378.1366 / (AU * sdistanceAu)).deg
+                val sHP = 3600.0 * asin(6378.1366 / (AU * sdistanceAu)) * M_180_PI
                 // Sun's semi-diameter
                 val sSD = 959.64 / sdistanceAu
                 // Moon's horizontal parallax
-                val mHP = 3600.0 * asin(1.0 / mdistanceER).deg
+                val mHP = 3600.0 * asin(1.0 / mdistanceER) * M_180_PI
                 // Moon's semi-diameter
                 // 0.272488 is Moon/Earth's radius
-                val mSD = 3600.0 * asin(0.272488 / mdistanceER).deg
+                val mSD = 3600.0 * asin(0.272488 / mdistanceER) * M_180_PI
 
                 // Besselian elements
                 // ref: Explanatory supplement to the astronomical ephemeris
@@ -71,8 +71,8 @@ data class LunarEclipse(
                 val f1 = p1 + sSD + sHP // Radius of umbra at the distance of the Moon
                 val f2 = p1 - sSD + sHP // Radius of penumbra at the distance of the Moon
 
-                val x = 3600.0 * asin(cos(decMoon) * sin(raMoon - raShadow)).deg
-                val y = 3600.0 * asin(cos(decShadow) * sin(decMoon) - sin(decShadow) * cos(decMoon) * cos(raMoon - raShadow)).deg
+                val x = 3600.0 * asin(cos(decMoon) * sin(raMoon - raShadow)) * M_180_PI
+                val y = 3600.0 * asin(cos(decShadow) * sin(decMoon) - sin(decShadow) * cos(decMoon) * cos(raMoon - raShadow)) * M_180_PI
                 val L1 = f1 + mSD // Distance between center of the Moon and shadow at beginning and end of penumbral eclipse
                 val L2 = f2 + mSD // Distance between center of the Moon and shadow at beginning and end of partial eclipse
 

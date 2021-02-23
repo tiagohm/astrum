@@ -1,7 +1,7 @@
 package br.tiagohm.astrum.sky.algorithms.ephemeris
 
+import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.rad
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -78,8 +78,8 @@ object MarsSat {
     private fun generateMarsSatToVSOP87(t: Double, vsop87: DoubleArray) {
         val t0 = t - 6491.5
 
-        val ome = (OME0 + DOME * t0 / 36525.0).rad
-        val inc = (INC0 + DINC * t0 / 36525.0).rad
+        val ome = (OME0 + DOME * t0 / 36525.0) * M_PI_180
+        val inc = (INC0 + DINC * t0 / 36525.0) * M_PI_180
 
         val co = cos(ome)
         val so = sin(ome)

@@ -4,7 +4,7 @@ import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.algorithms.math.Triad
-import br.tiagohm.astrum.sky.deg
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
@@ -30,11 +30,11 @@ class Venus(parent: Sun) : Planet(
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = 0.021624851729521666
+    override fun computeRotObliquity(jde: Double) = Radians(0.021624851729521666)
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Double,
+        phaseAngle: Radians,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,
@@ -42,7 +42,7 @@ class Venus(parent: Sun) : Planet(
         d: Double,
         shadowFactor: Double,
     ): Double {
-        val phaseDeg = phaseAngle.deg
+        val phaseDeg = phaseAngle.degrees.value
 
         return when (o.apparentMagnitudeAlgorithm) {
             ApparentMagnitudeAlgorithm.EXPLANATORY_SUPPLEMENT_2013 -> {
