@@ -6,7 +6,7 @@ import br.tiagohm.astrum.sky.M_PI
 import br.tiagohm.astrum.sky.pmod
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
-inline class Radians(override val value: Double) : Angle, Comparable<Any> {
+inline class Radians(override val value: Double) : Angle, Comparable<Radians> {
 
     override val radians: Radians
         get() = this
@@ -31,12 +31,7 @@ inline class Radians(override val value: Double) : Angle, Comparable<Any> {
 
     inline operator fun times(a: Number) = Radians(value * a.toDouble())
 
-    override fun compareTo(other: Any): Int {
-        return if (other is Radians) value.compareTo(other.value)
-        else if (other is Number) value.compareTo(other.toDouble())
-        else if (other is Degrees) value.compareTo(other.radians.value)
-        else throw IllegalArgumentException("Invalid compare type")
-    }
+    override fun compareTo(other: Radians) = value.compareTo(other.value)
 
     inline operator fun div(a: Radians) = Radians(value / a.value)
 

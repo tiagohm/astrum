@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.ephemeris.Elp82b
 import br.tiagohm.astrum.sky.core.ephemeris.MarsSat
 import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
@@ -9,7 +10,9 @@ import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.orbit.Orbit
-import br.tiagohm.astrum.sky.core.units.*
+import br.tiagohm.astrum.sky.core.sin
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import br.tiagohm.astrum.sky.planets.major.jupiter.Jupiter
 import br.tiagohm.astrum.sky.planets.major.mars.Mars
@@ -284,10 +287,11 @@ abstract class Planet internal constructor(
         val phi = o.site.latitude.radians
         val coeff = o.home.computeMeanSolarDay() / o.home.siderealDay
 
-        var (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeSiderealPositionGeometric(o))
-        ra = M_2_PI - ra
+        val coord = Algorithms.rectangularToSphericalCoordinates(computeSiderealPositionGeometric(o))
+        val ra = M_2_PI - coord.x.value
+        val dec = coord.y.value
 
-        var ha = ra.value * 12.0 / M_PI
+        var ha = ra * 12.0 / M_PI
         if (ha > 24.0) ha -= 24.0
         // It seems necessary to have ha in [-12,12]!
         if (ha > 12.0) ha -= 24.0

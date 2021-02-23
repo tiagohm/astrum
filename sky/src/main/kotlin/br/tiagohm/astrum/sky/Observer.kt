@@ -2,14 +2,18 @@ package br.tiagohm.astrum.sky
 
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.atmosphere.Refraction
+import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Quad
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.nutation.Nutation
+import br.tiagohm.astrum.sky.core.sin
+import br.tiagohm.astrum.sky.core.tan
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.MoonSecularAcceleration
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
-import br.tiagohm.astrum.sky.core.units.*
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.major.earth.Earth
@@ -165,7 +169,7 @@ data class Observer(
      * For Earth we need JD(UT), for other planets JDE! To be general, just have both in here!
      */
     fun computeRotAltAzToEquatorial(): Mat4 {
-        return Mat4.zrotation(computeSiderealTime()) * Mat4.yrotation((90.0 - site.latitude).radians)
+        return Mat4.zrotation(computeSiderealTime()) * Mat4.yrotation(Degrees(90.0 - site.latitude.value))
     }
 
     fun computeRotEquatorialToVsop87() = home.computeRotEquatorialToVsop87()

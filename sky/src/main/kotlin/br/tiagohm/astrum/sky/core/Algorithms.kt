@@ -3,11 +3,9 @@ package br.tiagohm.astrum.sky.core
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.coordinates.Geographic
 import br.tiagohm.astrum.sky.core.coordinates.Horizontal
+import br.tiagohm.astrum.sky.core.coordinates.Spherical
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.Radians
-import br.tiagohm.astrum.sky.core.units.cos
-import br.tiagohm.astrum.sky.core.units.sin
-import br.tiagohm.astrum.sky.core.units.tan
 import br.tiagohm.astrum.sky.planets.Planet
 import java.lang.Math.cbrt
 import kotlin.math.*
@@ -85,7 +83,7 @@ object Algorithms {
         return ellipticToRectangular(a, n, elem, dt)
     }
 
-    inline fun rectangularToSphericalCoordinates(a: Triad) = a.longitude to a.latitude
+    inline fun rectangularToSphericalCoordinates(a: Triad) = Spherical(a.longitude, a.latitude)
 
     fun sphericalToRectangularCoordinates(longitude: Radians, latitude: Radians): Triad {
         val cosLat = cos(latitude)

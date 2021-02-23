@@ -4,9 +4,13 @@ import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.*
+import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.*
+import br.tiagohm.astrum.sky.core.sin
+import br.tiagohm.astrum.sky.core.tan
+import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.Radians
 import kotlin.math.acos
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -104,7 +108,7 @@ interface CelestialObject {
      * Checks position an object above mathematical horizon for current location.
      */
     fun isAboveHorizon(o: Observer): Boolean {
-        return Algorithms.rectangularToSphericalCoordinates(computeAltAzPositionGeometric(o)).second >= Radians.ZERO
+        return Algorithms.rectangularToSphericalCoordinates(computeAltAzPositionGeometric(o)).y >= Radians.ZERO
     }
 
     /**
@@ -129,7 +133,7 @@ interface CelestialObject {
      */
     fun airmass(o: Observer): Double {
         val pos = computeAltAzPositionApparent(o)
-        val az = Algorithms.rectangularToSphericalCoordinates(pos).second.value
+        val az = Algorithms.rectangularToSphericalCoordinates(pos).y.value
         return if (az > -2.0 * M_PI_180) Extinction.airmass(cos(M_PI_2 - az), true)
         else 0.0
     }

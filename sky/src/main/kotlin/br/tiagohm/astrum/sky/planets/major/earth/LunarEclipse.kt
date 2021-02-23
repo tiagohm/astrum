@@ -2,10 +2,11 @@ package br.tiagohm.astrum.sky.planets.major.earth
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.units.cos
-import br.tiagohm.astrum.sky.core.units.sin
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.asin
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class LunarEclipse(
@@ -28,8 +29,12 @@ data class LunarEclipse(
             val sun = moon.parent!!.parent!! as Sun
             val mEquPos = moon.computeEquinoxEquatorialPosition(op)
             val sEquPos = sun.computeEquinoxEquatorialPosition(op)
-            var (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(mEquPos)
-            val (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(sEquPos)
+            val sCoord = Algorithms.rectangularToSphericalCoordinates(sEquPos)
+            val mCoord = Algorithms.rectangularToSphericalCoordinates(mEquPos)
+            val raSun = sCoord.x.value
+            val decSun = sCoord.y.value
+            var raMoon = mCoord.x.value
+            val decMoon = mCoord.y.value
 
             // R.A. of Earth's shadow
             val raShadow = (raSun + M_PI).let { if (it < 0) it + M_2_PI else it }
@@ -38,7 +43,7 @@ data class LunarEclipse(
 
             raMoon = if (raMoon < 0) raMoon + M_2_PI else raMoon
 
-            val raDiff = (raMoon - raShadow).degrees.value.let { if (it < 0) it + 360.0 else it }
+            val raDiff = Radians(raMoon - raShadow).normalized.degrees.value
 
             if (raDiff < 3 || raDiff > 357) {
                 val sdistanceAu = sEquPos.length

@@ -8,9 +8,7 @@ import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.Geographic
 import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.cos
-import br.tiagohm.astrum.sky.core.units.sin
-import br.tiagohm.astrum.sky.core.units.times
+import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.*
 
@@ -32,12 +30,16 @@ data class SolarEclipse(
             val sun = moon.parent!!.parent!! as Sun
             val sEquPos = sun.computeEquinoxEquatorialPosition(op)
             val mEquPos = moon.computeEquinoxEquatorialPosition(op)
-            var (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(sEquPos)
-            var (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(mEquPos)
+            val sCoord = Algorithms.rectangularToSphericalCoordinates(sEquPos)
+            val mCoord = Algorithms.rectangularToSphericalCoordinates(mEquPos)
+            var raSun = sCoord.x.value
+            val decSun = sCoord.y.value
+            var raMoon = mCoord.x.value
+            val decMoon = mCoord.y.value
 
-            val raDiff = (raMoon - raSun).degrees.normalized.value
+            val raDiff = Radians(raMoon - raSun).normalized.degrees.value
 
-            return if (raDiff < 3.0 || raDiff > 357.0) {
+            return if (raDiff !in 3.0..357.0) {
                 var lon = 0.0
                 var lat = 0.0
                 var mag = 0.0
@@ -75,7 +77,7 @@ data class SolarEclipse(
                 val tf2 = tan(f2)
                 var L1 = z * tf1 + (0.272488 / cos(f1))
                 var L2 = z * tf2 - (0.272281 / cos(f2))
-                var mu = (gast - a.degrees).value
+                var mu = gast.degrees.value - a * M_180_PI
 
                 // Find Lat./Long. of center line on Earth's surface
                 val cd = cos(d)
