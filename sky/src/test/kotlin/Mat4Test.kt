@@ -1,5 +1,5 @@
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.Radians
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -3,8 +3,8 @@ package br.tiagohm.astrum.sky.constellations
 import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_PI
 import br.tiagohm.astrum.sky.Observer
-import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.math.Triad
 
 enum class Constellation(
     val latinName: String,

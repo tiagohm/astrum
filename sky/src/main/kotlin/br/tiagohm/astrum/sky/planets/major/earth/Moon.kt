@@ -1,9 +1,9 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.Equatorial
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.Planet
 

@@ -1,14 +1,14 @@
 package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.algorithms.ephemeris.Elp82b
-import br.tiagohm.astrum.sky.algorithms.ephemeris.MarsSat
-import br.tiagohm.astrum.sky.algorithms.ephemeris.Vsop87
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.math.Triad
-import br.tiagohm.astrum.sky.algorithms.orbit.KeplerOrbit
-import br.tiagohm.astrum.sky.algorithms.orbit.Orbit
+import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.ephemeris.Elp82b
+import br.tiagohm.astrum.sky.core.ephemeris.MarsSat
+import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
+import br.tiagohm.astrum.sky.core.orbit.Orbit
 import br.tiagohm.astrum.sky.core.units.*
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import br.tiagohm.astrum.sky.planets.major.jupiter.Jupiter

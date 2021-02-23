@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.algorithms.nutation
+package br.tiagohm.astrum.sky.core.nutation
 
 data class Nut2000B(
     val l: Double,

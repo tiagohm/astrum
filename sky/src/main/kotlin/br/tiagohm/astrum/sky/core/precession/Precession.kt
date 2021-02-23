@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.algorithms.precession
+package br.tiagohm.astrum.sky.core.precession
 
 import br.tiagohm.astrum.sky.JD_DAY
 import br.tiagohm.astrum.sky.M_2_PI

@@ -1,7 +1,7 @@
-package br.tiagohm.astrum.sky.algorithms.ephemeris
+package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.M_PI
-import br.tiagohm.astrum.sky.algorithms.Algorithms
+import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.readByteArrayFromResources
 import br.tiagohm.astrum.sky.readDoubleArrayFromResources
 import kotlin.math.cos

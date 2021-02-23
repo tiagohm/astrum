@@ -1,11 +1,11 @@
 package br.tiagohm.astrum.sky
 
-import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.math.Triad
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.constellations.Constellation
+import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.*
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.*
 import kotlin.math.acos
 import kotlin.math.atan2

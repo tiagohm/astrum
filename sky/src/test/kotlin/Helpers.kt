@@ -1,6 +1,6 @@
-import br.tiagohm.astrum.sky.algorithms.math.Duad
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Duad
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.coordinates.Coordinate
 import br.tiagohm.astrum.sky.core.units.Degrees
 import br.tiagohm.astrum.sky.core.units.Radians

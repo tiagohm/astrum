@@ -1,10 +1,10 @@
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Location
 import br.tiagohm.astrum.sky.Observer
-import br.tiagohm.astrum.sky.algorithms.math.Duad
-import br.tiagohm.astrum.sky.algorithms.math.Triad
-import br.tiagohm.astrum.sky.algorithms.time.DateTime
-import br.tiagohm.astrum.sky.algorithms.time.TimeCorrectionType
+import br.tiagohm.astrum.sky.core.math.Duad
+import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun

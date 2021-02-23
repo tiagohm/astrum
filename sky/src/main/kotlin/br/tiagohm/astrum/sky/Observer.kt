@@ -1,14 +1,14 @@
 package br.tiagohm.astrum.sky
 
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.math.Quad
-import br.tiagohm.astrum.sky.algorithms.math.Triad
-import br.tiagohm.astrum.sky.algorithms.nutation.Nutation
-import br.tiagohm.astrum.sky.algorithms.time.DateTime
-import br.tiagohm.astrum.sky.algorithms.time.MoonSecularAcceleration
-import br.tiagohm.astrum.sky.algorithms.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.atmosphere.Refraction
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Quad
+import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.nutation.Nutation
+import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.MoonSecularAcceleration
+import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.core.units.*
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun

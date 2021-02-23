@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.sky.algorithms.ephemeris.Vsop87
+import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

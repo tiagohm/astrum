@@ -1,7 +1,7 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.algorithms.Algorithms
+import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.units.cos
 import br.tiagohm.astrum.sky.core.units.sin
 import br.tiagohm.astrum.sky.planets.Sun

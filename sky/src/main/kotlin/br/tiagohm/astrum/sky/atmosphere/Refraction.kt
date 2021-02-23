@@ -3,7 +3,7 @@ package br.tiagohm.astrum.sky.atmosphere
 import br.tiagohm.astrum.sky.Celsius
 import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_PI_180
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Triad
 import kotlin.math.*
 
 data class Refraction(

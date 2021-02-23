@@ -1,10 +1,10 @@
-package br.tiagohm.astrum.sky.algorithms.orbit
+package br.tiagohm.astrum.sky.core.orbit
 
 import br.tiagohm.astrum.sky.EPSILON
 import br.tiagohm.astrum.sky.GAUSS_GRAV_K
 import br.tiagohm.astrum.sky.GAUSS_GRAV_K_SQ
 import br.tiagohm.astrum.sky.M_2_PI
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Triad
 import java.lang.Math.cbrt
 import kotlin.math.*
 

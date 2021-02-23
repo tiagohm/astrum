@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.sky
 
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.precession.Precession
-import br.tiagohm.astrum.sky.algorithms.time.DateTime
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.precession.Precession
+import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.units.Degrees
 import br.tiagohm.astrum.sky.core.units.Radians
 import java.io.InputStream

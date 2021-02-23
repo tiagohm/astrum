@@ -1,7 +1,7 @@
-package br.tiagohm.astrum.sky.algorithms.ephemeris
+package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.M_PI_180
-import br.tiagohm.astrum.sky.algorithms.Algorithms
+import br.tiagohm.astrum.sky.core.Algorithms
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -17,7 +17,7 @@ object MarsSat {
         val ts = doubleArrayOf(t0, t1, t2)
         val es = arrayOf(elem0, elem1, elem2)
 
-        Algorithms.computeInterpolatedElements(t, elem, DIM, ::computeMarsSatElem, DELTA_T, ts, es)
+        Algorithms.computeInterpolatedElements(t, elem, DIM, MarsSat::computeMarsSatElem, DELTA_T, ts, es)
 
         t0 = ts[0]
         t1 = ts[1]

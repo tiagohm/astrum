@@ -3,7 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.saturn
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.Degrees
 import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.core.units.cos

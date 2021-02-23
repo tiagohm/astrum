@@ -3,11 +3,11 @@ package br.tiagohm.astrum.sky.planets.major.earth
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
-import br.tiagohm.astrum.sky.algorithms.math.Mat4
-import br.tiagohm.astrum.sky.algorithms.math.Triad
-import br.tiagohm.astrum.sky.algorithms.nutation.Nutation
-import br.tiagohm.astrum.sky.algorithms.precession.Precession
-import br.tiagohm.astrum.sky.algorithms.time.SiderealTime
+import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.nutation.Nutation
+import br.tiagohm.astrum.sky.core.precession.Precession
+import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.Degrees
 import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm

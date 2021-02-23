@@ -1,6 +1,6 @@
-package br.tiagohm.astrum.sky.algorithms.orbit
+package br.tiagohm.astrum.sky.core.orbit
 
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Triad
 
 interface Orbit {
 

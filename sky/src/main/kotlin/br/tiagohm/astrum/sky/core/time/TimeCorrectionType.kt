@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.algorithms.time
+package br.tiagohm.astrum.sky.core.time
 
 @Suppress("NOTHING_TO_INLINE")
 enum class TimeCorrectionType(

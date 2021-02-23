@@ -1,9 +1,9 @@
-package br.tiagohm.astrum.sky.algorithms
+package br.tiagohm.astrum.sky.core
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.algorithms.math.Triad
 import br.tiagohm.astrum.sky.core.coordinates.Geographic
 import br.tiagohm.astrum.sky.core.coordinates.Horizontal
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.core.units.cos
 import br.tiagohm.astrum.sky.core.units.sin

@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.algorithms.math
+package br.tiagohm.astrum.sky.core.math
 
 import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.core.units.cos

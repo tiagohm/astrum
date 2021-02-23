@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.atmosphere
 
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Triad
 import kotlin.math.exp
 import kotlin.math.min
 

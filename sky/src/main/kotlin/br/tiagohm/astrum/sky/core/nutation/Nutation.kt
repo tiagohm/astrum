@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.algorithms.nutation
+package br.tiagohm.astrum.sky.core.nutation
 
 import br.tiagohm.astrum.sky.JD_HOUR
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD

@@ -1,5 +1,5 @@
 import br.tiagohm.astrum.sky.M_PI_180
-import br.tiagohm.astrum.sky.algorithms.math.Triad
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

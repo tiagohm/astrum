@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.sky.algorithms.time.DateTime
+import br.tiagohm.astrum.sky.core.time.DateTime
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

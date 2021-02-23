@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.algorithms.time
+package br.tiagohm.astrum.sky.core.time
 
 import java.time.Instant
 import java.time.ZoneOffset

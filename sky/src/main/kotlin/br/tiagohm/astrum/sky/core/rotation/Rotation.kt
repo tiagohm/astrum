@@ -1,8 +1,8 @@
-package br.tiagohm.astrum.sky.algorithms.rotation
+package br.tiagohm.astrum.sky.core.rotation
 
 import br.tiagohm.astrum.sky.MAT_J2000_TO_VSOP87
 import br.tiagohm.astrum.sky.M_PI_2
-import br.tiagohm.astrum.sky.algorithms.Algorithms
+import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.units.Radians
 import br.tiagohm.astrum.sky.core.units.minus
 

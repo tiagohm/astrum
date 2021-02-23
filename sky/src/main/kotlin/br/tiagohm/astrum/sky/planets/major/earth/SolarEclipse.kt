@@ -4,9 +4,9 @@ import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.Observer
-import br.tiagohm.astrum.sky.algorithms.Algorithms
-import br.tiagohm.astrum.sky.algorithms.time.SiderealTime
+import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.Geographic
+import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.Degrees
 import br.tiagohm.astrum.sky.core.units.cos
 import br.tiagohm.astrum.sky.core.units.sin
