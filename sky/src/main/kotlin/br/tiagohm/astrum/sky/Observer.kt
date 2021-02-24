@@ -144,20 +144,20 @@ data class Observer(
     fun computeDistanceFromCenterInMeters() = computeDistanceFromCenter() * AU
 
     /**
-     * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude
+     * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude in radians.
      */
     fun computeTopographicOffsetFromCenter(): Quad {
         val a = home.equatorialRadius.au.value
 
         if (a <= 0.0) {
-            return Quad(0.0, 0.0, site.latitude.radians.value, site.altitude.au.value / (1000.0 * AU))
+            return Quad(0.0, 0.0, site.latitude.radians.value, site.altitude.au.value)
         }
 
         val bByA = home.oneMinusOblateness
 
         val lat = site.latitude.radians
         val u = atan(bByA * tan(lat))
-        val alt = site.altitude.au.value / (1000.0 * AU * a)
+        val alt = site.altitude.au.value / a
 
         val rhoSinPhiPrime = bByA * sin(u) + alt * sin(lat)
         val rhoCosPhiPrime = cos(u) + alt * cos(lat)
@@ -179,7 +179,7 @@ data class Observer(
     fun computeRotEquatorialToVsop87() = home.computeRotEquatorialToVsop87()
 
     /**
-     * Computes the sidereal time in radians of the prime meridian (i.e. Rotation Angle) shifted by the observer longitude.
+     * Computes the sidereal time of the prime meridian (i.e. Rotation Angle) shifted by the observer longitude.
      */
     fun computeSiderealTime(): Angle {
         return home.computeSiderealTime(jd, jde, useNutation) + site.longitude

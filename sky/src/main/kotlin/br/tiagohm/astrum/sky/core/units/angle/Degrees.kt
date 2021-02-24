@@ -23,11 +23,13 @@ inline class Degrees(override val value: Double) : Angle {
 
     override operator fun times(a: Angle) = Degrees(value * a.degrees.value)
 
-    override operator fun times(a: Number) = Degrees(value * a.toDouble())
+    override operator fun times(n: Number) = Degrees(value * n.toDouble())
 
     override fun compareTo(other: Angle) = value.compareTo(other.degrees.value)
 
     override operator fun div(a: Angle) = Degrees(value / a.degrees.value)
+
+    override operator fun div(n: Number) = Degrees(value / n.toDouble())
 
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
@@ -46,7 +48,6 @@ inline class Degrees(override val value: Double) : Angle {
     companion object {
 
         val ZERO = Degrees(0.0)
-        val PLUS_15 = Degrees(15.0)
         val PLUS_45 = Degrees(45.0)
         val PLUS_90 = Degrees(90.0)
     }

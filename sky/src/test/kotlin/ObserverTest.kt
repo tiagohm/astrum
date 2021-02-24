@@ -710,15 +710,15 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(Double.NaN, sun.phase(o), DELTA_3)
-        assertEquals(0.039, Mercury(sun).phase(o), DELTA_3)
-        assertEquals(0.980, Venus(sun).phase(o), DELTA_3)
-        assertEquals(0.887, Mars(sun).phase(o), DELTA_3)
-        assertEquals(1.000, Jupiter(sun).phase(o), DELTA_3)
-        assertEquals(1.000, Saturn(sun).phase(o), DELTA_3)
-        assertEquals(0.999, Uranus(sun).phase(o), DELTA_3)
-        assertEquals(1.000, Neptune(sun).phase(o), DELTA_3)
-        assertEquals(1.000, Pluto(sun).phase(o), DELTA_3)
+        assertEquals(Double.NaN, sun.illumination(o), DELTA_3)
+        assertEquals(0.039, Mercury(sun).illumination(o), DELTA_3)
+        assertEquals(0.980, Venus(sun).illumination(o), DELTA_3)
+        assertEquals(0.887, Mars(sun).illumination(o), DELTA_3)
+        assertEquals(1.000, Jupiter(sun).illumination(o), DELTA_3)
+        assertEquals(1.000, Saturn(sun).illumination(o), DELTA_3)
+        assertEquals(0.999, Uranus(sun).illumination(o), DELTA_3)
+        assertEquals(1.000, Neptune(sun).illumination(o), DELTA_3)
+        assertEquals(1.000, Pluto(sun).illumination(o), DELTA_3)
     }
 
     @Test
@@ -1053,7 +1053,7 @@ class ObserverTest {
             assertEquals(LunarPhase.WAXING_GIBBOUS, moon.lunarPhase(it))
             assertEquals(14.6, moon.age(it), DELTA_1)
             assertEquals(82.5454, 70.3246, moon.horizontal(it), DELTA_3, true)
-            assertEquals(1.0, moon.phase(it), DELTA_1)
+            assertEquals(1.0, moon.illumination(it), DELTA_1)
             assertTrue(!LunarEclipse.compute(it, moon).isEclipsing)
             assertEquals(-12.26, moon.visualMagnitudeWithExtinction(it), DELTA_2)
         }
@@ -1143,7 +1143,7 @@ class ObserverTest {
         assertEquals(Constellation.LEO, phobos.constellation(o))
         assertEquals(20.9156, phobos.elongation(o), DELTA_4, true)
         assertEquals(12.5759, phobos.phaseAngle(o), DELTA_4, true)
-        assertEquals(98.8, 100 * phobos.phase(o), DELTA_1)
+        assertEquals(98.8, 100 * phobos.illumination(o), DELTA_1)
         assertEquals(2.571, phobos.distance(o), DELTA_3)
         assertEquals(1.663, phobos.distanceFromSun(o), DELTA_3)
         assertEquals(2.136, phobos.orbitalVelocity(o), DELTA_3)
@@ -1166,7 +1166,7 @@ class ObserverTest {
         assertEquals(Constellation.LEO, deimos.constellation(o))
         assertEquals(20.9113, deimos.elongation(o), DELTA_4, true)
         assertEquals(12.5729, deimos.phaseAngle(o), DELTA_4, true)
-        assertEquals(98.8, 100 * deimos.phase(o), DELTA_1)
+        assertEquals(98.8, 100 * deimos.illumination(o), DELTA_1)
         assertEquals(2.571, deimos.distance(o), DELTA_3)
         assertEquals(1.663, deimos.distanceFromSun(o), DELTA_3)
         assertEquals(1.350, deimos.orbitalVelocity(o), DELTA_3)

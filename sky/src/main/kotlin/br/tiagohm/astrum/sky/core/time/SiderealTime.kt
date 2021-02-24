@@ -10,7 +10,7 @@ import kotlin.math.floor
 object SiderealTime {
 
     /**
-     * Compute the mean sidereal time in degrees at the meridian of Greenwich (GMST) of a given date
+     * Compute the mean sidereal time at the meridian of Greenwich (GMST) of a given date
      */
     fun computeMean(jd: Double, jde: Double): Degrees {
         // Time in seconds
@@ -31,7 +31,7 @@ object SiderealTime {
     }
 
     /**
-     * Compute the apparent sidereal time in degrees at the meridian of Greenwich of a given date
+     * Compute the apparent sidereal time at the meridian of Greenwich of a given date
      */
     fun computeApparent(jd: Double, jde: Double): Degrees {
         // Formula 11.1, 11.4 pg 83

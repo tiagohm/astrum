@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.sky.core.orbit
 
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.units.distance.Distance
 
 interface Orbit {
 
@@ -8,7 +9,7 @@ interface Orbit {
 
     val velocity: Triad
 
-    val semiMajorAxis: Double
+    val semiMajorAxis: Distance
 
     val e: Double
 

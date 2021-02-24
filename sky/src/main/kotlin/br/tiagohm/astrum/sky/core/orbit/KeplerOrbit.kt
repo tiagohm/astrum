@@ -5,20 +5,22 @@ import br.tiagohm.astrum.sky.GAUSS_GRAV_K
 import br.tiagohm.astrum.sky.GAUSS_GRAV_K_SQ
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.units.distance.AU
+import br.tiagohm.astrum.sky.core.units.distance.Distance
 import java.lang.Math.cbrt
 import kotlin.math.*
 
-class KeplerOrbit(
-    val q: Double, // Pericenter Distance (AU)
+data class KeplerOrbit(
+    val q: Distance, // Pericenter Distance (AU)
     override val e: Double, // Eccentricity
     val i: Double, // Inclination (radians)
     val omega: Double, // Longitude of ascending node (randians)
     val w: Double, // Argument of perihelion (radians)
     val t0: Double, // time at perihelion (JDE)
     val n: Double, // Mean motion (for parabolic orbits: W/dt in Heafner's presentation, ch5.5) [radians/day]
-    parentRotObliquity: Double = 0.0, // Comets/Minor Planets only have parent==sun, no need for these? Oh yes: Double, VSOP/J2000 eq frames!
-    parentRotAscendingnode: Double = 0.0,
-    parentRotJ2000Longitude: Double = 0.0,
+    val parentRotObliquity: Double = 0.0, // Comets/Minor Planets only have parent==sun, no need for these? Oh yes: Double, VSOP/J2000 eq frames!
+    val parentRotAscendingnode: Double = 0.0,
+    val parentRotJ2000Longitude: Double = 0.0,
     val centralMass: Double = 1.0, // Mass in Solar masses. Velocity depends on this.
 ) : Orbit {
 
@@ -28,7 +30,7 @@ class KeplerOrbit(
     override var velocity = Triad.ZERO
         private set
 
-    private val initOrbit: (Double) -> Pair<Double, Double> = when {
+    private val initOrbit: (KeplerOrbit, Double) -> Pair<Double, Double> = when {
         e < 1.0 -> ::initEllipticalOrbit
         e > 1.0 -> ::initHyperbolicOrbit
         else -> ::initParabolicOrbit
@@ -38,93 +40,9 @@ class KeplerOrbit(
         setParentOrientation(parentRotObliquity, parentRotAscendingnode, parentRotJ2000Longitude)
     }
 
-    override val semiMajorAxis = if (e == 1.0) 0.0 else q / (1.0 - e)
+    override val semiMajorAxis: Distance = if (e == 1.0) AU.ZERO else AU(q.au.value / (1.0 - e))
 
     override val siderealPeriod = computeSiderealPeriod(semiMajorAxis, centralMass)
-
-    // Solve true anomaly nu for elliptical orbit with Laguerre-Conway's method. (May have high e)
-    private fun initEllipticalOrbit(dt: Double): Pair<Double, Double> {
-        assert(e < 1.0)
-
-        val a = q / (1.0 - e)
-        val M = (n * dt % M_2_PI).let { if (it < 0.0) it + M_2_PI else it }
-
-        //	Comet orbits are quite often near-parabolic, where this may still only converge slowly.
-        //	Better always use Laguerre-Conway. See Heafner, Ch. 5.3
-
-        var E = M + 0.85 * e * sin(M).sign
-
-        var escape = 0
-
-        while (true) {
-            val Ep = E
-            val f2 = e * sin(E)
-            val f = E - f2 - M
-            val f1 = 1.0 - e * cos(E)
-
-            E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
-
-            if (abs(E - Ep) < EPSILON) {
-                break
-            }
-
-            if (++escape > 10) {
-                break
-            }
-        }
-
-        // Note: q=a*(1-e)
-        // elsewhere: a sqrt(1-e²) ... q / (1-e) sqrt( (1+e)(1-e)) = q sqrt((1+e)/(1-e))
-        val h1 = q * sqrt((1.0 + e) / (1.0 - e))
-        val rCosNu = a * (cos(E) - e)
-        val rSinNu = h1 * sin(E)
-
-        return Pair(rCosNu, rSinNu)
-    }
-
-    // Solve true anomaly nu for hyperbolic "orbit" (better: trajectory) around the sun.
-    private fun initHyperbolicOrbit(dt: Double): Pair<Double, Double> {
-        assert(e > 1.0)
-
-        val a = q / (e - 1.0)
-        val M = n * dt
-
-        assert(a > 0.0)
-
-        // Heafner, ch.5.4
-        var E = M.sign * ln(2.0 * abs(M) / e + 1.85)
-
-        while (true) {
-            val Ep = E
-            val f2 = e * sin(E)
-            val f = f2 - E - M
-            val f1 = e * cosh(E) - 1.0
-
-            E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
-
-            if (abs(E - Ep) < EPSILON) {
-                break
-            }
-        }
-
-        val rCosNu = a * (e - cosh(E))
-        val rSinNu = a * sqrt(e * e - 1.0) * sinh(E)
-
-        return Pair(rCosNu, rSinNu)
-    }
-
-    // Solve true anomaly nu for parabolic orbit around the sun.
-    private fun initParabolicOrbit(dt: Double): Pair<Double, Double> {
-        assert(e == 1.0)
-
-        val W = dt * n
-        val Y = cbrt(W + sqrt(W * W + 1.0))
-        val tanNu2 = Y - 1.0 / Y // Heafner (5.5.8) has an error here, writes (Y-1)/Y.
-        val rCosNu = q * (1.0 - tanNu2 * tanNu2)
-        val rSinNu = 2.0 * q * tanNu2
-
-        return Pair(rCosNu, rSinNu)
-    }
 
     fun setParentOrientation(
         parentRotObliquity: Double,
@@ -151,7 +69,7 @@ class KeplerOrbit(
 
     override fun positionAtTimevInVSOP87Coordinates(jde: Double): Triad {
         // Laguerre-Conway seems stable enough to go for <1.0
-        val (rCosNu, rSinNu) = initOrbit(jde - t0)
+        val (rCosNu, rSinNu) = initOrbit(this, jde - t0)
 
         val cw = cos(w)
         val sw = sin(w)
@@ -172,7 +90,7 @@ class KeplerOrbit(
         val r = sqrt(rSinNu * rSinNu + rCosNu * rCosNu)
         val sinNu = rSinNu / r
         val cosNu = rCosNu / r
-        val p = q * (1.0 + e) // Heafner: semilatus rectum
+        val p = q.au.value * (1.0 + e) // Heafner: semilatus rectum
         val sqrtMuP = sqrt(GAUSS_GRAV_K_SQ * centralMass / p)
 
         val s0 = sqrtMuP * ((e + cosNu) * Qx - sinNu * Px) // rdotx (AU/d)
@@ -194,9 +112,96 @@ class KeplerOrbit(
 
     companion object {
 
-        fun computeSiderealPeriod(semiMajorAxis: Double, centralMass: Double): Double {
+        fun computeSiderealPeriod(semiMajorAxis: Distance, centralMass: Double): Double {
+            val a = semiMajorAxis.au.value
             // Solution for non-Solar central mass (Moons) we need to take central mass (in Solar units) into account. Tested with comparison of preconfigured Moon data.
-            return if (semiMajorAxis <= 0) 0.0 else M_2_PI / GAUSS_GRAV_K * sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / centralMass)
+            return if (a <= 0) 0.0 else M_2_PI / GAUSS_GRAV_K * sqrt(a * a * a / centralMass)
+        }
+
+        // Solve true anomaly nu for elliptical orbit with Laguerre-Conway's method. (May have high e)
+        private fun initEllipticalOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
+            val e = orbit.e
+            val q = orbit.q.au.value
+            val n = orbit.n
+            val a = orbit.semiMajorAxis.au.value
+            val M = (n * dt % M_2_PI).let { if (it < 0.0) it + M_2_PI else it }
+
+            //	Comet orbits are quite often near-parabolic, where this may still only converge slowly.
+            //	Better always use Laguerre-Conway. See Heafner, Ch. 5.3
+
+            var E = M + 0.85 * e * sin(M).sign
+
+            var escape = 0
+
+            while (true) {
+                val Ep = E
+                val f2 = e * sin(E)
+                val f = E - f2 - M
+                val f1 = 1.0 - e * cos(E)
+
+                E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
+
+                if (abs(E - Ep) < EPSILON) {
+                    break
+                }
+
+                if (++escape > 10) {
+                    break
+                }
+            }
+
+            // Note: q=a*(1-e)
+            // elsewhere: a sqrt(1-e²) ... q / (1-e) sqrt( (1+e)(1-e)) = q sqrt((1+e)/(1-e))
+            val h1 = q * sqrt((1.0 + e) / (1.0 - e))
+            val rCosNu = a * (cos(E) - e)
+            val rSinNu = h1 * sin(E)
+
+            return Pair(rCosNu, rSinNu)
+        }
+
+        // Solve true anomaly nu for hyperbolic "orbit" (better: trajectory) around the sun.
+        private fun initHyperbolicOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
+            val e = orbit.e
+            val q = orbit.q.au.value
+            val n = orbit.n
+            val a = q / (e - 1.0)
+            val M = n * dt
+
+            assert(a > 0.0)
+
+            // Heafner, ch.5.4
+            var E = M.sign * ln(2.0 * abs(M) / e + 1.85)
+
+            while (true) {
+                val Ep = E
+                val f2 = e * sin(E)
+                val f = f2 - E - M
+                val f1 = e * cosh(E) - 1.0
+
+                E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
+
+                if (abs(E - Ep) < EPSILON) {
+                    break
+                }
+            }
+
+            val rCosNu = a * (e - cosh(E))
+            val rSinNu = a * sqrt(e * e - 1.0) * sinh(E)
+
+            return Pair(rCosNu, rSinNu)
+        }
+
+        // Solve true anomaly nu for parabolic orbit around the sun.
+        private fun initParabolicOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
+            val q = orbit.q.au.value
+            val n = orbit.n
+            val W = dt * n
+            val Y = cbrt(W + sqrt(W * W + 1.0))
+            val tanNu2 = Y - 1.0 / Y // Heafner (5.5.8) has an error here, writes (Y-1)/Y.
+            val rCosNu = q * (1.0 - tanNu2 * tanNu2)
+            val rSinNu = 2.0 * q * tanNu2
+
+            return Pair(rCosNu, rSinNu)
         }
     }
 }

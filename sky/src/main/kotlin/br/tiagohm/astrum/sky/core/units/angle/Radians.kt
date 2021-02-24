@@ -22,11 +22,13 @@ inline class Radians(override val value: Double) : Angle {
 
     override operator fun times(a: Angle) = Radians(value * a.radians.value)
 
-    override operator fun times(a: Number) = Radians(value * a.toDouble())
+    override operator fun times(n: Number) = Radians(value * n.toDouble())
 
     override fun compareTo(other: Angle) = value.compareTo(other.radians.value)
 
     override operator fun div(a: Angle) = Radians(value / a.radians.value)
+
+    override operator fun div(n: Number) = Radians(value / n.toDouble())
 
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false

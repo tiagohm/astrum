@@ -18,7 +18,9 @@ interface Angle : Unit, Comparable<Angle> {
 
     operator fun times(a: Angle): Angle
 
-    operator fun times(a: Number): Angle
+    operator fun times(n: Number): Angle
 
     operator fun div(a: Angle): Angle
+
+    operator fun div(n: Number): Angle
 }

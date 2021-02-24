@@ -55,7 +55,7 @@ abstract class Planet internal constructor(
      */
     open val siderealPeriod = if (orbit is KeplerOrbit &&
         type != PlanetType.OBSERVER &&
-        orbit.semiMajorAxis > 0.0 &&
+        orbit.semiMajorAxis.isPositive &&
         orbit.e < 0.9
     ) orbit.siderealPeriod else 0.0
 
@@ -85,8 +85,8 @@ abstract class Planet internal constructor(
             // TODO: Testar com luas e asteroides
             if (absoluteMagnitude <= -99.0) return 100.0
 
-            val a = parent?.orbit?.semiMajorAxis
-                ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis
+            val a = parent?.orbit?.semiMajorAxis?.au?.value
+                ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis.au.value
                 else if (parent is Mars) 1.52371034
                 else if (parent is Jupiter) 5.202887
                 else if (parent is Saturn) 9.53667594
@@ -265,7 +265,7 @@ abstract class Planet internal constructor(
     }
 
     /**
-     * Computes the obliquity in radians.
+     * Computes the obliquity.
      * For Earth, this is epsilon, the angle between earth's rotational axis and pole of mean ecliptic of date.
      * Details: e.g. Hilton etal, Report on Precession and the Ecliptic, Cel.Mech.Dyn.Astr.94:351-67 (2006), Fig1.
      * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
@@ -348,7 +348,7 @@ abstract class Planet internal constructor(
         get() = siderealDay < 0.0
 
     /**
-     * Computes the elongation angle (radians) for an observer.
+     * Computes the elongation angle for an observer.
      */
     fun elongation(o: Observer): Radians {
         val obsPos = o.computeHeliocentricEclipticPosition()
@@ -362,7 +362,7 @@ abstract class Planet internal constructor(
     /**
      * Computes the planet phase ([0..1] illuminated fraction of the planet disk) for an observer.
      */
-    fun phase(o: Observer): Double {
+    fun illumination(o: Observer): Double {
         val obsPos = o.computeHeliocentricEclipticPosition()
         val observerRq = obsPos.lengthSquared
         val planetHelioPos = computeHeliocentricEclipticPosition(o)

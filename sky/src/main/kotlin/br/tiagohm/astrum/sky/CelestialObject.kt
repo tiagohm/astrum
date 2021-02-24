@@ -10,7 +10,6 @@ import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.sin
 import br.tiagohm.astrum.sky.core.tan
 import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.acos
 import kotlin.math.atan2
@@ -140,14 +139,14 @@ interface CelestialObject {
     }
 
     /**
-     * Computes the angular radius in degrees of a circle containing the object as seen from the observer
+     * Computes the angular radius of a circle containing the object as seen from the observer
      * with the circle center assumed to be at computeJ2000EquatorialPosition().
      * This value is the apparent angular size of the object, and is independent of the current FOV.
      */
     fun angularSize(o: Observer): Angle
 
     /**
-     * Computes the phase angle (radians) for an observer.
+     * Computes the phase angle for an observer.
      */
     fun phaseAngle(o: Observer): Radians {
         val obsPos = o.computeHeliocentricEclipticPosition()
@@ -208,8 +207,7 @@ interface CelestialObject {
     ): HourAngle {
         val pos = if (apparent) computeSiderealPositionApparent(o) else computeSiderealPositionGeometric(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
-        // TODO: Usar Radians em vez de Degrees????
-        return HourAngle(Radians(M_2_PI - a.radians.value).degrees.normalized / Degrees.PLUS_15, b)
+        return HourAngle(Radians(M_2_PI - a.radians.value).degrees.normalized / 15.0, b)
     }
 
     fun horizontal(

@@ -49,7 +49,7 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     }
 
     /**
-     * Angle in radians between two vectors
+     * Angle between two vectors.
      */
     fun angle(a: Triad): Radians {
         val cosAngle = dot(a) / sqrt(lengthSquared * a.lengthSquared)

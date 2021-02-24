@@ -1,7 +1,7 @@
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.time.EspenakMeeus
 import br.tiagohm.astrum.sky.core.time.SiderealTime
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.distance.AU
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -57,7 +57,7 @@ class SiderealTimeTest {
             val s = d[3]
 
             val est = h + m / 60.0 + s / 3600.0
-            var ast = (SiderealTime.computeMean(jd, jde) / Degrees.PLUS_15).value % 24.0
+            var ast = (SiderealTime.computeMean(jd, jde) / 15.0).value % 24.0
             if (ast < 0.0) ast += 24.0
 
             assertTrue(abs(abs(est) - abs(ast)) <= 0.0002)
@@ -84,7 +84,7 @@ class SiderealTimeTest {
             val s = d[3]
 
             val est = h + m / 60.0 + s / 3600.0
-            var ast = (SiderealTime.computeApparent(jd, jde) / Degrees.PLUS_15).value % 24.0
+            var ast = (SiderealTime.computeApparent(jd, jde) / 15.0).value % 24.0
             if (ast < 0.0) ast += 24.0
 
             assertTrue(abs(abs(est) - abs(ast)) <= 0.0002)
@@ -101,7 +101,7 @@ class SiderealTimeTest {
         )
 
         for (distance in data.keys) {
-            assertEquals(data[distance]!!, KeplerOrbit.computeSiderealPeriod(distance, 1.0), 0.001)
+            assertEquals(data[distance]!!, KeplerOrbit.computeSiderealPeriod(AU(distance), 1.0), 0.001)
         }
     }
 }
