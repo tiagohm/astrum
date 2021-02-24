@@ -1,12 +1,13 @@
 package br.tiagohm.astrum.sky.planets.minor.pluto
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
@@ -15,7 +16,7 @@ import kotlin.math.sin
 
 class Pluto(parent: Sun) : Planet(
     "Pluto",
-    1188.3 / AU,
+    Kilometer(1188.3).au,
     0.0,
     0.55,
     null,
@@ -31,6 +32,9 @@ class Pluto(parent: Sun) : Planet(
 
     override val meanOppositionMagnitude = 15.12
 
+    /**
+     * Calculate Pluto heliocentric ecliptical coordinates for given julian day.
+     */
     /**
      * Calculate Pluto heliocentric ecliptical coordinates for given julian day.
      */
@@ -73,7 +77,7 @@ class Pluto(parent: Sun) : Planet(
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

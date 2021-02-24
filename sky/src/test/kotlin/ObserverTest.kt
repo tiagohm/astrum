@@ -6,7 +6,8 @@ import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
-import br.tiagohm.astrum.sky.core.units.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.distance.Meter
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.major.earth.*
@@ -272,8 +273,8 @@ class ObserverTest {
         for (i in 0 until 8) {
             positions[i]?.let {
                 val (ra, dec) = planets[i].equatorial(o)
-                assertEquals(it[0], ra.degrees, delta)
-                assertEquals(it[1], dec.degrees, delta)
+                assertEquals(it[0], ra, delta, true)
+                assertEquals(it[1], dec, delta, true)
             }
         }
     }
@@ -289,15 +290,15 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(-106.3196, sun.parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-110.2466, Mercury(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-101.2810, Venus(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-104.5911, Mars(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-103.9624, Jupiter(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-102.1158, Saturn(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-108.2743, Uranus(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-111.9848, Neptune(sun).parallacticAngle(o).degrees, DELTA_4)
-        assertEquals(-95.8256, Pluto(sun).parallacticAngle(o).degrees, DELTA_4)
+        assertEquals(-106.3196, sun.parallacticAngle(o), DELTA_4, true)
+        assertEquals(-110.2466, Mercury(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-101.2810, Venus(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-104.5911, Mars(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-103.9624, Jupiter(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-102.1158, Saturn(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-108.2743, Uranus(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-111.9848, Neptune(sun).parallacticAngle(o), DELTA_4, true)
+        assertEquals(-95.8256, Pluto(sun).parallacticAngle(o), DELTA_4, true)
     }
 
     @Test
@@ -345,7 +346,7 @@ class ObserverTest {
 
         val o1 = Observer(
             earth,
-            Location("Tokyo", Degrees(35.689499), Degrees(139.691711), 44.0),
+            Location("Tokyo", Degrees(35.689499), Degrees(139.691711), Meter(44.0)),
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
@@ -618,16 +619,16 @@ class ObserverTest {
             DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        assertEquals(0.0, sun.elongation(o).degrees, DELTA_3)
-        assertEquals(7.2763, Mercury(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(12.0253, Venus(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(88.0661, Mars(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(5.8016, Jupiter(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(11.1048, Saturn(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(80.0264, Uranus(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(32.5258, Neptune(sun).elongation(o).degrees, DELTA_3)
-        assertEquals(80.5519, Moon(earth).elongation(o).degrees, DELTA_3)
-        assertEquals(21.5853, Pluto(sun).elongation(o).degrees, DELTA_3)
+        assertEquals(0.0, sun.elongation(o), DELTA_3)
+        assertEquals(7.2763, Mercury(sun).elongation(o), DELTA_3, true)
+        assertEquals(12.0253, Venus(sun).elongation(o), DELTA_3, true)
+        assertEquals(88.0661, Mars(sun).elongation(o), DELTA_3, true)
+        assertEquals(5.8016, Jupiter(sun).elongation(o), DELTA_3, true)
+        assertEquals(11.1048, Saturn(sun).elongation(o), DELTA_3, true)
+        assertEquals(80.0264, Uranus(sun).elongation(o), DELTA_3, true)
+        assertEquals(32.5258, Neptune(sun).elongation(o), DELTA_3, true)
+        assertEquals(80.5519, Moon(earth).elongation(o), DELTA_3, true)
+        assertEquals(21.5853, Pluto(sun).elongation(o), DELTA_3, true)
     }
 
     @Test
@@ -642,15 +643,15 @@ class ObserverTest {
         )
 
         assertEquals(Double.NaN, sun.phaseAngle(o), DELTA_3)
-        assertEquals(157.3247, Mercury(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(16.3937, Venus(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(39.3243, Mars(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(1.1233, Jupiter(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(1.0902, Saturn(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(2.8157, Uranus(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(1.015, Neptune(sun).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(99.308, Moon(earth).phaseAngle(o).degrees, DELTA_3)
-        assertEquals(0.6074, Pluto(sun).phaseAngle(o).degrees, DELTA_3)
+        assertEquals(157.3247, Mercury(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(16.3937, Venus(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(39.3243, Mars(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(1.1233, Jupiter(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(1.0902, Saturn(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(2.8157, Uranus(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(1.015, Neptune(sun).phaseAngle(o), DELTA_3, true)
+        assertEquals(99.308, Moon(earth).phaseAngle(o), DELTA_3, true)
+        assertEquals(0.6074, Pluto(sun).phaseAngle(o), DELTA_3, true)
     }
 
     @Test
@@ -902,11 +903,11 @@ class ObserverTest {
             dt,
         )
 
-        assertEquals(23.4371, o.computeEclipticObliquity().degrees, DELTA_4)
-        assertEquals(23.4372, o.copy(dateTime = dt.copy(day = 10)).computeEclipticObliquity().degrees, DELTA_4)
-        assertEquals(23.6893, o.copy(dateTime = dt.copy(year = 46)).computeEclipticObliquity().degrees, DELTA_4)
-        assertEquals(24.2108, o.copy(dateTime = dt.copy(year = -6046)).computeEclipticObliquity().degrees, DELTA_4)
-        assertEquals(22.9481, o.copy(dateTime = dt.copy(year = 6046)).computeEclipticObliquity().degrees, DELTA_4)
+        assertEquals(23.4371, o.computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(23.4372, o.copy(dateTime = dt.copy(day = 10)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(23.6893, o.copy(dateTime = dt.copy(year = 46)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(24.2108, o.copy(dateTime = dt.copy(year = -6046)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(22.9481, o.copy(dateTime = dt.copy(year = 6046)).computeEclipticObliquity(), DELTA_4, true)
     }
 
     @Test
@@ -931,29 +932,29 @@ class ObserverTest {
 
         val jupiter = Jupiter(sun)
 
-        assertEquals(0.00903, jupiter.angularSize(o) * 2, DELTA_5)
-        assertEquals(0.01053, jupiter.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
+        assertEquals(0.00903, jupiter.angularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.01053, jupiter.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
 
         val saturn = Saturn(sun)
 
-        assertEquals(0.00982, saturn.angularSize(o) * 2, DELTA_5)
-        assertEquals(0.01088, saturn.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
-        assertEquals(0.00422, saturn.spheroidAngularSize(o) * 2, DELTA_5)
-        assertEquals(0.00467, saturn.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
+        assertEquals(0.00982, saturn.angularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.01088, saturn.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00422, saturn.spheroidAngularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.00467, saturn.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
 
         val uranus = Uranus(sun)
 
-        assertEquals(0.00376, uranus.angularSize(o) * 2, DELTA_5)
-        assertEquals(0.00360, uranus.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
-        assertEquals(0.00098, uranus.spheroidAngularSize(o) * 2, DELTA_5)
-        assertEquals(0.00094, uranus.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
+        assertEquals(0.00376, uranus.angularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.00360, uranus.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00098, uranus.spheroidAngularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.00094, uranus.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
 
         val neptune = Neptune(sun)
 
-        assertEquals(0.00157, neptune.angularSize(o) * 2, DELTA_5)
-        assertEquals(0.00158, neptune.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
-        assertEquals(0.00062, neptune.spheroidAngularSize(o) * 2, DELTA_5)
-        assertEquals(0.00062, neptune.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5)
+        assertEquals(0.00157, neptune.angularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.00158, neptune.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00062, neptune.spheroidAngularSize(o) * 2, DELTA_5, true)
+        assertEquals(0.00062, neptune.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
     }
 
     @Test
@@ -962,7 +963,7 @@ class ObserverTest {
         val earth = Earth(sun)
         val moon = Moon(earth)
 
-        val site = Location("Rangpur", Degrees(25.9896), Degrees(87.0868), 14.0)
+        val site = Location("Rangpur", Degrees(25.9896), Degrees(87.0868), Meter(14.0))
 
         val a = Observer(earth, site, DateTime(2009, 7, 22, 5, 57, 28, utcOffset = 6.0))
         assertEquals(69.5333, 4.5405, sun.horizontal(a), DELTA_4, true)
@@ -985,7 +986,7 @@ class ObserverTest {
 
         assertEquals(87.079, 25.9876, se.position, DELTA_3, true)
         assertEquals(1.033, se.magnitude, DELTA_3)
-        assertEquals(252.769, se.azimuth, DELTA_3)
+        assertEquals(252.769, se.azimuth, DELTA_3, true)
     }
 
     @Test
@@ -1138,16 +1139,16 @@ class ObserverTest {
         assertEquals(92.4084, -31.6069, phobos.supergalactic(o), DELTA_4, true)
         assertEquals(153.8858, 1.0653, phobos.eclipticJ2000(o), DELTA_4, true)
         assertEquals(154.1835, 1.0664, phobos.ecliptic(o), DELTA_4, true)
-        assertEquals(-117.3806, phobos.parallacticAngle(o).degrees, DELTA_4)
+        assertEquals(-117.3806, phobos.parallacticAngle(o), DELTA_4, true)
         assertEquals(Constellation.LEO, phobos.constellation(o))
-        assertEquals(20.9156, phobos.elongation(o).degrees, DELTA_4)
-        assertEquals(12.5759, phobos.phaseAngle(o).degrees, DELTA_4)
+        assertEquals(20.9156, phobos.elongation(o), DELTA_4, true)
+        assertEquals(12.5759, phobos.phaseAngle(o), DELTA_4, true)
         assertEquals(98.8, 100 * phobos.phase(o), DELTA_1)
         assertEquals(2.571, phobos.distance(o), DELTA_3)
         assertEquals(1.663, phobos.distanceFromSun(o), DELTA_3)
         assertEquals(2.136, phobos.orbitalVelocity(o), DELTA_3)
         assertEquals(21.272, phobos.heliocentricVelocity(o), DELTA_3)
-        assertEquals(0.000003, phobos.angularSize(o) * 2, DELTA_6)
+        assertEquals(0.000003, phobos.angularSize(o) * 2, DELTA_6, true)
 
         // Phobos
         assertEquals(16.05, deimos.visualMagnitude(o), DELTA_2)
@@ -1161,16 +1162,16 @@ class ObserverTest {
         assertEquals(92.4044, -31.6095, deimos.supergalactic(o), DELTA_4, true)
         assertEquals(153.8815, 1.0657, deimos.eclipticJ2000(o), DELTA_4, true)
         assertEquals(154.1792, 1.0668, deimos.ecliptic(o), DELTA_4, true)
-        assertEquals((-117.3823), deimos.parallacticAngle(o).degrees, DELTA_4)
+        assertEquals((-117.3823), deimos.parallacticAngle(o), DELTA_4, true)
         assertEquals(Constellation.LEO, deimos.constellation(o))
-        assertEquals(20.9113, deimos.elongation(o).degrees, DELTA_4)
-        assertEquals(12.5729, deimos.phaseAngle(o).degrees, DELTA_4)
+        assertEquals(20.9113, deimos.elongation(o), DELTA_4, true)
+        assertEquals(12.5729, deimos.phaseAngle(o), DELTA_4, true)
         assertEquals(98.8, 100 * deimos.phase(o), DELTA_1)
         assertEquals(2.571, deimos.distance(o), DELTA_3)
         assertEquals(1.663, deimos.distanceFromSun(o), DELTA_3)
         assertEquals(1.350, deimos.orbitalVelocity(o), DELTA_3)
         assertEquals(22.289, deimos.heliocentricVelocity(o), DELTA_3)
-        assertEquals(0.000001, deimos.angularSize(o) * 2, DELTA_6)
+        assertEquals(0.000001, deimos.angularSize(o) * 2, DELTA_6, true)
     }
 
     companion object {
@@ -1182,7 +1183,7 @@ class ObserverTest {
         private const val DELTA_5 = 0.00001
         private const val DELTA_6 = 0.000001
 
-        private val SAO_JOSE_DAS_PALMEIRAS = Location("São José das Palmeiras - BR", Degrees(-24.837778), Degrees(-54.063889), 563.0)
-        private val PICO_DOS_DIAS_OBSERVATORY = Location("Pico dos Dias Observatory - BR", Degrees(-22.534444), Degrees(-45.5825), 1864.0)
+        private val SAO_JOSE_DAS_PALMEIRAS = Location("São José das Palmeiras - BR", Degrees(-24.837778), Degrees(-54.063889).radians, Meter(563.0))
+        private val PICO_DOS_DIAS_OBSERVATORY = Location("Pico dos Dias Observatory - BR", Degrees(-22.534444).radians, Degrees(-45.5825), Meter(1864.0))
     }
 }

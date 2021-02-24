@@ -9,8 +9,9 @@ import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.sin
 import br.tiagohm.astrum.sky.core.tan
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.acos
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -89,7 +90,7 @@ interface CelestialObject {
     }
 
     /**
-     * Computes parallactic angle in radians, which is the deviation between zenith angle and north angle.
+     * Computes parallactic angle, which is the deviation between zenith angle and north angle.
      */
     fun parallacticAngle(o: Observer): Radians {
         val phi = o.site.latitude.radians
@@ -97,7 +98,7 @@ interface CelestialObject {
         var (ha, delta) = Algorithms.rectangularToSphericalCoordinates(siderealPos)
 
         // We must invert the orientation sense in case of sidereal positions!
-        ha *= -1.0
+        ha = -ha
 
         // A rare condition! Object exactly in zenith, avoid undefined result.
         return if (ha == Radians.ZERO && (delta - phi) == Radians.ZERO) Radians.ZERO
@@ -133,7 +134,7 @@ interface CelestialObject {
      */
     fun airmass(o: Observer): Double {
         val pos = computeAltAzPositionApparent(o)
-        val az = Algorithms.rectangularToSphericalCoordinates(pos).y.value
+        val az = Algorithms.rectangularToSphericalCoordinates(pos).y.radians.value
         return if (az > -2.0 * M_PI_180) Extinction.airmass(cos(M_PI_2 - az), true)
         else 0.0
     }
@@ -143,7 +144,7 @@ interface CelestialObject {
      * with the circle center assumed to be at computeJ2000EquatorialPosition().
      * This value is the apparent angular size of the object, and is independent of the current FOV.
      */
-    fun angularSize(o: Observer): Degrees
+    fun angularSize(o: Observer): Angle
 
     /**
      * Computes the phase angle (radians) for an observer.
@@ -208,7 +209,7 @@ interface CelestialObject {
         val pos = if (apparent) computeSiderealPositionApparent(o) else computeSiderealPositionGeometric(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
         // TODO: Usar Radians em vez de Degrees????
-        return HourAngle(Radians(M_2_PI - a.value).degrees.normalized / 15.0, b)
+        return HourAngle(Radians(M_2_PI - a.radians.value).degrees.normalized / Degrees.PLUS_15, b)
     }
 
     fun horizontal(
@@ -219,7 +220,7 @@ interface CelestialObject {
         val pos = if (apparent) computeAltAzPositionApparent(o) else computeAltAzPositionGeometric(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
         val direction = if (southAzimuth) M_2_PI else M_3_PI // N is zero, E is 90 degrees
-        val az = (direction - a.value).let { if (it > M_2_PI) it - M_2_PI else it }
+        val az = (direction - a.radians.value).let { if (it > M_2_PI) it - M_2_PI else it }
         return Horizontal(Radians(az), b)
     }
 
@@ -240,7 +241,7 @@ interface CelestialObject {
         val (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeJ2000EquatorialPosition(o))
         val equ = Equatorial(ra, dec)
         var (lambda, beta) = equ.toEcliptic(eclJ2000)
-        if (lambda < Radians.ZERO) lambda += M_2_PI
+        if (lambda < Radians.ZERO) lambda += Radians.TWO_PI
         return Ecliptic(lambda, beta)
     }
 
@@ -248,7 +249,7 @@ interface CelestialObject {
         val (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(o))
         val equ = Equatorial(ra, dec)
         var (lambda, beta) = equ.toEcliptic(o.computeEclipticObliquity())
-        if (lambda < Radians.ZERO) lambda += M_2_PI
+        if (lambda < Radians.ZERO) lambda += Radians.TWO_PI
         return Ecliptic(lambda, beta)
     }
 

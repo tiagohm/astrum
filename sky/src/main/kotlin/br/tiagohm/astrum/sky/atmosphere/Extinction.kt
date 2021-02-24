@@ -5,7 +5,7 @@ import kotlin.math.exp
 import kotlin.math.min
 
 data class Extinction(
-    val coefficient: Double = 0.13,
+    val coefficient: Double = DEFAULT_COEFFICIENT,
 ) {
 
     /**
@@ -19,6 +19,8 @@ data class Extinction(
     fun backward(altAzPos: Triad, mag: Double) = mag - airmass(altAzPos[2], false) * coefficient
 
     companion object {
+
+        const val DEFAULT_COEFFICIENT = 0.13
 
         /**
          * Computes airmass for cosine of zenith angle z.

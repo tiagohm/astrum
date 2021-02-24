@@ -1,16 +1,16 @@
 package br.tiagohm.astrum.sky.core.coordinates
 
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
 
 interface Coordinate {
 
     /**
-     * Coordinate X in radians.
+     * Coordinate X.
      */
-    val x: Radians
+    val x: Angle
 
     /**
-     * Coordinate Y in radians.
+     * Coordinate Y.
      */
-    val y: Radians
+    val y: Angle
 }

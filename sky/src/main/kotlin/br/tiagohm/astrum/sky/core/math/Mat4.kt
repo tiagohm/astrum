@@ -2,8 +2,7 @@ package br.tiagohm.astrum.sky.core.math
 
 import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.sin
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
 
 @Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")
 inline class Mat4(val data: DoubleArray) : Iterable<Double> {
@@ -238,7 +237,7 @@ inline class Mat4(val data: DoubleArray) : Iterable<Double> {
 
         val EMPTY = Mat4()
 
-        fun rotation(a: Triad, angle: Radians): Mat4 {
+        fun rotation(a: Triad, angle: Angle): Mat4 {
             val an = a.normalized
             val c = cos(angle)
             val s = sin(angle)
@@ -253,31 +252,23 @@ inline class Mat4(val data: DoubleArray) : Iterable<Double> {
 
         }
 
-        fun rotation(a: Triad, angle: Degrees) = rotation(a, angle.radians)
-
-        fun xrotation(angle: Radians): Mat4 {
+        fun xrotation(angle: Angle): Mat4 {
             val c = cos(angle)
             val s = sin(angle)
             return Mat4(a0 = 1.0, b1 = c, b2 = s, c1 = -s, c2 = c, d3 = 1.0)
         }
 
-        fun xrotation(angle: Degrees) = xrotation(angle.radians)
-
-        fun yrotation(angle: Radians): Mat4 {
+        fun yrotation(angle: Angle): Mat4 {
             val c = cos(angle)
             val s = sin(angle)
             return Mat4(a0 = c, a2 = -s, b1 = 1.0, c0 = s, c2 = c, d3 = 1.0)
         }
 
-        fun yrotation(angle: Degrees) = yrotation(angle.radians)
-
-        fun zrotation(angle: Radians): Mat4 {
+        fun zrotation(angle: Angle): Mat4 {
             val c = cos(angle)
             val s = sin(angle)
             return Mat4(a0 = c, a1 = s, b0 = -s, b1 = c, c2 = 1.0, d3 = 1.0)
         }
-
-        fun zrotation(angle: Degrees) = zrotation(angle.radians)
 
         fun translation(a: Triad): Mat4 {
             return Mat4(a0 = 1.0, b1 = 1.0, c2 = 1.0, d0 = a[0], d1 = a[1], d2 = a[2], d3 = 1.0)

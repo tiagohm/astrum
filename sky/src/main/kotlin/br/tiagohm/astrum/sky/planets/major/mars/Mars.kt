@@ -1,17 +1,18 @@
 package br.tiagohm.astrum.sky.planets.major.mars
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Mars(parent: Sun) : Planet(
     "Mars",
-    3396.19 / AU,
+    Kilometer(3396.19).au,
     0.005886,
     0.150,
     null,
@@ -36,7 +37,7 @@ class Mars(parent: Sun) : Planet(
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

@@ -1,14 +1,14 @@
 package br.tiagohm.astrum.sky.planets.major.mars
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Phobos(parent: Mars) : Planet(
     "Phobos",
-    11.08 / AU,
+    Kilometer(11.08).au,
     1.0,
     0.07,
     null,

@@ -1,13 +1,14 @@
 package br.tiagohm.astrum.sky.planets.major.saturn
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.sin
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Ring
@@ -16,13 +17,13 @@ import kotlin.math.*
 
 class Saturn(parent: Sun) : Planet(
     "Saturn",
-    60268.0 / AU,
+    Kilometer(60268.0).au,
     0.09796243446,
     0.50,
     null,
     PlanetType.PLANET,
     parent,
-    Ring(74510.0 / AU, 140390.0 / AU),
+    Ring(Kilometer(74510.0).au, Kilometer(140390.0).au),
 ) {
 
     override val siderealDay = 0.44400925923884945092
@@ -42,7 +43,7 @@ class Saturn(parent: Sun) : Planet(
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

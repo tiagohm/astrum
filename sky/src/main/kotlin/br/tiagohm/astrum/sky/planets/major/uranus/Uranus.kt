@@ -1,10 +1,11 @@
 package br.tiagohm.astrum.sky.planets.major.uranus
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Ring
@@ -12,13 +13,13 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Uranus(parent: Sun) : Planet(
     "Uranus",
-    25559.0 / AU,
+    Kilometer(25559.0).au,
     0.0229273446,
     0.66,
     null,
     PlanetType.PLANET,
     parent,
-    Ring(26840.0 / AU, 97700.0 / AU),
+    Ring(Kilometer(26840.0).au, Kilometer(97700.0).au),
 ) {
 
     override val siderealDay = -0.71833333334397530864
@@ -38,7 +39,7 @@ class Uranus(parent: Sun) : Planet(
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

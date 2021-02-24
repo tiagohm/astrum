@@ -2,14 +2,15 @@ package br.tiagohm.astrum.sky.core.nutation
 
 import br.tiagohm.astrum.sky.JD_HOUR
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
 data class Nutation(
-    val deltaPsi: Radians = Radians.ZERO,
-    val deltaEpsilon: Radians = Radians.ZERO,
+    val deltaPsi: Angle = Radians.ZERO,
+    val deltaEpsilon: Angle = Radians.ZERO,
 ) {
 
     companion object {

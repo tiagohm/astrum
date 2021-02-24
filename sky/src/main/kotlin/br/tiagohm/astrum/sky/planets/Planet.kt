@@ -11,8 +11,10 @@ import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.orbit.Orbit
 import br.tiagohm.astrum.sky.core.sin
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Distance
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import br.tiagohm.astrum.sky.planets.major.jupiter.Jupiter
 import br.tiagohm.astrum.sky.planets.major.mars.Mars
@@ -25,8 +27,8 @@ import kotlin.math.*
 abstract class Planet internal constructor(
     // English planet name
     final override val id: String,
-    // Gets the equator radius of the planet in AU
-    val equatorialRadius: Double,
+    // Gets the equator radius of the planet
+    val equatorialRadius: Distance,
     val oblateness: Double,
     // Planet albedo. Used for magnitude computation when no other formula in use
     val albedo: Double,
@@ -43,7 +45,7 @@ abstract class Planet internal constructor(
 ) : CelestialObject {
 
     private var rotLocalToParent = Mat4.IDENTITY
-    private var axisRotation = Degrees.ZERO
+    private var axisRotation: Angle = Degrees.ZERO
     private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
 
     val oneMinusOblateness = 1.0 - oblateness
@@ -248,18 +250,18 @@ abstract class Planet internal constructor(
     }
 
     /**
-     * Computes the angular size in degrees.
+     * Computes the angular size.
      */
-    override fun angularSize(o: Observer): Degrees {
-        val radius = rings?.size ?: equatorialRadius
-        return Radians(atan2(radius, computeJ2000EquatorialPosition(o).length)).degrees
+    override fun angularSize(o: Observer): Angle {
+        val radius = (rings?.size ?: equatorialRadius).au.value
+        return Radians(atan2(radius, computeJ2000EquatorialPosition(o).length))
     }
 
     /**
-     * Computes the angular radius (degrees) of the planet spheroid (i.e. without the rings)
+     * Computes the angular radius of the planet spheroid (i.e. without the rings)
      */
-    fun spheroidAngularSize(o: Observer): Degrees {
-        return Radians(atan2(equatorialRadius, computeJ2000EquatorialPosition(o).length)).degrees
+    fun spheroidAngularSize(o: Observer): Angle {
+        return Radians(atan2(equatorialRadius.au.value, computeJ2000EquatorialPosition(o).length))
     }
 
     /**
@@ -269,7 +271,7 @@ abstract class Planet internal constructor(
      * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
      * For moons, it may be the obliquity against its planet's equatorial plane.
      */
-    open fun computeRotObliquity(jde: Double) = Radians.ZERO
+    open fun computeRotObliquity(jde: Double): Angle = Radians.ZERO
 
     final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
         var hz = Radians.ZERO // Horizon parallax factor
@@ -277,19 +279,19 @@ abstract class Planet internal constructor(
         if (hasAtmosphere) {
             // Canonical refraction at horizon is -34'. Replace by pressure-dependent value here!
             val zero = Triad(1.0, 0.0, 0.0)
-            hz += asin(o.refraction.backward(zero)[2])
+            hz += Radians(asin(o.refraction.backward(zero)[2]))
         }
 
         return internalComputeRTSTime(o, hz, hasAtmosphere)
     }
 
-    internal open fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
+    internal open fun internalComputeRTSTime(o: Observer, hz: Angle, hasAtmosphere: Boolean): Triad {
         val phi = o.site.latitude.radians
         val coeff = o.home.computeMeanSolarDay() / o.home.siderealDay
 
         val coord = Algorithms.rectangularToSphericalCoordinates(computeSiderealPositionGeometric(o))
-        val ra = M_2_PI - coord.x.value
-        val dec = coord.y.value
+        val ra = M_2_PI - coord.x.radians.value
+        val dec = coord.y
 
         var ha = ra * 12.0 / M_PI
         if (ha > 24.0) ha -= 24.0
@@ -339,7 +341,7 @@ abstract class Planet internal constructor(
             p = p.parent
         }
 
-        return res * Mat4.zrotation((axisRotation + 90.0).radians)
+        return res * Mat4.zrotation((axisRotation + Degrees.PLUS_90).radians)
     }
 
     inline val isRotatingRetrograde: Boolean
@@ -416,8 +418,8 @@ abstract class Planet internal constructor(
 
             if (posTimesParentPos > parentRq) {
                 // The satellite is farther away from the sun than the parent planet.
-                val sunRadius = parent.parent!!.equatorialRadius
-                val sunMinusParentRadius = sunRadius - parent.equatorialRadius
+                val sunRadius = parent.parent!!.equatorialRadius.au.value
+                val sunMinusParentRadius = sunRadius - parent.equatorialRadius.au.value
                 val quot = posTimesParentPos / parentRq
 
                 // Compute d = distance from satellite center to border of inner shadow.
@@ -425,15 +427,17 @@ abstract class Planet internal constructor(
                 var ds = sunRadius - sunMinusParentRadius * quot -
                         sqrt((1.0 - sunMinusParentRadius / sqrt(parentRq)) * (planetRq - posTimesParentPos * quot))
 
+                val radius = equatorialRadius.au.value
+
                 // The satellite is totally inside the inner shadow.
-                if (ds >= equatorialRadius) {
+                if (ds >= radius) {
                     // Fit a more realistic magnitude for the Moon case.
                     // I used some empirical data for fitting. --AW
                     shadowFactor = if (this is Moon) 2.718E-5 else 1E-9
-                } else if (ds > -equatorialRadius) {
+                } else if (ds > -radius) {
                     // The satellite is partly inside the inner shadow,
                     // compute a fantasy value for the magnitude:
-                    ds /= equatorialRadius
+                    ds /= radius
                     shadowFactor = (0.5 - (asin(ds) + ds * sqrt(1.0 - ds * ds)) / M_PI)
                 }
             }
@@ -456,7 +460,7 @@ abstract class Planet internal constructor(
 
     protected open fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,
@@ -472,8 +476,9 @@ abstract class Planet internal constructor(
         }
 
         // This formula source is unknown. But this is actually used even for the Moon!
-        val p = (1.0 - phaseAngle.value / M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / M_PI
-        val F = 2.0 * albedo * equatorialRadius * equatorialRadius * p /
+        val radius = equatorialRadius.au.value
+        val p = (1.0 - phaseAngle.radians.value / M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / M_PI
+        val F = 2.0 * albedo * radius * radius * p /
                 (3.0 * observerPlanetRq * planetRq) * shadowFactor
         return -26.73 - 2.5 * log10(F)
     }

@@ -1,6 +1,5 @@
 package br.tiagohm.astrum.sky.core.coordinates
 
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
 
-class HourAngle(val ha: Degrees, val dec: Radians) : Spherical(ha.radians, dec)
+class HourAngle(val ha: Angle, val dec: Angle) : Spherical(ha.radians, dec)

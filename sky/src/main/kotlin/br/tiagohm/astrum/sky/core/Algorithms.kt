@@ -5,7 +5,8 @@ import br.tiagohm.astrum.sky.core.coordinates.Geographic
 import br.tiagohm.astrum.sky.core.coordinates.Horizontal
 import br.tiagohm.astrum.sky.core.coordinates.Spherical
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Planet
 import java.lang.Math.cbrt
 import kotlin.math.*
@@ -85,7 +86,7 @@ object Algorithms {
 
     inline fun rectangularToSphericalCoordinates(a: Triad) = Spherical(a.longitude, a.latitude)
 
-    fun sphericalToRectangularCoordinates(longitude: Radians, latitude: Radians): Triad {
+    fun sphericalToRectangularCoordinates(longitude: Angle, latitude: Angle): Triad {
         val cosLat = cos(latitude)
         return Triad(cos(longitude) * cosLat, sin(longitude) * cosLat, sin(latitude))
     }
@@ -98,11 +99,11 @@ object Algorithms {
 
     fun distanceKm(planet: Planet, a: Geographic, b: Geographic): Double {
         val f = planet.oblateness // Flattening
-        val radius = planet.equatorialRadius * AU
+        val radius = planet.equatorialRadius.kilometer.value
 
-        val F = ((a.latitude + b.latitude) * 0.5) // Latitude
-        val G = ((a.latitude - b.latitude) * 0.5)
-        val L = ((a.longitude - b.longitude) * 0.5) // Longitude
+        val F = ((a.latitude + b.latitude).radians.value * 0.5) // Latitude
+        val G = ((a.latitude - b.latitude).radians.value * 0.5)
+        val L = ((a.longitude - b.longitude).radians.value * 0.5) // Longitude
 
         val sinG = sin(G)
         val cosG = cos(G)
@@ -127,7 +128,7 @@ object Algorithms {
         val (c, d) = to
 
         val az = atan2(sin(c - a), cos(b) * tan(d) - sin(b) * cos(c - a)) + if (southAzimuth) M_PI else 0.0
-        return Radians(az.pmod(M_2_PI))
+        return Radians(az).normalized
     }
 
     fun azimuth(from: Geographic, to: Geographic, southAzimuth: Boolean = false): Radians {
@@ -135,7 +136,7 @@ object Algorithms {
         val (c, d) = to
 
         val az = atan2(sin(c - a), cos(b) * tan(d) - sin(b) * cos(c - a)) + if (southAzimuth) M_PI else 0.0
-        return Radians(az.pmod(M_2_PI))
+        return Radians(az).normalized
     }
 
     fun computeInterpolatedElements(

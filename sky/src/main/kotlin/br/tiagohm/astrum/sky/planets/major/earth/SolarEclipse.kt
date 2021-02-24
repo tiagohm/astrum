@@ -7,8 +7,9 @@ import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.Geographic
 import br.tiagohm.astrum.sky.core.time.SiderealTime
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.*
 
@@ -16,7 +17,7 @@ data class SolarEclipse(
     val position: Geographic,
     val magnitude: Double,
     val distance: Double,
-    val azimuth: Degrees,
+    val azimuth: Angle,
 ) {
 
     companion object {
@@ -32,10 +33,10 @@ data class SolarEclipse(
             val mEquPos = moon.computeEquinoxEquatorialPosition(op)
             val sCoord = Algorithms.rectangularToSphericalCoordinates(sEquPos)
             val mCoord = Algorithms.rectangularToSphericalCoordinates(mEquPos)
-            var raSun = sCoord.x.value
-            val decSun = sCoord.y.value
-            var raMoon = mCoord.x.value
-            val decMoon = mCoord.y.value
+            var raSun = sCoord.x.radians.value
+            val decSun = sCoord.y.radians.value
+            var raMoon = mCoord.x.radians.value
+            val decMoon = mCoord.y.radians.value
 
             val raDiff = Radians(raMoon - raSun).normalized.degrees.value
 

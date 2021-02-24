@@ -1,6 +1,5 @@
 package br.tiagohm.astrum.sky.constellations
 
-import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_PI
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.Algorithms
@@ -107,9 +106,9 @@ enum class Constellation(
             val pos1875 = Algorithms.j2000ToJ1875(o.equinoxEquatorialToJ2000(pos, false))
             val (ra1875, dec1875) = Algorithms.rectangularToSphericalCoordinates(pos1875)
 
-            var ra1875InHours = ra1875.value * 12.0 / M_PI
+            var ra1875InHours = ra1875.radians.value * 12.0 / M_PI
             if (ra1875InHours < 0.0) ra1875InHours += 24.0
-            val dec1875InDeg = dec1875.value * M_180_PI
+            val dec1875InDeg = dec1875.degrees.value
 
             val lines = ConstellationLine.lines
 

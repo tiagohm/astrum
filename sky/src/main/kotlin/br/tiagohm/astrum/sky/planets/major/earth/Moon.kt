@@ -1,15 +1,20 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.sky.M_2_PI
+import br.tiagohm.astrum.sky.Observer
+import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.Equatorial
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Moon(parent: Earth) : Planet(
     "Moon",
-    1737.4 / AU,
+    Kilometer(1737.4).au,
     0.0,
     0.12,
     null,
@@ -32,11 +37,11 @@ class Moon(parent: Earth) : Planet(
 
     override fun computeRotObliquity(jde: Double) = Radians(3.7723828609181886E-4)
 
-    override fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
-        return super.internalComputeRTSTime(o, hz + 0.7275 * 0.95 * M_PI_180, hasAtmosphere)
+    override fun internalComputeRTSTime(o: Observer, hz: Angle, hasAtmosphere: Boolean): Triad {
+        return super.internalComputeRTSTime(o, hz + Degrees(0.7275 * 0.95), hasAtmosphere)
     }
 
-    private fun computeAge(o: Observer): Radians {
+    private fun computeAge(o: Observer): Angle {
         val op = o.copy(useTopocentricCoordinates = false)
         val eclJDE = parent!!.computeRotObliquity(o.jde)
         val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))
@@ -64,5 +69,5 @@ class Moon(parent: Earth) : Planet(
         }
     }
 
-    fun age(o: Observer) = computeAge(o) * 29.530588853 / M_2_PI
+    fun age(o: Observer) = computeAge(o).radians.value * 29.530588853 / M_2_PI
 }

@@ -3,8 +3,8 @@ package br.tiagohm.astrum.sky
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.precession.Precession
 import br.tiagohm.astrum.sky.core.time.DateTime
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
@@ -14,6 +14,7 @@ import kotlin.math.round
 
 const val AU = 1.495978706996262E+08
 const val PARSEC = 30.857E+12
+const val LIGHT_YEAR = 9460730472580800.0 // meters
 const val EPSILON = 1E-10
 const val M_PI = Math.PI
 const val M_2_PI = 2 * M_PI
@@ -35,9 +36,7 @@ const val ONE_OVER_JD_SECOND = SECONDS_PER_DAY
 const val TZ_ERA_BEGINNING = 2395996.5 // December 1, 1847
 const val M_ARCSEC_RAD = M_2_PI / (360.0 * 3600.0)
 
-val MAT_J2000_TO_VSOP87 = Mat4.xrotation(Radians(-23.4392803055555555556 * M_PI_180)) *
-        Mat4.zrotation(Radians(0.0000275 * M_PI_180))
-
+val MAT_J2000_TO_VSOP87 = Mat4.xrotation(-EPS_0) * Mat4.zrotation(Radians(0.0000275 * M_PI_180))
 val MAT_VSOP87_TO_J2000 = MAT_J2000_TO_VSOP87.transpose()
 
 val MAT_J2000_TO_GALACTIC = Mat4(
@@ -67,10 +66,6 @@ val MAT_J2000_TO_J1875 by lazy {
             Mat4.xrotation(-p.omega) *
             Mat4.zrotation(p.chi)).transpose()
 }
-
-// Units
-
-typealias Celsius = Double
 
 // Math
 

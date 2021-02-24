@@ -1,9 +1,8 @@
+import br.tiagohm.astrum.sky.core.coordinates.Coordinate
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.coordinates.Coordinate
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
 import org.junit.jupiter.api.Assertions.assertEquals
 
 fun assertEquals(expected: Mat4, actual: Mat4, delta: Double) {
@@ -34,18 +33,15 @@ fun assertEquals(x: Double, y: Double, actual: Coordinate, delta: Double, isDegr
     }
 }
 
-fun assertEquals(expected: Radians, actual: Radians, delta: Double) {
+fun assertEquals(expected: Angle, actual: Angle, delta: Double) {
     assertEquals(expected, actual, delta)
 }
 
-fun assertEquals(expected: Double, actual: Radians, delta: Double) {
-    assertEquals(expected, actual.value, delta)
+fun assertEquals(expected: Double, actual: Angle, delta: Double, isDegrees: Boolean = false) {
+    if (isDegrees) {
+        assertEquals(expected, actual.degrees.value, delta)
+    } else {
+        assertEquals(expected, actual.radians.value, delta)
+    }
 }
 
-fun assertEquals(expected: Degrees, actual: Degrees, delta: Double) {
-    assertEquals(expected, actual, delta)
-}
-
-fun assertEquals(expected: Double, actual: Degrees, delta: Double) {
-    assertEquals(expected, actual.value, delta)
-}

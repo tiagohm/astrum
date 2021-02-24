@@ -2,7 +2,9 @@ package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import kotlin.math.log10
 import kotlin.math.max
@@ -10,7 +12,7 @@ import kotlin.math.sqrt
 
 class Sun : Planet(
     "Sun",
-    695700.0 / AU,
+    Kilometer(695700.0).au,
     0.0,
     -1.0,
     null,
@@ -36,7 +38,7 @@ class Sun : Planet(
 
     override fun computeRotObliquity(jde: Double) = Radians(0.12653637076958889433)
 
-    override fun internalComputeRTSTime(o: Observer, hz: Radians, hasAtmosphere: Boolean): Triad {
+    override fun internalComputeRTSTime(o: Observer, hz: Angle, hasAtmosphere: Boolean): Triad {
         return super.internalComputeRTSTime(o, hz - angularSize(o).radians, hasAtmosphere)
     }
 

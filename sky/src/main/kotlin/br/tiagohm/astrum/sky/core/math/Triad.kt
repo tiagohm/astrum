@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.sky.core.math
 
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan2
@@ -34,10 +35,10 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     inline val length: Double
         get() = sqrt(lengthSquared)
 
-    inline val latitude: Radians
+    inline val latitude: Angle
         get() = Radians(asin(this[2] / length))
 
-    inline val longitude: Radians
+    inline val longitude: Angle
         get() = Radians(atan2(this[1], this[0]))
 
     val normalized: Triad

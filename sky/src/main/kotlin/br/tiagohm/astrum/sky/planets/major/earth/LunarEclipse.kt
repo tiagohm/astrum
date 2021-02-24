@@ -2,7 +2,9 @@ package br.tiagohm.astrum.sky.planets.major.earth
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.cos
+import br.tiagohm.astrum.sky.core.sin
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.asin
 import kotlin.math.cos
@@ -31,10 +33,10 @@ data class LunarEclipse(
             val sEquPos = sun.computeEquinoxEquatorialPosition(op)
             val sCoord = Algorithms.rectangularToSphericalCoordinates(sEquPos)
             val mCoord = Algorithms.rectangularToSphericalCoordinates(mEquPos)
-            val raSun = sCoord.x.value
-            val decSun = sCoord.y.value
-            var raMoon = mCoord.x.value
-            val decMoon = mCoord.y.value
+            val raSun = sCoord.x.radians.value
+            val decSun = sCoord.y
+            var raMoon = mCoord.x.radians.value
+            val decMoon = mCoord.y
 
             // R.A. of Earth's shadow
             val raShadow = (raSun + M_PI).let { if (it < 0) it + M_2_PI else it }

@@ -3,16 +3,17 @@ package br.tiagohm.astrum.sky.core.precession
 import br.tiagohm.astrum.sky.JD_DAY
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
 data class Precession(
-    val psi: Radians = Radians.ZERO,
-    val omega: Radians = Radians.ZERO,
-    val chi: Radians = Radians.ZERO,
-    val epsilon: Radians = Radians.ZERO,
+    val psi: Angle = Radians.ZERO,
+    val omega: Angle = Radians.ZERO,
+    val chi: Angle = Radians.ZERO,
+    val epsilon: Angle = Radians.ZERO,
 ) {
 
     companion object {

@@ -1,10 +1,11 @@
 package br.tiagohm.astrum.sky.planets.major.neptune
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Ring
@@ -12,13 +13,13 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Neptune(parent: Sun) : Planet(
     "Neptune",
-    24764.0 / AU,
+    Kilometer(24764.0).au,
     0.01708124697,
     0.62,
     null,
     PlanetType.PLANET,
     parent,
-    Ring(40900.0 / AU, 62932.0 / AU),
+    Ring(Kilometer(40900.0).au, Kilometer(62932.0).au),
 ) {
 
     override val siderealDay = 0.671249999952453125
@@ -38,7 +39,7 @@ class Neptune(parent: Sun) : Planet(
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

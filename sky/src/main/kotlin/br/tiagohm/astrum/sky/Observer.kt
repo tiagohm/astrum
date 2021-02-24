@@ -12,8 +12,11 @@ import br.tiagohm.astrum.sky.core.tan
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.MoonSecularAcceleration
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.pressure.Pressure
+import br.tiagohm.astrum.sky.core.units.temperature.Temperature
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.major.earth.Earth
@@ -25,10 +28,10 @@ data class Observer(
     val home: Earth,
     val site: Location,
     val dateTime: DateTime,
-    val deltaTAlgorithm: TimeCorrectionType = TimeCorrectionType.ESPEANAK_MEEUS,
-    val pressure: Double = 1013.0,
-    val temperature: Celsius = 15.0,
-    val extinctionCoefficient: Double = 0.13,
+    val timeCorrection: TimeCorrectionType = TimeCorrectionType.ESPEANAK_MEEUS,
+    val pressure: Pressure = Refraction.DEFAULT_PRESSURE,
+    val temperature: Temperature = Refraction.DEFAULT_TEMPERATURE,
+    val extinctionCoefficient: Double = Extinction.DEFAULT_COEFFICIENT,
     val useTopocentricCoordinates: Boolean = true,
     val useNutation: Boolean = true,
     val useLightTravelTime: Boolean = true,
@@ -83,7 +86,7 @@ data class Observer(
 
         if (useTopocentricCoordinates) {
             val offset = computeTopographicOffsetFromCenter()
-            val sigma = site.latitude.radians - offset[2]
+            val sigma = site.latitude.radians - Radians(offset[2])
             val rho = offset[3]
 
             matAltAzToHeliocentricEclipticJ2000 =
@@ -107,10 +110,10 @@ data class Observer(
     }
 
     fun computeDeltaT(jd: Double): Double {
-        var deltaT = deltaTAlgorithm.compute(jd)
+        var deltaT = timeCorrection.compute(jd)
 
-        if (!deltaTAlgorithm.deltaTdontUseMoon) {
-            deltaT += MoonSecularAcceleration.compute(jd, deltaTAlgorithm.deltaTnDot, false)
+        if (!timeCorrection.deltaTdontUseMoon) {
+            deltaT += MoonSecularAcceleration.compute(jd, timeCorrection.deltaTnDot, false)
         }
 
         return deltaT
@@ -144,16 +147,17 @@ data class Observer(
      * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude
      */
     fun computeTopographicOffsetFromCenter(): Quad {
-        if (home.equatorialRadius <= 0.0) {
-            return Quad(0.0, 0.0, site.latitude.radians.value, site.altitude / (1000.0 * AU))
+        val a = home.equatorialRadius.au.value
+
+        if (a <= 0.0) {
+            return Quad(0.0, 0.0, site.latitude.radians.value, site.altitude.au.value / (1000.0 * AU))
         }
 
-        val a = home.equatorialRadius
         val bByA = home.oneMinusOblateness
 
         val lat = site.latitude.radians
         val u = atan(bByA * tan(lat))
-        val alt = site.altitude / (1000.0 * AU * a)
+        val alt = site.altitude.au.value / (1000.0 * AU * a)
 
         val rhoSinPhiPrime = bByA * sin(u) + alt * sin(lat)
         val rhoCosPhiPrime = cos(u) + alt * cos(lat)
@@ -169,7 +173,7 @@ data class Observer(
      * For Earth we need JD(UT), for other planets JDE! To be general, just have both in here!
      */
     fun computeRotAltAzToEquatorial(): Mat4 {
-        return Mat4.zrotation(computeSiderealTime()) * Mat4.yrotation(Degrees(90.0 - site.latitude.value))
+        return Mat4.zrotation(computeSiderealTime()) * Mat4.yrotation(Degrees(90.0 - site.latitude.degrees.value))
     }
 
     fun computeRotEquatorialToVsop87() = home.computeRotEquatorialToVsop87()
@@ -177,15 +181,15 @@ data class Observer(
     /**
      * Computes the sidereal time in radians of the prime meridian (i.e. Rotation Angle) shifted by the observer longitude.
      */
-    fun computeSiderealTime(): Radians {
-        return (home.computeSiderealTime(jd, jde, useNutation) + site.longitude).radians
+    fun computeSiderealTime(): Angle {
+        return home.computeSiderealTime(jd, jde, useNutation) + site.longitude
     }
 
     /**
      * Compute the mean sidereal time in hours of current date shifted by the observer longitude
      */
     fun computeMeanSiderealTime(): Double {
-        var time = (home.computeSiderealTime(jd, jde, false) + site.longitude).value / 15.0
+        var time = (home.computeSiderealTime(jd, jde, false) + site.longitude).degrees.value / 15.0
         time = time.pmod(24.0)
         return if (time < 0) time + 24.0 else time
     }
@@ -194,7 +198,7 @@ data class Observer(
      * Compute the apparent sidereal time in hours of current date shifted by the observer longitude
      */
     fun computeApparentSiderealTime(): Double {
-        var time = (home.computeSiderealTime(jd, jde, true) + site.longitude).value / 15.0
+        var time = (home.computeSiderealTime(jd, jde, true) + site.longitude).degrees.value / 15.0
         time = time.pmod(24.0)
         return if (time < 0) time + 24.0 else time
     }
@@ -231,7 +235,7 @@ data class Observer(
         }
     }
 
-    fun computeEclipticObliquity(): Radians {
+    fun computeEclipticObliquity(): Angle {
         return home.computeRotObliquity(jde) + if (useNutation) Nutation.compute(jde).deltaEpsilon else Radians.ZERO
     }
 
@@ -246,11 +250,11 @@ data class Observer(
         val sun = home.parent!! as Sun
         val lp = lightTimeSunPosition
         val p3 = computeHeliocentricEclipticPosition()
-        val RS = sun.equatorialRadius
+        val RS = sun.equatorialRadius.au.value
 
         val trans = moon.computeShadowMatrix(jde)
         val c = trans * Triad.ZERO
-        val radius = moon.equatorialRadius
+        val radius = moon.equatorialRadius.au.value
 
         var v1 = lp - p3
         var v2 = c - p3

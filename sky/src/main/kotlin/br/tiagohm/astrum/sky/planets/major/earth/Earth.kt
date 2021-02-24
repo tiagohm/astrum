@@ -1,6 +1,5 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Mat4
@@ -8,15 +7,16 @@ import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.nutation.Nutation
 import br.tiagohm.astrum.sky.core.precession.Precession
 import br.tiagohm.astrum.sky.core.time.SiderealTime
-import br.tiagohm.astrum.sky.core.units.Degrees
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Earth(parent: Sun) : Planet(
     "Earth",
-    6378.1366 / AU,
+    Kilometer(6378.1366).au,
     0.003352810664747481,
     0.3,
     null,
@@ -71,13 +71,11 @@ class Earth(parent: Sun) : Planet(
         return rotLocalToParent
     }
 
-    override fun computeRotObliquity(jde: Double): Radians {
-        return Precession.computeVondrakEpsilon(jde)
-    }
+    override fun computeRotObliquity(jde: Double) = Precession.computeVondrakEpsilon(jde)
 
     override fun computeVisualMagnitude(
         o: Observer,
-        phaseAngle: Radians,
+        phaseAngle: Angle,
         cosChi: Double,
         observerRq: Double,
         planetRq: Double,

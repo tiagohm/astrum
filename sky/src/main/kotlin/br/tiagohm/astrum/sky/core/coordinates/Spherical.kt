@@ -1,14 +1,14 @@
 package br.tiagohm.astrum.sky.core.coordinates
 
-import br.tiagohm.astrum.sky.core.units.Radians
+import br.tiagohm.astrum.sky.core.units.angle.Angle
 
 /**
  * Represents a generic spherical coordinate system.
  */
 @Suppress("NOTHING_TO_INLINE")
 open class Spherical(
-    override val x: Radians,
-    override val y: Radians,
+    override val x: Angle,
+    override val y: Angle,
 ) : Coordinate {
 
     inline operator fun component1() = x

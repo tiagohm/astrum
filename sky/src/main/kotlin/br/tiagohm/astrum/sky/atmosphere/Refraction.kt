@@ -1,17 +1,20 @@
 package br.tiagohm.astrum.sky.atmosphere
 
-import br.tiagohm.astrum.sky.Celsius
 import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.units.pressure.Millibar
+import br.tiagohm.astrum.sky.core.units.pressure.Pressure
+import br.tiagohm.astrum.sky.core.units.temperature.Celsius
+import br.tiagohm.astrum.sky.core.units.temperature.Temperature
 import kotlin.math.*
 
 data class Refraction(
-    val pressure: Double = 1013.0,
-    val temperature: Celsius = 15.0,
+    val pressure: Pressure = DEFAULT_PRESSURE,
+    val temperature: Temperature = DEFAULT_TEMPERATURE,
 ) {
 
-    private val ptc = pressure / 1010.0 * 283.0 / (273.0 + temperature) / 60.0
+    private val ptc = pressure.millibar.value / 1010.0 * 283.0 / (273.0 + temperature.celsius.value) / 60.0
 
     fun forward(pos: Triad): Triad {
         val length = pos.length
@@ -84,5 +87,8 @@ data class Refraction(
         private const val MIN_APP_ALTITUDE_DEG = -3.21783
         private const val TRANSITION_WIDTH_GEO_DEG = 1.46
         private const val TRANSITION_WIDTH_APP_DEG = 1.78217
+
+        val DEFAULT_PRESSURE = Millibar(1013.0)
+        val DEFAULT_TEMPERATURE = Celsius(15.0)
     }
 }
