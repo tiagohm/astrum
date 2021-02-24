@@ -87,8 +87,7 @@ object Algorithms {
     inline fun rectangularToSphericalCoordinates(a: Triad) = Spherical(a.longitude, a.latitude)
 
     fun sphericalToRectangularCoordinates(longitude: Angle, latitude: Angle): Triad {
-        val cosLat = cos(latitude)
-        return Triad(cos(longitude) * cosLat, sin(longitude) * cosLat, sin(latitude))
+        return cos(latitude).let { Triad(cos(longitude) * it, sin(longitude) * it, sin(latitude)) }
     }
 
     inline fun j2000ToGalactic(a: Triad) = MAT_J2000_TO_GALACTIC * a

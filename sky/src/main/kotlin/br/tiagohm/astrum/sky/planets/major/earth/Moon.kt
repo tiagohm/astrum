@@ -43,7 +43,7 @@ class Moon(parent: Earth) : Planet(
 
     private fun computeAge(o: Observer): Angle {
         val op = o.copy(useTopocentricCoordinates = false)
-        val eclJDE = parent!!.computeRotObliquity(o.jde)
+        val eclJDE = parent!!.computeRotObliquity(op.jde)
         val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))
         val equMoon = Equatorial(raMoon, decMoon)
         val (lambdaMoon) = equMoon.toEcliptic(eclJDE)
@@ -53,7 +53,10 @@ class Moon(parent: Earth) : Planet(
         return (lambdaMoon - lambdaSun).normalized
     }
 
-    fun lunarPhase(o: Observer): LunarPhase {
+    /**
+     * Gets the lunar phase name.
+     */
+    fun phase(o: Observer): LunarPhase {
         val delta = computeAge(o).degrees.value
 
         return when {
@@ -69,5 +72,8 @@ class Moon(parent: Earth) : Planet(
         }
     }
 
+    /**
+     * Computer lunar phase age in days.
+     */
     fun age(o: Observer) = computeAge(o).radians.value * 29.530588853 / M_2_PI
 }

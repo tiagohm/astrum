@@ -19,7 +19,7 @@ data class Rotation(
             val pole = Algorithms.sphericalToRectangularCoordinates(ra, dec)
             val vsop87Pole = MAT_J2000_TO_VSOP87.multiplyWithoutTranslation(pole)
             val (lng, lat) = Algorithms.rectangularToSphericalCoordinates(vsop87Pole)
-            return Rotation(lng + Radians.PI_2, -lat + Radians.PI_2)
+            return Rotation(Radians.PI_2 - lat, lng + Radians.PI_2)
         }
     }
 }

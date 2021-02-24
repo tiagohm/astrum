@@ -700,7 +700,7 @@ class ObserverTest {
     }
 
     @Test
-    fun phase() {
+    fun illumination() {
         val sun = Sun()
         val earth = Earth(sun)
 
@@ -998,42 +998,42 @@ class ObserverTest {
         val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, DateTime(2021, 2, 11, 15, 0, 0))
 
         o.copy(dateTime = DateTime(2021, 2, 11, 16, 0, 0)).let {
-            assertEquals(LunarPhase.NEW_MOON, moon.lunarPhase(it))
+            assertEquals(LunarPhase.NEW_MOON, moon.phase(it))
             assertEquals(29.5, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 2, 11, 18, 0, 0)).let {
-            assertEquals(LunarPhase.WAXING_CRESCENT, moon.lunarPhase(it))
+            assertEquals(LunarPhase.WAXING_CRESCENT, moon.phase(it))
             assertEquals(DELTA_1, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 2, 19, 15, 0, 0)).let {
-            assertEquals(LunarPhase.FIRST_QUARTER, moon.lunarPhase(it))
+            assertEquals(LunarPhase.FIRST_QUARTER, moon.phase(it))
             assertEquals(7.4, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 2, 20, 21, 0, 0)).let {
-            assertEquals(LunarPhase.WAXING_GIBBOUS, moon.lunarPhase(it))
+            assertEquals(LunarPhase.WAXING_GIBBOUS, moon.phase(it))
             assertEquals(8.5, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 2, 27, 5, 0, 0)).let {
-            assertEquals(LunarPhase.FULL_MOON, moon.lunarPhase(it))
+            assertEquals(LunarPhase.FULL_MOON, moon.phase(it))
             assertEquals(14.8, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 2, 27, 21, 0, 0)).let {
-            assertEquals(LunarPhase.WANING_GIBBOUS, moon.lunarPhase(it))
+            assertEquals(LunarPhase.WANING_GIBBOUS, moon.phase(it))
             assertEquals(15.5, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 3, 5, 23, 0, 0)).let {
-            assertEquals(LunarPhase.THIRD_QUARTER, moon.lunarPhase(it))
+            assertEquals(LunarPhase.THIRD_QUARTER, moon.phase(it))
             assertEquals(22.2, moon.age(it), DELTA_1)
         }
 
         o.copy(dateTime = DateTime(2021, 3, 7, 2, 0, 0)).let {
-            assertEquals(LunarPhase.WANING_CRESCENT, moon.lunarPhase(it))
+            assertEquals(LunarPhase.WANING_CRESCENT, moon.phase(it))
             assertEquals(23.4, moon.age(it), DELTA_1)
         }
     }
@@ -1050,7 +1050,7 @@ class ObserverTest {
 
         // Not started
         o.copy().let {
-            assertEquals(LunarPhase.WAXING_GIBBOUS, moon.lunarPhase(it))
+            assertEquals(LunarPhase.WAXING_GIBBOUS, moon.phase(it))
             assertEquals(14.6, moon.age(it), DELTA_1)
             assertEquals(82.5454, 70.3246, moon.horizontal(it), DELTA_3, true)
             assertEquals(1.0, moon.illumination(it), DELTA_1)
@@ -1078,7 +1078,7 @@ class ObserverTest {
 
         // Maximum Eclipse
         o.copy(dateTime = DateTime(2022, 5, 16, 1, 11, 20)).let {
-            assertEquals(LunarPhase.FULL_MOON, moon.lunarPhase(it))
+            assertEquals(LunarPhase.FULL_MOON, moon.phase(it))
             assertEquals(277.2745, 72.3696, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
             assertEquals(2.37272, le.penumbralMagnitude, DELTA_5)
@@ -1097,7 +1097,7 @@ class ObserverTest {
 
         // Partial Eclipse ends
         o.copy(dateTime = DateTime(2022, 5, 16, 2, 55, 8)).let {
-            assertEquals(LunarPhase.WANING_GIBBOUS, moon.lunarPhase(it))
+            assertEquals(LunarPhase.WANING_GIBBOUS, moon.phase(it))
             assertEquals(265.7446, 49.0918, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
             assertEquals(0.95841, le.penumbralMagnitude, DELTA_5)
