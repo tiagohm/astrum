@@ -11,7 +11,7 @@ import br.tiagohm.astrum.sky.core.units.distance.Meter
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.major.earth.*
-import br.tiagohm.astrum.sky.planets.major.jupiter.Jupiter
+import br.tiagohm.astrum.sky.planets.major.jupiter.*
 import br.tiagohm.astrum.sky.planets.major.mars.Deimos
 import br.tiagohm.astrum.sky.planets.major.mars.Mars
 import br.tiagohm.astrum.sky.planets.major.mars.Phobos
@@ -1172,6 +1172,127 @@ class ObserverTest {
         assertEquals(1.350, deimos.orbitalVelocity(o), DELTA_3)
         assertEquals(22.289, deimos.heliocentricVelocity(o), DELTA_3)
         assertEquals(0.000001, deimos.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun jupiterMoons() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val jupiter = Jupiter(sun)
+        val io = Io(jupiter)
+        val europa = Europa(jupiter)
+        val ganymede = Ganymede(jupiter)
+        val callisto = Callisto(jupiter)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        // Io
+        assertEquals(4.99, io.visualMagnitude(o), DELTA_2)
+        assertEquals(4.99, io.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(5.02, io.meanOppositionMagnitude, DELTA_2)
+        assertEquals(331.37064, -12.9591, io.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(331.65676, -12.8553, io.equatorial(o), DELTA_4, true)
+        assertEquals(7.80123, -12.8553, io.hourAngle(o), DELTA_4, true)
+        assertEquals(246.6340, -18.8934, io.horizontal(o), DELTA_4, true)
+        assertEquals(44.5969, -48.7599, io.galactic(o), DELTA_4, true)
+        assertEquals(-92.2277, 34.8665, io.supergalactic(o), DELTA_4, true)
+        assertEquals(328.8209, -1.1468, io.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(329.1186, -1.1480, io.ecliptic(o), DELTA_4, true)
+        assertEquals(119.5762, io.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AQR, io.constellation(o))
+        assertEquals(164.1348, io.elongation(o), DELTA_4, true)
+        assertEquals(3.161, io.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * io.illumination(o), DELTA_1)
+        assertEquals(4.046, io.distance(o), DELTA_3)
+        assertEquals(5.029, io.distanceFromSun(o), DELTA_3)
+        assertEquals(17.354, io.orbitalVelocity(o), DELTA_3)
+        assertEquals(23.153, io.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.000344, io.angularSize(o) * 2, DELTA_6, true)
+        assertEquals(Triad(18.755, 1.1774, 7.6), io.rts(o), DELTA_3)
+        assertEquals(42.4592 / 24.0, io.siderealDay, DELTA_3)
+        assertEquals(42.4767 / 24.0, io.meanSolarDay, DELTA_3)
+
+        // Europa
+        assertEquals(5.21, europa.visualMagnitude(o), DELTA_2)
+        assertEquals(5.21, europa.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(5.29, europa.meanOppositionMagnitude, DELTA_2)
+        assertEquals(331.29151, -12.9926, europa.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(331.57769, -12.8889, europa.equatorial(o), DELTA_4, true)
+        assertEquals(7.80650, -12.8889, europa.hourAngle(o), DELTA_4, true)
+        assertEquals(246.5629, -18.9439, europa.horizontal(o), DELTA_4, true)
+        assertEquals(44.4993, -48.7058, europa.galactic(o), DELTA_4, true)
+        assertEquals(-92.3100, 34.9166, europa.supergalactic(o), DELTA_4, true)
+        assertEquals(328.7369, -1.1512, europa.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(329.0346, -1.1524, europa.ecliptic(o), DELTA_4, true)
+        assertEquals(119.6169, europa.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AQR, europa.constellation(o))
+        assertEquals(164.2182, europa.elongation(o), DELTA_4, true)
+        assertEquals(3.1468, europa.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * europa.illumination(o), DELTA_1)
+        assertEquals(4.042, europa.distance(o), DELTA_3)
+        assertEquals(5.026, europa.distanceFromSun(o), DELTA_3)
+        assertEquals(13.839, europa.orbitalVelocity(o), DELTA_3)
+        assertEquals(10.613, europa.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.000295, europa.angularSize(o) * 2, DELTA_6, true)
+        assertEquals(Triad(18.75, 1.172, 7.594), europa.rts(o), DELTA_3)
+        assertEquals(85.2283 / 24.0, europa.siderealDay, DELTA_3)
+        assertEquals(85.2981 / 24.0, europa.meanSolarDay, DELTA_3)
+
+        // Ganymede
+        assertEquals(4.55, ganymede.visualMagnitude(o), DELTA_2)
+        assertEquals(4.55, ganymede.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(4.61, ganymede.meanOppositionMagnitude, DELTA_2)
+        assertEquals(331.37354, -12.9568, ganymede.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(331.65966, -12.8530, ganymede.equatorial(o), DELTA_4, true)
+        assertEquals(7.80103, -12.8530, ganymede.hourAngle(o), DELTA_4, true)
+        assertEquals(246.6376, -18.8921, ganymede.horizontal(o), DELTA_4, true)
+        assertEquals(44.6019, -48.7614, ganymede.galactic(o), DELTA_4, true)
+        assertEquals(-92.2236, 34.8652, ganymede.supergalactic(o), DELTA_4, true)
+        assertEquals(328.8244, -1.1456, ganymede.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(329.1220, -1.1468, ganymede.ecliptic(o), DELTA_4, true)
+        assertEquals(119.5744, ganymede.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AQR, ganymede.constellation(o))
+        assertEquals(164.1314, ganymede.elongation(o), DELTA_4, true)
+        assertEquals(3.1578, ganymede.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * ganymede.illumination(o), DELTA_1)
+        assertEquals(4.052, ganymede.distance(o), DELTA_3)
+        assertEquals(5.035, ganymede.distanceFromSun(o), DELTA_3)
+        assertEquals(10.905, ganymede.orbitalVelocity(o), DELTA_3)
+        assertEquals(23.773, ganymede.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.000497, ganymede.angularSize(o) * 2, DELTA_6, true)
+        assertEquals(Triad(18.755, 1.1776, 7.6), ganymede.rts(o), DELTA_3)
+        assertEquals(171.7092 / 24.0, ganymede.siderealDay, DELTA_3)
+        assertEquals(171.9933 / 24.0, ganymede.meanSolarDay, DELTA_3)
+
+        // Callisto
+        assertEquals(5.72, callisto.visualMagnitude(o), DELTA_2)
+        assertEquals(5.72, callisto.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(5.65, callisto.meanOppositionMagnitude, DELTA_2)
+        assertEquals(331.22461, -13.0158, callisto.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(331.51085, -12.9121, callisto.equatorial(o), DELTA_4, true)
+        assertEquals(7.81096, -12.9121, callisto.hourAngle(o), DELTA_4, true)
+        assertEquals(246.5075, -18.9890, callisto.horizontal(o), DELTA_4, true)
+        assertEquals(44.4238, -48.6578, callisto.galactic(o), DELTA_4, true)
+        assertEquals(-92.3743, 34.9615, callisto.supergalactic(o), DELTA_4, true)
+        assertEquals(328.6678, -1.1502, callisto.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(328.9654, -1.1514, callisto.ecliptic(o), DELTA_4, true)
+        assertEquals(119.6498, callisto.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AQR, callisto.constellation(o))
+        assertEquals(164.2873, callisto.elongation(o), DELTA_4, true)
+        assertEquals(3.1252, callisto.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * callisto.illumination(o), DELTA_1)
+        assertEquals(4.055, callisto.distance(o), DELTA_3)
+        assertEquals(5.039, callisto.distanceFromSun(o), DELTA_3)
+        assertEquals(8.217, callisto.orbitalVelocity(o), DELTA_3)
+        assertEquals(20.595, callisto.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.000455, callisto.angularSize(o) * 2, DELTA_6, true)
+        assertEquals(Triad(18.744, 1.1667, 7.591), callisto.rts(o), DELTA_3)
+        assertEquals(400.5364 / 24.0, callisto.siderealDay, DELTA_3)
+        assertEquals(402.0853 / 24.0, callisto.meanSolarDay, DELTA_3)
     }
 
     companion object {

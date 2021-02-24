@@ -4,6 +4,7 @@ import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.ephemeris.Elp82b
+import br.tiagohm.astrum.sky.core.ephemeris.L12
 import br.tiagohm.astrum.sky.core.ephemeris.MarsSat
 import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
 import br.tiagohm.astrum.sky.core.math.Mat4
@@ -66,17 +67,17 @@ abstract class Planet internal constructor(
         get() = computeMeanSolarDay()
 
     /**
-     * Get duration of sidereal day (earth days)
+     * Get duration of sidereal day, in earth days.
      */
     abstract val siderealDay: Double
 
     /**
-     * Gets the absolute magnitude
+     * Gets the absolute magnitude.
      */
     open val absoluteMagnitude = -99.0
 
     /**
-     * Returns the mean opposition magnitude, defined as V(1,0)+5log10(a(a-1))
+     * Returns the mean opposition magnitude, defined as V(1,0)+5log10(a(a-1)).
      */
     open val meanOppositionMagnitude: Double
         get() {
@@ -523,6 +524,10 @@ abstract class Planet internal constructor(
 
         fun computeMarsSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
             return MarsSat.computeCoordinates(jd, body)
+        }
+
+        fun computeJupiterSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+            return L12.computeCoordinates(jd, body)
         }
 
         fun computePlanetHeliocentricCoordinates(jd: Double, planet: Int): DoubleArray {

@@ -15,7 +15,7 @@ import kotlin.math.round
 const val AU = 1.495978706996262E+08
 const val PARSEC = 30.857E+12
 const val LIGHT_YEAR = 9460730472580800.0 // meters
-const val EPSILON = 1E-10
+const val EPSILON = 1E-12
 const val M_PI = Math.PI
 const val M_2_PI = 2 * M_PI
 const val M_3_PI = 3 * M_PI
