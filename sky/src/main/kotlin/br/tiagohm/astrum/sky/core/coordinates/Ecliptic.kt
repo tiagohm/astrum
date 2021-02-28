@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.sky.core.coordinates
 
-import br.tiagohm.astrum.sky.core.cos
-import br.tiagohm.astrum.sky.core.sin
-import br.tiagohm.astrum.sky.core.tan
+import br.tiagohm.astrum.sky.core.math.cos
+import br.tiagohm.astrum.sky.core.math.sin
+import br.tiagohm.astrum.sky.core.math.tan
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.asin

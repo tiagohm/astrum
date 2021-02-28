@@ -13,13 +13,13 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Neptune(parent: Sun) : Planet(
     "Neptune",
-    Kilometer(24764.0).au,
+    Kilometer(24764.0),
     0.01708124697,
     0.62,
     null,
     PlanetType.PLANET,
     parent,
-    Ring(Kilometer(40900.0).au, Kilometer(62932.0).au),
+    Ring(Kilometer(40900.0), Kilometer(62932.0)),
 ) {
 
     override val siderealDay = 0.671249999952453125
@@ -36,6 +36,8 @@ class Neptune(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.489152978736078)
+
+    override fun computeRotAscendingNode() = Radians(0.8593144058841349)
 
     override fun computeVisualMagnitude(
         o: Observer,

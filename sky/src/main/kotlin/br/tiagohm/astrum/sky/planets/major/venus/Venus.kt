@@ -12,7 +12,7 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Venus(parent: Sun) : Planet(
     "Venus",
-    Kilometer(6051.8).au,
+    Kilometer(6051.8),
     0.0,
     0.77,
     null,
@@ -32,6 +32,8 @@ class Venus(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.021624851729521666)
+
+    override fun computeRotAscendingNode() = Radians(2.097642769084066)
 
     override fun computeVisualMagnitude(
         o: Observer,

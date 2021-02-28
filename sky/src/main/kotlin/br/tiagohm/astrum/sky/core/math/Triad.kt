@@ -138,5 +138,8 @@ inline class Triad(val data: DoubleArray) : Iterable<Double> {
     companion object {
 
         val ZERO = Triad()
+        val X = Triad(1.0)
+        val Y = Triad(a1 = 1.0)
+        val Z = Triad(a2 = 1.0)
     }
 }

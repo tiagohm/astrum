@@ -8,7 +8,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Deimos(parent: Mars) : Planet(
     "Phobos",
-    Kilometer(6.2).au,
+    Kilometer(6.2),
     1.0,
     0.08,
     null,
@@ -22,7 +22,9 @@ class Deimos(parent: Mars) : Planet(
 
     override val absoluteMagnitude = 12.89
 
-    override fun computeRotObliquity(jde: Double) = Radians(1.4450075283699964)
+    override fun computeRotObliquity(jde: Double) = Radians(0.4510749586748628)
+
+    override fun computeRotAscendingNode() = Radians(1.4450075283699964)
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computeMarsSatHeliocentricCoordinates(jde, 1)

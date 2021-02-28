@@ -2,41 +2,41 @@ package br.tiagohm.astrum.sky.planets.minor.pluto
 
 import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.Observer
-import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
-import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
+import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Pluto(parent: Sun) : Planet(
-    "Pluto",
-    Kilometer(1188.3).au,
-    0.0,
-    0.55,
-    null,
-    PlanetType.DWARF_PLANET,
+class Pluto(parent: Sun) : MinorPlanet(
+    "(134340) Pluto",
     parent,
+    AU(29.5739917738007),
+    0.250248713478499,
+    Radians(0.29825933192269555762),
+    Radians(1.92644133465723380742),
+    Radians(1.96519085060668286585),
+    2447654.529313563835,
+    Radians(0.00006943722388998144),
+    0.55,
+    -0.4,
+    radius = Kilometer(1188.3),
 ) {
 
     override val siderealDay = 6.38722299911257520456
 
     override val siderealPeriod = 90797.0
 
-    override val absoluteMagnitude = -1.0
-
     override val meanOppositionMagnitude = 15.12
 
     /**
-     * Calculate Pluto heliocentric ecliptical coordinates for given julian day.
-     */
-    /**
-     * Calculate Pluto heliocentric ecliptical coordinates for given julian day.
+     * Calculate Pluto's heliocentric ecliptical coordinates for given julian day.
      */
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         // Meeus, Astron. Algorithms 2nd ed (1998). Chap 37. Equ 37.1
@@ -73,7 +73,9 @@ class Pluto(parent: Sun) : Planet(
         return Triad(R * pos[0], R * pos[1], R * pos[2]) to Triad.ZERO
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(3.96802141178535)
+    override fun computeRotObliquity(jde: Double) = Radians(1.9690025972455527)
+
+    override fun computeRotAscendingNode() = Radians(3.96802141178535)
 
     override fun computeVisualMagnitude(
         o: Observer,

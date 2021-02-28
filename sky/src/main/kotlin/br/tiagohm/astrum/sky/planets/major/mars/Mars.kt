@@ -12,7 +12,7 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Mars(parent: Sun) : Planet(
     "Mars",
-    Kilometer(3396.19).au,
+    Kilometer(3396.19),
     0.005886,
     0.150,
     null,
@@ -34,6 +34,8 @@ class Mars(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.44338065731385523)
+
+    override fun computeRotAscendingNode() = Radians(1.4808002454424123)
 
     override fun computeVisualMagnitude(
         o: Observer,

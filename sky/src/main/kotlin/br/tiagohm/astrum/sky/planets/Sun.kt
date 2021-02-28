@@ -12,7 +12,7 @@ import kotlin.math.sqrt
 
 class Sun : Planet(
     "Sun",
-    Kilometer(695700.0).au,
+    Kilometer(695700.0),
     0.0,
     -1.0,
     null,
@@ -37,6 +37,8 @@ class Sun : Planet(
     override fun computePosition(jde: Double) = Triad.ZERO to Triad.ZERO
 
     override fun computeRotObliquity(jde: Double) = Radians(0.12653637076958889433)
+
+    override fun computeRotAscendingNode() = Radians(1.3223623836794924)
 
     override fun internalComputeRTSTime(o: Observer, hz: Angle, hasAtmosphere: Boolean): Triad {
         return super.internalComputeRTSTime(o, hz - angularSize(o).radians, hasAtmosphere)

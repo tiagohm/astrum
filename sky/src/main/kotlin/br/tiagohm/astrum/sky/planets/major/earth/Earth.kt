@@ -9,6 +9,7 @@ import br.tiagohm.astrum.sky.core.precession.Precession
 import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
@@ -16,7 +17,7 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Earth(parent: Sun) : Planet(
     "Earth",
-    Kilometer(6378.1366).au,
+    Kilometer(6378.1366),
     0.003352810664747481,
     0.3,
     null,
@@ -72,6 +73,8 @@ class Earth(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Precession.computeVondrakEpsilon(jde)
+
+    override fun computeRotAscendingNode() = Radians.PI
 
     override fun computeVisualMagnitude(
         o: Observer,

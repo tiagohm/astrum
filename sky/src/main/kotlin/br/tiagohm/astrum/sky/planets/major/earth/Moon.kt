@@ -14,7 +14,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Moon(parent: Earth) : Planet(
     "Moon",
-    Kilometer(1737.4).au,
+    Kilometer(1737.4),
     0.0,
     0.12,
     null,
@@ -36,6 +36,8 @@ class Moon(parent: Earth) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(3.7723828609181886E-4)
+
+    override fun computeRotAscendingNode() = Radians(-0.09356927531260717)
 
     override fun internalComputeRTSTime(o: Observer, hz: Angle, hasAtmosphere: Boolean): Triad {
         return super.internalComputeRTSTime(o, hz + Degrees(0.7275 * 0.95), hasAtmosphere)

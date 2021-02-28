@@ -2,9 +2,9 @@ package br.tiagohm.astrum.sky.planets.major.saturn
 
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
-import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.sin
+import br.tiagohm.astrum.sky.core.math.cos
+import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
@@ -17,13 +17,13 @@ import kotlin.math.*
 
 class Saturn(parent: Sun) : Planet(
     "Saturn",
-    Kilometer(60268.0).au,
+    Kilometer(60268.0),
     0.09796243446,
     0.50,
     null,
     PlanetType.PLANET,
     parent,
-    Ring(Kilometer(74510.0).au, Kilometer(140390.0).au),
+    Ring(Kilometer(74510.0), Kilometer(140390.0)),
 ) {
 
     override val siderealDay = 0.44400925923884945092
@@ -40,6 +40,8 @@ class Saturn(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.4896026430986047)
+
+    override fun computeRotAscendingNode() = Radians(2.9588132951645223)
 
     override fun computeVisualMagnitude(
         o: Observer,

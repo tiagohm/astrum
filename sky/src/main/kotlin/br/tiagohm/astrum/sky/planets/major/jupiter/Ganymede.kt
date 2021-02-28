@@ -11,7 +11,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Ganymede(parent: Jupiter) : Planet(
     "Ganymede",
-    Kilometer(2631.2).au,
+    Kilometer(2631.2),
     0.0,
     0.43,
     null,
@@ -33,6 +33,8 @@ class Ganymede(parent: Jupiter) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.03709159998168787)
+
+    override fun computeRotAscendingNode() = Radians(-0.3722572646729567)
 
     override fun computeVisualMagnitude(
         o: Observer,

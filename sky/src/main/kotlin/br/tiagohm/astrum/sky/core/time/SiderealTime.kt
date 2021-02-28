@@ -1,7 +1,7 @@
 package br.tiagohm.astrum.sky.core.time
 
 import br.tiagohm.astrum.sky.SECONDS_PER_DAY
-import br.tiagohm.astrum.sky.core.cos
+import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.nutation.Nutation
 import br.tiagohm.astrum.sky.core.precession.Precession
 import br.tiagohm.astrum.sky.core.units.angle.Degrees

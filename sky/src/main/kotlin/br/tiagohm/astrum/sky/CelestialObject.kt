@@ -4,11 +4,7 @@ import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.*
-import br.tiagohm.astrum.sky.core.cos
-import br.tiagohm.astrum.sky.core.math.Mat4
-import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.sin
-import br.tiagohm.astrum.sky.core.tan
+import br.tiagohm.astrum.sky.core.math.*
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.acos
@@ -149,12 +145,13 @@ interface CelestialObject {
      * Computes the phase angle for an observer.
      */
     fun phaseAngle(o: Observer): Radians {
-        val obsPos = o.computeHeliocentricEclipticPosition()
-        val observerRq = obsPos.lengthSquared
+        val observerHelioPos = o.computeHeliocentricEclipticPosition()
+        val observerRq = observerHelioPos.lengthSquared
         val planetHelioPos = computeHeliocentricEclipticPosition(o)
         val planetRq = planetHelioPos.lengthSquared
-        val observerPlanetRq = (obsPos - planetHelioPos).lengthSquared
-        return Radians(acos((observerPlanetRq + planetRq - observerRq) / (2.0 * sqrt(observerPlanetRq * planetRq))))
+        val observerPlanetRq = (observerHelioPos - planetHelioPos).lengthSquared
+        val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * sqrt(observerPlanetRq * planetRq))
+        return Radians(acos(cosChi))
     }
 
     /**

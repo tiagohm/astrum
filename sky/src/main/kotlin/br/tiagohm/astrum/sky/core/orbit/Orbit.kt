@@ -5,13 +5,17 @@ import br.tiagohm.astrum.sky.core.units.distance.Distance
 
 interface Orbit {
 
-    fun positionAtTimevInVSOP87Coordinates(jde: Double): Triad
-
-    val velocity: Triad
+    fun positionAndVelocityAtTimevInVSOP87Coordinates(jde: Double): Pair<Triad, Triad>
 
     val semiMajorAxis: Distance
 
+    /**
+     * Excentricity.
+     */
     val e: Double
 
+    /**
+     * Gets duration of sidereal year, in earth days.
+     */
     val siderealPeriod: Double
 }

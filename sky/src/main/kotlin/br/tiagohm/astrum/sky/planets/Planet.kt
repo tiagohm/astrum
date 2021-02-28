@@ -2,16 +2,16 @@ package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.cos
 import br.tiagohm.astrum.sky.core.ephemeris.Elp82b
 import br.tiagohm.astrum.sky.core.ephemeris.L12
 import br.tiagohm.astrum.sky.core.ephemeris.MarsSat
 import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.math.cos
+import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.orbit.Orbit
-import br.tiagohm.astrum.sky.core.sin
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
@@ -22,6 +22,7 @@ import br.tiagohm.astrum.sky.planets.major.mars.Mars
 import br.tiagohm.astrum.sky.planets.major.neptune.Neptune
 import br.tiagohm.astrum.sky.planets.major.saturn.Saturn
 import br.tiagohm.astrum.sky.planets.major.uranus.Uranus
+import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
 import kotlin.math.*
 
@@ -29,7 +30,7 @@ abstract class Planet internal constructor(
     // English planet name
     final override val id: String,
     // Gets the equator radius of the planet
-    val equatorialRadius: Distance,
+    radius: Distance,
     val oblateness: Double,
     // Planet albedo. Used for magnitude computation when no other formula in use
     val albedo: Double,
@@ -49,13 +50,14 @@ abstract class Planet internal constructor(
     private var axisRotation: Angle = Degrees.ZERO
     private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
 
+    val radius = radius.au
+
     val oneMinusOblateness = 1.0 - oblateness
 
     /**
-     * Gets duration of sidereal year
+     * Gets duration of sidereal year, in earth days.
      */
     open val siderealPeriod = if (orbit is KeplerOrbit &&
-        type != PlanetType.OBSERVER &&
         orbit.semiMajorAxis.isPositive &&
         orbit.e < 0.9
     ) orbit.siderealPeriod else 0.0
@@ -86,7 +88,7 @@ abstract class Planet internal constructor(
             if (absoluteMagnitude <= -99.0) return 100.0
 
             val a = parent?.orbit?.semiMajorAxis?.au?.value
-                ?: if (type.ordinal >= PlanetType.ASTEROID.ordinal) orbit!!.semiMajorAxis.au.value
+                ?: if (this is MinorPlanet) orbit!!.semiMajorAxis.au.value
                 else if (parent is Mars) 1.52371034
                 else if (parent is Jupiter) 5.202887
                 else if (parent is Saturn) 9.53667594
@@ -102,11 +104,7 @@ abstract class Planet internal constructor(
 
     val isMoon = type == PlanetType.MOON
 
-    val isAsteroid = type == PlanetType.ASTEROID
-
-    val isComet = type == PlanetType.COMET
-
-    val isDwarfPlanet = type == PlanetType.DWARF_PLANET
+    val isMinorPlanet = type == PlanetType.MINOR_PLANET
 
     val isPlanet = type == PlanetType.PLANET
 
@@ -138,7 +136,7 @@ abstract class Planet internal constructor(
     open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean) = Degrees.ZERO
 
     protected open fun computePosition(jde: Double): Pair<Triad, Triad> {
-        return orbit!!.let { it.positionAtTimevInVSOP87Coordinates(jde) to it.velocity }
+        return orbit!!.positionAndVelocityAtTimevInVSOP87Coordinates(jde)
     }
 
     internal fun internalComputePosition(jde: Double): Pair<Triad, Triad> {
@@ -183,8 +181,7 @@ abstract class Planet internal constructor(
     }
 
     protected open fun internalComputeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean): Mat4 {
-        // return Mat4.zrotation(rotation.ascendingNode) * Mat4.xrotation(rotation.obliquity)
-        return Mat4.zrotation(Radians.ZERO) * Mat4.xrotation(Radians.ZERO)
+        return Mat4.zrotation(computeRotAscendingNode()) * Mat4.xrotation(computeRotObliquity(jde))
     }
 
     override fun computeHeliocentricEclipticPosition(o: Observer): Triad {
@@ -253,7 +250,7 @@ abstract class Planet internal constructor(
      * Computes the angular size.
      */
     override fun angularSize(o: Observer): Angle {
-        val radius = (rings?.size ?: equatorialRadius).au.value
+        val radius = (rings?.size ?: radius).au.value
         return Radians(atan2(radius, computeJ2000EquatorialPosition(o).length))
     }
 
@@ -261,17 +258,22 @@ abstract class Planet internal constructor(
      * Computes the angular radius of the planet spheroid (i.e. without the rings)
      */
     fun spheroidAngularSize(o: Observer): Angle {
-        return Radians(atan2(equatorialRadius.au.value, computeJ2000EquatorialPosition(o).length))
+        return Radians(atan2(radius.au.value, computeJ2000EquatorialPosition(o).length))
     }
 
     /**
-     * Computes the obliquity.
+     * Computes the tilt of rotation axis w.r.t. ecliptic.
      * For Earth, this is epsilon, the angle between earth's rotational axis and pole of mean ecliptic of date.
      * Details: e.g. Hilton etal, Report on Precession and the Ecliptic, Cel.Mech.Dyn.Astr.94:351-67 (2006), Fig1.
      * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
      * For moons, it may be the obliquity against its planet's equatorial plane.
      */
-    open fun computeRotObliquity(jde: Double): Angle = Radians.ZERO
+    abstract fun computeRotObliquity(jde: Double): Angle
+
+    /**
+     * Computes the longitude of ascending node of equator on the ecliptic.
+     */
+    abstract fun computeRotAscendingNode(): Angle
 
     final override fun rts(o: Observer, hasAtmosphere: Boolean): Triad {
         var hz = Radians.ZERO // Horizon parallax factor
@@ -402,14 +404,15 @@ abstract class Planet internal constructor(
         val observerRq = observerHelioPos.lengthSquared
         val planetHelioPos = computeHeliocentricEclipticPosition(o)
         val planetRq = planetHelioPos.lengthSquared
-        val observerPlanetRq = (observerHelioPos - planetHelioPos).lengthSquared
+        val observerPlanetHelioPos = observerHelioPos - planetHelioPos
+        val observerPlanetRq = observerPlanetHelioPos.lengthSquared
         val dr = sqrt(observerPlanetRq * planetRq)
         val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * dr)
         val phaseAngle = Radians(acos(cosChi))
         var shadowFactor = 1.0
         val d = 5.0 * log10(dr)
 
-        // TODO: Testar com luas de Júpiter?
+        // TODO: Testar com luas de Júpiter???
         // Check if the satellite is inside the inner shadow of the parent planet
         if (parent!!.parent != null) {
             val parentHelioPos = parent.computeHeliocentricEclipticPosition(o)
@@ -418,8 +421,8 @@ abstract class Planet internal constructor(
 
             if (posTimesParentPos > parentRq) {
                 // The satellite is farther away from the sun than the parent planet.
-                val sunRadius = parent.parent!!.equatorialRadius.au.value
-                val sunMinusParentRadius = sunRadius - parent.equatorialRadius.au.value
+                val sunRadius = parent.parent!!.radius.au.value
+                val sunMinusParentRadius = sunRadius - parent.radius.au.value
                 val quot = posTimesParentPos / parentRq
 
                 // Compute d = distance from satellite center to border of inner shadow.
@@ -427,7 +430,7 @@ abstract class Planet internal constructor(
                 var ds = sunRadius - sunMinusParentRadius * quot -
                         sqrt((1.0 - sunMinusParentRadius / sqrt(parentRq)) * (planetRq - posTimesParentPos * quot))
 
-                val radius = equatorialRadius.au.value
+                val radius = radius.au.value
 
                 // The satellite is totally inside the inner shadow.
                 if (ds >= radius) {
@@ -442,8 +445,6 @@ abstract class Planet internal constructor(
                 }
             }
         }
-
-        // TODO: Plutão e Luas de Júpiter
 
         // Use empirical formulae for main planets when seen from earth
         return computeVisualMagnitude(
@@ -476,10 +477,9 @@ abstract class Planet internal constructor(
         }
 
         // This formula source is unknown. But this is actually used even for the Moon!
-        val radius = equatorialRadius.au.value
+        val radius = radius.au.value
         val p = (1.0 - phaseAngle.radians.value / M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / M_PI
-        val F = 2.0 * albedo * radius * radius * p /
-                (3.0 * observerPlanetRq * planetRq) * shadowFactor
+        val F = 2.0 * albedo * radius * radius * p / (3.0 * observerPlanetRq * planetRq) * shadowFactor
         return -26.73 - 2.5 * log10(F)
     }
 

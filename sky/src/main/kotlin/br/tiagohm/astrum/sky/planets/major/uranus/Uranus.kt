@@ -13,13 +13,13 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Uranus(parent: Sun) : Planet(
     "Uranus",
-    Kilometer(25559.0).au,
+    Kilometer(25559.0),
     0.0229273446,
     0.66,
     null,
     PlanetType.PLANET,
     parent,
-    Ring(Kilometer(26840.0).au, Kilometer(97700.0).au),
+    Ring(Kilometer(26840.0), Kilometer(97700.0)),
 ) {
 
     override val siderealDay = -0.71833333334397530864
@@ -36,6 +36,8 @@ class Uranus(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(1.4360256624251349)
+
+    override fun computeRotAscendingNode() = Radians(-0.21560564768092383)
 
     override fun computeVisualMagnitude(
         o: Observer,

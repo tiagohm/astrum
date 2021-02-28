@@ -11,7 +11,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Io(parent: Jupiter) : Planet(
     "Io",
-    Kilometer(1821.49).au,
+    Kilometer(1821.49),
     0.0,
     0.63,
     null,
@@ -33,6 +33,8 @@ class Io(parent: Jupiter) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.0386258511268327)
+
+    override fun computeRotAscendingNode() = Radians(-0.3890901056071774)
 
     override fun computeVisualMagnitude(
         o: Observer,

@@ -1,10 +1,11 @@
 package br.tiagohm.astrum.sky.core.orbit
 
-import br.tiagohm.astrum.sky.EPSILON
-import br.tiagohm.astrum.sky.GAUSS_GRAV_K
-import br.tiagohm.astrum.sky.GAUSS_GRAV_K_SQ
-import br.tiagohm.astrum.sky.M_2_PI
+import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.math.cos
+import br.tiagohm.astrum.sky.core.math.sin
+import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Distance
 import java.lang.Math.cbrt
@@ -13,22 +14,18 @@ import kotlin.math.*
 data class KeplerOrbit(
     val q: Distance, // Pericenter Distance (AU)
     override val e: Double, // Eccentricity
-    val i: Double, // Inclination (radians)
-    val omega: Double, // Longitude of ascending node (randians)
-    val w: Double, // Argument of perihelion (radians)
-    val t0: Double, // time at perihelion (JDE)
-    val n: Double, // Mean motion (for parabolic orbits: W/dt in Heafner's presentation, ch5.5) [radians/day]
-    val parentRotObliquity: Double = 0.0, // Comets/Minor Planets only have parent==sun, no need for these? Oh yes: Double, VSOP/J2000 eq frames!
-    val parentRotAscendingnode: Double = 0.0,
-    val parentRotJ2000Longitude: Double = 0.0,
+    val i: Angle, // Inclination
+    val omega: Angle, // Longitude of ascending node
+    val w: Angle, // Argument of perihelion
+    val t0: Double, // Time at perihelion (JDE)
+    val n: Angle, // Mean motion (for parabolic orbits: W/dt in Heafner's presentation, ch5.5) [radians/day]
+    val parentRotObliquity: Angle = Radians.ZERO, // Comets/Minor Planets only have parent==sun, no need for these? Oh yes: Double, VSOP/J2000 eq frames!
+    val parentRotAscendingnode: Angle = Radians.ZERO,
+    val parentRotJ2000Longitude: Angle = computeRotJ2000Longitude(parentRotObliquity, parentRotAscendingnode),
     val centralMass: Double = 1.0, // Mass in Solar masses. Velocity depends on this.
 ) : Orbit {
 
     private val rotateToVsop87 = DoubleArray(9)
-
-    // Caches velocity from last position computation, [AU/d]
-    override var velocity = Triad.ZERO
-        private set
 
     private val initOrbit: (KeplerOrbit, Double) -> Pair<Double, Double> = when {
         e < 1.0 -> ::initEllipticalOrbit
@@ -45,9 +42,9 @@ data class KeplerOrbit(
     override val siderealPeriod = computeSiderealPeriod(semiMajorAxis, centralMass)
 
     fun setParentOrientation(
-        parentRotObliquity: Double,
-        parentRotAscendingNode: Double,
-        parentRotJ2000Longitude: Double
+        parentRotObliquity: Angle,
+        parentRotAscendingNode: Angle,
+        parentRotJ2000Longitude: Angle
     ) {
         val cobl = cos(parentRotObliquity)
         val sobl = sin(parentRotObliquity)
@@ -67,7 +64,7 @@ data class KeplerOrbit(
         rotateToVsop87[8] = cobl
     }
 
-    override fun positionAtTimevInVSOP87Coordinates(jde: Double): Triad {
+    override fun positionAndVelocityAtTimevInVSOP87Coordinates(jde: Double): Pair<Triad, Triad> {
         // Laguerre-Conway seems stable enough to go for <1.0
         val (rCosNu, rSinNu) = initOrbit(this, jde - t0)
 
@@ -105,9 +102,7 @@ data class KeplerOrbit(
         val rdot1 = rotateToVsop87[3] * s0 + rotateToVsop87[4] * s1 + rotateToVsop87[5] * s2
         val rdot2 = rotateToVsop87[6] * s0 + rotateToVsop87[7] * s1 + rotateToVsop87[8] * s2
 
-        velocity = Triad(rdot0, rdot1, rdot2)
-
-        return Triad(v0, v1, v2)
+        return Triad(v0, v1, v2) to Triad(rdot0, rdot1, rdot2)
     }
 
     companion object {
@@ -118,13 +113,27 @@ data class KeplerOrbit(
             return if (a <= 0) 0.0 else M_2_PI / GAUSS_GRAV_K * sqrt(a * a * a / centralMass)
         }
 
+        fun computeRotJ2000Longitude(obliquity: Angle, ascendingNode: Angle): Radians {
+            val cobl = cos(obliquity)
+            val sobl = sin(obliquity)
+            val cnod = cos(ascendingNode)
+            val snod = sin(ascendingNode)
+
+            val orbitAxis0 = Triad(cnod, snod, 0.0)
+            val orbitAxis1 = Triad(-snod * cobl, cnod * cobl, sobl)
+            val orbitPole = Triad(snod * sobl, -cnod * sobl, cobl)
+            val J2000NodeOrigin = (J2000_POLE * orbitPole).normalized
+
+            return Radians(atan2(J2000NodeOrigin.dot(orbitAxis1), J2000NodeOrigin.dot(orbitAxis0)))
+        }
+
         // Solve true anomaly nu for elliptical orbit with Laguerre-Conway's method. (May have high e)
         private fun initEllipticalOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
             val e = orbit.e
             val q = orbit.q.au.value
             val n = orbit.n
-            val a = orbit.semiMajorAxis.au.value
-            val M = (n * dt % M_2_PI).let { if (it < 0.0) it + M_2_PI else it }
+            val a = q / (1.0 - e)
+            val M = (n.radians.value * dt).pmod(M_2_PI)
 
             //	Comet orbits are quite often near-parabolic, where this may still only converge slowly.
             //	Better always use Laguerre-Conway. See Heafner, Ch. 5.3
@@ -133,7 +142,7 @@ data class KeplerOrbit(
 
             var escape = 0
 
-            while (true) {
+            while (escape++ < 10) {
                 val Ep = E
                 val f2 = e * sin(E)
                 val f = E - f2 - M
@@ -142,10 +151,6 @@ data class KeplerOrbit(
                 E += (-5.0 * f) / (f1 + f1.sign * sqrt(abs(16.0 * f1 * f1 - 20.0 * f * f2)))
 
                 if (abs(E - Ep) < EPSILON) {
-                    break
-                }
-
-                if (++escape > 10) {
                     break
                 }
             }
@@ -165,7 +170,7 @@ data class KeplerOrbit(
             val q = orbit.q.au.value
             val n = orbit.n
             val a = q / (e - 1.0)
-            val M = n * dt
+            val M = n.radians.value * dt
 
             assert(a > 0.0)
 
@@ -194,7 +199,7 @@ data class KeplerOrbit(
         // Solve true anomaly nu for parabolic orbit around the sun.
         private fun initParabolicOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
             val q = orbit.q.au.value
-            val n = orbit.n
+            val n = orbit.n.radians.value
             val W = dt * n
             val Y = cbrt(W + sqrt(W * W + 1.0))
             val tanNu2 = Y - 1.0 / Y // Heafner (5.5.8) has an error here, writes (Y-1)/Y.

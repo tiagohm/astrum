@@ -5,6 +5,9 @@ import br.tiagohm.astrum.sky.core.coordinates.Geographic
 import br.tiagohm.astrum.sky.core.coordinates.Horizontal
 import br.tiagohm.astrum.sky.core.coordinates.Spherical
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.math.cos
+import br.tiagohm.astrum.sky.core.math.sin
+import br.tiagohm.astrum.sky.core.math.tan
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Planet
@@ -98,7 +101,7 @@ object Algorithms {
 
     fun distanceKm(planet: Planet, a: Geographic, b: Geographic): Double {
         val f = planet.oblateness // Flattening
-        val radius = planet.equatorialRadius.kilometer.value
+        val radius = planet.radius.kilometer.value
 
         val F = ((a.latitude + b.latitude).radians.value * 0.5) // Latitude
         val G = ((a.latitude - b.latitude).radians.value * 0.5)

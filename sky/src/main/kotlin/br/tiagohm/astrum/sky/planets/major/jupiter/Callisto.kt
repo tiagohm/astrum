@@ -11,7 +11,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Callisto(parent: Jupiter) : Planet(
     "Callisto",
-    Kilometer(2410.3).au,
+    Kilometer(2410.3),
     0.0,
     0.17,
     null,
@@ -33,6 +33,8 @@ class Callisto(parent: Jupiter) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.03157353427088316)
+
+    override fun computeRotAscendingNode() = Radians(-0.3056868358604381)
 
     override fun computeVisualMagnitude(
         o: Observer,

@@ -1,19 +1,11 @@
 package br.tiagohm.astrum.sky
 
 enum class PlanetType {
+    DSO,
     STAR,
     PLANET,
     MOON,
-    OBSERVER,
     ARTIFICIAL,
-    ASTEROID,
-    PLUTINO,
-    COMET,
-    DWARF_PLANET,
-    CUBEWANO,
-    SDO,
-    OCO,
-    SEDNOID,
-    INTERSTELLAR,
+    MINOR_PLANET,
     UNDEFINED
 }

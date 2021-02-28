@@ -12,7 +12,7 @@ import br.tiagohm.astrum.sky.planets.Sun
 
 class Mercury(parent: Sun) : Planet(
     "Mercury",
-    Kilometer(2440.53).au,
+    Kilometer(2440.53),
     0.0009301258,
     0.06,
     null,
@@ -32,6 +32,8 @@ class Mercury(parent: Sun) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.1228178112752234)
+
+    override fun computeRotAscendingNode() = Radians(0.8418651386288667)
 
     override fun computeVisualMagnitude(
         o: Observer,

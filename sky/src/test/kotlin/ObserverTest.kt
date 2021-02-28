@@ -7,6 +7,8 @@ import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.distance.AU
+import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.core.units.distance.Meter
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
@@ -20,6 +22,7 @@ import br.tiagohm.astrum.sky.planets.major.neptune.Neptune
 import br.tiagohm.astrum.sky.planets.major.saturn.Saturn
 import br.tiagohm.astrum.sky.planets.major.uranus.Uranus
 import br.tiagohm.astrum.sky.planets.major.venus.Venus
+import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -1293,6 +1296,69 @@ class ObserverTest {
         assertEquals(Triad(18.744, 1.1667, 7.591), callisto.rts(o), DELTA_3)
         assertEquals(400.5364 / 24.0, callisto.siderealDay, DELTA_3)
         assertEquals(402.0853 / 24.0, callisto.meanSolarDay, DELTA_3)
+    }
+
+    @Test
+    fun asteroids() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val eccentricity = 0.0757544
+        val semiMajorAxis = 2.7681117
+        val pericenterDistance = AU(semiMajorAxis * (1.0 - eccentricity))
+        val meanMotion = Degrees(0.21400733999999999)
+        val ascendingNode = Degrees(80.321799999999996)
+        val argOfPericenter = Degrees(72.733239999999995)
+        val inclination = Degrees(10.591659999999999)
+        val epoch = 2457400.5
+        val meanAnomaly = Degrees(181.38132999999999)
+        val timeAtPericenter = epoch - (meanAnomaly / meanMotion).value
+
+        val mpc0 = MinorPlanet(
+            "Ceres",
+            sun,
+            pericenterDistance,
+            eccentricity,
+            inclination,
+            ascendingNode,
+            argOfPericenter,
+            timeAtPericenter,
+            meanMotion,
+            0.09,
+            3.4,
+            0.12,
+            Kilometer(469.7),
+        )
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(9.07, mpc0.visualMagnitude(o), DELTA_2)
+        assertEquals(9.26, mpc0.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(6.85, mpc0.meanOppositionMagnitude, DELTA_2)
+        assertEquals(60.66426, 14.2267, mpc0.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(60.96341, 14.2854, mpc0.equatorial(o), DELTA_4, true)
+        assertEquals(1.84675, 14.2717, mpc0.hourAngle(o), DELTA_4, true)
+        assertEquals(321.0102, 44.2723, mpc0.horizontal(o), DELTA_4, true)
+        assertEquals(177.2551, -27.8639, mpc0.galactic(o), DELTA_4, true)
+        assertEquals(-30.6589, -37.9452, mpc0.supergalactic(o), DELTA_4, true)
+        assertEquals(61.4559, -6.3529, mpc0.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(61.7536, -6.3503, mpc0.ecliptic(o), DELTA_4, true)
+        assertEquals(143.1551, mpc0.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.TAU, mpc0.constellation(o))
+        assertEquals(71.6577, mpc0.elongation(o), DELTA_4, true)
+        assertEquals(19.8699, mpc0.phaseAngle(o), DELTA_4, true)
+        assertEquals(97.0, 100 * mpc0.illumination(o), DELTA_1)
+        assertEquals(2.983, mpc0.distance(o), DELTA_3)
+        assertEquals(2.833, mpc0.distanceFromSun(o), DELTA_3)
+        assertEquals(17.488, mpc0.orbitalVelocity(o), DELTA_3)
+        assertEquals(17.488, mpc0.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.00012, mpc0.angularSize(o) * 2, DELTA_6, true)
+        assertEquals(Triad(1.494, 7.147, 12.8), mpc0.rts(o), DELTA_3)
+        assertEquals(1682.185, mpc0.siderealPeriod, DELTA_3)
     }
 
     companion object {

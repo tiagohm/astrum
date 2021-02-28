@@ -10,28 +10,19 @@ Kotlin
 ```kotlin
 val sun = Sun()
 val earth = Earth(sun)
-val site = ObservationSite("Observatório Pico dos Dias", -22.534444, -45.5825, 1864.0)
+val site = ObservationSite("Observatório Pico dos Dias", Degrees(-22.534444), Degrees(-45.5825), Meter(1864.0))
 val o = Observer(
     earth,
     site,
     DateTime(2021, 2, 5, 12, 0, 0),
-    DeltaTAlgorithmType.ESPEANAK_MEEUS,
+    TimeCorrectionType.ESPEANAK_MEEUS,
     useTopocentricCoordinates = true,
     useNutation = true,
     useLightTravelTime = true,
 )
 val mercury = Mercury(sun)
-val pos = mercury.computeEquinoxEquatorialPosition(o)
-val radec = Algorithms.rectangularToSphericalCoordinates(pos)
+val radec = mercury.equatorial(pos)
 ```
-
-Command Line
-
-`astrum [command] [options|subcommands]`
-
-* `planets`
-  - `list`: List the planets
-    - `--rate=[integer]`: Sets the update rate in seconds
 
 ## Features
 
@@ -40,3 +31,4 @@ Command Line
 * [Stellarium](https://github.com/Stellarium/stellarium/)
 * [Bill-Gray/lunar](https://github.com/Bill-Gray/lunar)
 * [skyfielders/python-skyfield](https://github.com/skyfielders/python-skyfield)
+* [brandon-rhodes/pyephem](https://rhodesmill.org/pyephem/quick)

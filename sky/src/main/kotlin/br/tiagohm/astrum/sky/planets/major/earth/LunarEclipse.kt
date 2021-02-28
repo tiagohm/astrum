@@ -2,8 +2,8 @@ package br.tiagohm.astrum.sky.planets.major.earth
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.cos
-import br.tiagohm.astrum.sky.core.sin
+import br.tiagohm.astrum.sky.core.math.cos
+import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.asin

@@ -1,7 +1,5 @@
 package br.tiagohm.astrum.sky.core.math
 
-import br.tiagohm.astrum.sky.core.cos
-import br.tiagohm.astrum.sky.core.sin
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 
 @Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")

@@ -2,13 +2,8 @@ package br.tiagohm.astrum.sky
 
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.atmosphere.Refraction
-import br.tiagohm.astrum.sky.core.cos
-import br.tiagohm.astrum.sky.core.math.Mat4
-import br.tiagohm.astrum.sky.core.math.Quad
-import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.math.*
 import br.tiagohm.astrum.sky.core.nutation.Nutation
-import br.tiagohm.astrum.sky.core.sin
-import br.tiagohm.astrum.sky.core.tan
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.MoonSecularAcceleration
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
@@ -129,7 +124,7 @@ data class Observer(
     )
 
     /**
-     * Computes the position of the home planet center in the heliocentric VSOP87 frame in AU
+     * Computes the position of the home planet center in the heliocentric VSOP87 frame in AU.
      */
     fun computeCenterVsop87Position() = home.computeHeliocentricEclipticPosition(this)
 
@@ -147,7 +142,7 @@ data class Observer(
      * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude in radians.
      */
     fun computeTopographicOffsetFromCenter(): Quad {
-        val a = home.equatorialRadius.au.value
+        val a = home.radius.au.value
 
         if (a <= 0.0) {
             return Quad(0.0, 0.0, site.latitude.radians.value, site.altitude.au.value)
@@ -250,11 +245,11 @@ data class Observer(
         val sun = home.parent!! as Sun
         val lp = lightTimeSunPosition
         val p3 = computeHeliocentricEclipticPosition()
-        val RS = sun.equatorialRadius.au.value
+        val RS = sun.radius.au.value
 
         val trans = moon.computeShadowMatrix(jde)
         val c = trans * Triad.ZERO
-        val radius = moon.equatorialRadius.au.value
+        val radius = moon.radius.au.value
 
         var v1 = lp - p3
         var v2 = c - p3

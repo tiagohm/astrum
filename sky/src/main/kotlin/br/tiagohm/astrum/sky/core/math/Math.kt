@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package br.tiagohm.astrum.sky.core
+package br.tiagohm.astrum.sky.core.math
 
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 

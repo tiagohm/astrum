@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.sky
 
 import br.tiagohm.astrum.sky.core.math.Mat4
+import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.precession.Precession
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
@@ -38,6 +39,8 @@ const val M_ARCSEC_RAD = M_2_PI / (360.0 * 3600.0)
 
 val MAT_J2000_TO_VSOP87 = Mat4.xrotation(-EPS_0) * Mat4.zrotation(Radians(0.0000275 * M_PI_180))
 val MAT_VSOP87_TO_J2000 = MAT_J2000_TO_VSOP87.transpose()
+
+val J2000_POLE = MAT_J2000_TO_VSOP87.multiplyWithoutTranslation(Triad.Z)
 
 val MAT_J2000_TO_GALACTIC = Mat4(
     -0.054875539726, 0.494109453312, -0.867666135858, 0.0,

@@ -8,7 +8,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Phobos(parent: Mars) : Planet(
     "Phobos",
-    Kilometer(11.08).au,
+    Kilometer(11.08),
     1.0,
     0.07,
     null,
@@ -22,7 +22,9 @@ class Phobos(parent: Mars) : Planet(
 
     override val absoluteMagnitude = 11.8
 
-    override fun computeRotObliquity(jde: Double) = Radians(1.4468158007959493)
+    override fun computeRotObliquity(jde: Double) = Radians(0.4662456205433312)
+
+    override fun computeRotAscendingNode() = Radians(1.4468158007959493)
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computeMarsSatHeliocentricCoordinates(jde, 0)

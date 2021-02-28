@@ -11,7 +11,7 @@ import br.tiagohm.astrum.sky.planets.Planet
 
 class Europa(parent: Jupiter) : Planet(
     "Europa",
-    Kilometer(1560.8).au,
+    Kilometer(1560.8),
     0.0,
     0.67,
     null,
@@ -33,6 +33,8 @@ class Europa(parent: Jupiter) : Planet(
     }
 
     override fun computeRotObliquity(jde: Double) = Radians(0.03838365303405089)
+
+    override fun computeRotAscendingNode() = Radians(-0.38518526400454545)
 
     override fun computeVisualMagnitude(
         o: Observer,
