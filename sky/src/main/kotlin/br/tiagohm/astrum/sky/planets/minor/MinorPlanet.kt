@@ -38,7 +38,7 @@ open class MinorPlanet(
     n: Angle = computeMeanMotion(e, q),
     albedo: Double = 0.15,
     override val absoluteMagnitude: Double = -99.0,
-    val slope: Double = -99.0,
+    val slope: Double = -10.0,
     radius: Distance = Kilometer(1.0),
 ) : Planet(
     name,

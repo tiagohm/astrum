@@ -23,6 +23,7 @@ import br.tiagohm.astrum.sky.planets.major.saturn.Saturn
 import br.tiagohm.astrum.sky.planets.major.uranus.Uranus
 import br.tiagohm.astrum.sky.planets.major.venus.Venus
 import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
+import br.tiagohm.astrum.sky.planets.minor.comets.Comet
 import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -1314,7 +1315,7 @@ class ObserverTest {
         val meanAnomaly = Degrees(181.38132999999999)
         val timeAtPericenter = epoch - (meanAnomaly / meanMotion).value
 
-        val mpc0 = MinorPlanet(
+        val ceres = MinorPlanet(
             "Ceres",
             sun,
             pericenterDistance,
@@ -1336,29 +1337,87 @@ class ObserverTest {
             DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
-        assertEquals(9.07, mpc0.visualMagnitude(o), DELTA_2)
-        assertEquals(9.26, mpc0.visualMagnitudeWithExtinction(o), DELTA_2)
-        assertEquals(6.85, mpc0.meanOppositionMagnitude, DELTA_2)
-        assertEquals(60.66426, 14.2267, mpc0.equatorialJ2000(o), DELTA_4, true)
-        assertEquals(60.96341, 14.2854, mpc0.equatorial(o), DELTA_4, true)
-        assertEquals(1.84675, 14.2717, mpc0.hourAngle(o), DELTA_4, true)
-        assertEquals(321.0102, 44.2723, mpc0.horizontal(o), DELTA_4, true)
-        assertEquals(177.2551, -27.8639, mpc0.galactic(o), DELTA_4, true)
-        assertEquals(-30.6589, -37.9452, mpc0.supergalactic(o), DELTA_4, true)
-        assertEquals(61.4559, -6.3529, mpc0.eclipticJ2000(o), DELTA_4, true)
-        assertEquals(61.7536, -6.3503, mpc0.ecliptic(o), DELTA_4, true)
-        assertEquals(143.1551, mpc0.parallacticAngle(o), DELTA_4, true)
-        assertEquals(Constellation.TAU, mpc0.constellation(o))
-        assertEquals(71.6577, mpc0.elongation(o), DELTA_4, true)
-        assertEquals(19.8699, mpc0.phaseAngle(o), DELTA_4, true)
-        assertEquals(97.0, 100 * mpc0.illumination(o), DELTA_1)
-        assertEquals(2.983, mpc0.distance(o), DELTA_3)
-        assertEquals(2.833, mpc0.distanceFromSun(o), DELTA_3)
-        assertEquals(17.488, mpc0.orbitalVelocity(o), DELTA_3)
-        assertEquals(17.488, mpc0.heliocentricVelocity(o), DELTA_3)
-        assertEquals(0.00012, mpc0.angularSize(o) * 2, DELTA_6, true)
-        assertEquals(Triad(1.494, 7.147, 12.8), mpc0.rts(o), DELTA_3)
-        assertEquals(1682.185, mpc0.siderealPeriod, DELTA_3)
+        assertEquals(9.07, ceres.visualMagnitude(o), DELTA_2)
+        assertEquals(9.26, ceres.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(6.85, ceres.meanOppositionMagnitude, DELTA_2)
+        assertEquals(60.66426, 14.2267, ceres.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(60.96341, 14.2854, ceres.equatorial(o), DELTA_4, true)
+        assertEquals(1.84675, 14.2717, ceres.hourAngle(o), DELTA_4, true)
+        assertEquals(321.0102, 44.2723, ceres.horizontal(o), DELTA_4, true)
+        assertEquals(177.2551, -27.8639, ceres.galactic(o), DELTA_4, true)
+        assertEquals(-30.6589, -37.9452, ceres.supergalactic(o), DELTA_4, true)
+        assertEquals(61.4559, -6.3529, ceres.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(61.7536, -6.3503, ceres.ecliptic(o), DELTA_4, true)
+        assertEquals(143.1551, ceres.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.TAU, ceres.constellation(o))
+        assertEquals(71.6577, ceres.elongation(o), DELTA_4, true)
+        assertEquals(19.8699, ceres.phaseAngle(o), DELTA_4, true)
+        assertEquals(97.0, 100 * ceres.illumination(o), DELTA_1)
+        assertEquals(2.983, ceres.distance(o), DELTA_3)
+        assertEquals(2.833, ceres.distanceFromSun(o), DELTA_3)
+        assertEquals(17.488, ceres.orbitalVelocity(o), DELTA_3)
+        assertEquals(17.488, ceres.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.00012, ceres.angularSize(o) * 2, DELTA_6, true)
+        assertEquals(Triad(1.494, 7.147, 12.8), ceres.rts(o), DELTA_3)
+        assertEquals(1682.185, ceres.siderealPeriod, DELTA_3)
+    }
+
+    @Test
+    fun comets() {
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val eccentricity = 0.999176
+        val pericenterDistance = AU(0.294707)
+        val ascendingNode = Degrees(61.0131)
+        val argOfPericenter = Degrees(37.267)
+        val inclination = Degrees(128.9309)
+        val timeAtPericenter = 2459034.175694444
+
+        val neowise = Comet(
+            "C/2020 F3 (NEOWISE)",
+            sun,
+            pericenterDistance,
+            eccentricity,
+            inclination,
+            ascendingNode,
+            argOfPericenter,
+            timeAtPericenter,
+            albedo = 0.1,
+            absoluteMagnitude = 12.5,
+            slope = 3.2,
+            radius = Kilometer(5.0),
+        )
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2020, 7, 5, 9, 0, 0), // 2459036.000000
+        )
+
+        assertEquals(8.51, neowise.visualMagnitude(o), DELTA_2)
+        assertEquals(8.80, neowise.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(91.28328, 33.2793, neowise.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(91.61557, 33.2764, neowise.equatorial(o), DELTA_4, true)
+        assertEquals(21.78438, 33.2482, neowise.hourAngle(o), DELTA_4, true)
+        assertEquals(30.6174, 25.8483, neowise.horizontal(o), DELTA_4, true)
+        assertEquals(178.3385, 5.7911, neowise.galactic(o), DELTA_4, true)
+        assertEquals(12.9031, -39.5853, neowise.supergalactic(o), DELTA_4, true)
+        assertEquals(91.0888, 9.8449, neowise.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(91.3708, 9.8476, neowise.ecliptic(o), DELTA_4, true)
+        assertEquals(-145.7715, neowise.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AUR, neowise.constellation(o))
+        assertEquals(15.9060, neowise.elongation(o), DELTA_4, true)
+        assertEquals(68.1151, neowise.phaseAngle(o), DELTA_4, true)
+        assertEquals(68.6, 100 * neowise.illumination(o), DELTA_1)
+        assertEquals(1.090, neowise.distance(o), DELTA_3)
+        assertEquals(0.3, neowise.distanceFromSun(o), DELTA_3)
+        assertEquals(76.853, neowise.orbitalVelocity(o), DELTA_3)
+        assertEquals(Triad(6.212, 11.223, 16.2333), neowise.rts(o), DELTA_3)
+        assertEquals(2470547.945, neowise.siderealPeriod, DELTA_3)
+        val (diam, length) = neowise.computeComaDiameterAndTailLength(o)
+        assertEquals(47630.3, diam.kilometer.value, DELTA_1)
+        assertEquals(102246.2, length.kilometer.value, DELTA_1)
     }
 
     companion object {

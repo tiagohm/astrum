@@ -13,7 +13,7 @@ import kotlin.math.round
 
 // Constants
 
-const val AU = 1.495978706996262E+08
+const val AU = 1.495978706996262E+08 // km
 const val PARSEC = 30.857E+12
 const val LIGHT_YEAR = 9460730472580800.0 // meters
 const val EPSILON = 1E-12
