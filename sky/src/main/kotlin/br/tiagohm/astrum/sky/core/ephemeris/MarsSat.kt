@@ -5,6 +5,10 @@ import br.tiagohm.astrum.sky.core.Algorithms
 import kotlin.math.cos
 import kotlin.math.sin
 
+/**
+ * The Ephemerides of the Martian satellites (adjustement from 1877 to 2005, Version 1.0)
+ * by Valery Lainey can be obtained from Valery Lainey.
+ */
 object MarsSat {
 
     fun computeCoordinates(jd: Double, body: Int): DoubleArray {
@@ -17,7 +21,7 @@ object MarsSat {
         val ts = doubleArrayOf(t0, t1, t2)
         val es = arrayOf(elem0, elem1, elem2)
 
-        Algorithms.computeInterpolatedElements(t, elem, DIM, MarsSat::computeMarsSatElem, DELTA_T, ts, es)
+        Algorithms.computeInterpolatedElements(t, elem, DIM, ::computeMarsSatElem, DELTA_T, ts, es)
 
         t0 = ts[0]
         t1 = ts[1]

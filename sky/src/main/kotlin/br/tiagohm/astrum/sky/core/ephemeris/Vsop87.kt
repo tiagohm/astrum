@@ -9,7 +9,8 @@ import kotlin.math.min
 import kotlin.math.sin
 
 /**
- * Variations Séculaires des Orbites Planétaires
+ * Variations Séculaires des Orbites Planétaires by Bretagnon P. and Francou G.
+ * ftp://ftp.imcce.fr/pub/ephem/planets/vsop87
  */
 object Vsop87 {
 

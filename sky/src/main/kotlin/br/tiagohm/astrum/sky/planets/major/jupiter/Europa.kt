@@ -28,7 +28,7 @@ class Europa(parent: Jupiter) : Planet(
     override val meanOppositionMagnitude = 5.29
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
-        val xyz = computeJupiterSatHeliocentricCoordinates(jde, 1)
+        val xyz = computeL12HeliocentricCoordinates(jde, 1)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 

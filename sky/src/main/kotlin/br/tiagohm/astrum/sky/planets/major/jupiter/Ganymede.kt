@@ -28,7 +28,7 @@ class Ganymede(parent: Jupiter) : Planet(
     override val meanOppositionMagnitude = 4.61
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
-        val xyz = computeJupiterSatHeliocentricCoordinates(jde, 2)
+        val xyz = computeL12HeliocentricCoordinates(jde, 2)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 

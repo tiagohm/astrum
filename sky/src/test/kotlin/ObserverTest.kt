@@ -19,7 +19,7 @@ import br.tiagohm.astrum.sky.planets.major.mars.Mars
 import br.tiagohm.astrum.sky.planets.major.mars.Phobos
 import br.tiagohm.astrum.sky.planets.major.mercury.Mercury
 import br.tiagohm.astrum.sky.planets.major.neptune.Neptune
-import br.tiagohm.astrum.sky.planets.major.saturn.Saturn
+import br.tiagohm.astrum.sky.planets.major.saturn.*
 import br.tiagohm.astrum.sky.planets.major.uranus.Uranus
 import br.tiagohm.astrum.sky.planets.major.venus.Venus
 import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
@@ -1418,6 +1418,294 @@ class ObserverTest {
         val (diam, length) = neowise.computeComaDiameterAndTailLength(o)
         assertEquals(47630.3, diam.kilometer.value, DELTA_1)
         assertEquals(102246.2, length.kilometer.value, DELTA_1)
+    }
+
+    @Test
+    fun mimas() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val mimas = Mimas(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(13.04, mimas.visualMagnitude(o), DELTA_2)
+        assertEquals(13.04, mimas.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(12.85, mimas.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.29472, -18.5914, mimas.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.59727, -18.5121, mimas.equatorial(o), DELTA_4, true)
+        assertEquals(9.07186, -18.5121, mimas.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8433, -30.6096, mimas.horizontal(o), DELTA_4, true)
+        assertEquals(27.9918, -34.0507, mimas.galactic(o), DELTA_4, true)
+        assertEquals(-113.1629, 45.661, mimas.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6344, -0.781, mimas.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9321, -0.783, mimas.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8881, mimas.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, mimas.constellation(o))
+        assertEquals(176.5488, mimas.elongation(o), DELTA_4, true)
+        assertEquals(0.3517, mimas.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * mimas.illumination(o), DELTA_1)
+        assertEquals(8.936, mimas.distance(o), DELTA_3)
+        assertEquals(9.949, mimas.distanceFromSun(o), DELTA_3)
+        assertEquals(14.385, mimas.orbitalVelocity(o), DELTA_3)
+        assertEquals(11.323, mimas.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000169, mimas.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun enceladus() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val enceladus = Enceladus(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(11.85, enceladus.visualMagnitude(o), DELTA_2)
+        assertEquals(11.85, enceladus.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(11.65, enceladus.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.29955, -18.5869, enceladus.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.60209, -18.5076, enceladus.equatorial(o), DELTA_4, true)
+        assertEquals(9.07154, -18.5076, enceladus.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8508, -30.6092, enceladus.horizontal(o), DELTA_4, true)
+        assertEquals(27.9989, -34.0534, enceladus.galactic(o), DELTA_4, true)
+        assertEquals(-113.1538, 45.6614, enceladus.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6400, -0.7779, enceladus.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9377, -0.7799, enceladus.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8827, enceladus.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, enceladus.constellation(o))
+        assertEquals(176.5550, enceladus.elongation(o), DELTA_4, true)
+        assertEquals(0.351, enceladus.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * enceladus.illumination(o), DELTA_1)
+        assertEquals(8.938, enceladus.distance(o), DELTA_3)
+        assertEquals(9.951, enceladus.distanceFromSun(o), DELTA_3)
+        assertEquals(12.582, enceladus.orbitalVelocity(o), DELTA_3)
+        assertEquals(21.516, enceladus.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000216, enceladus.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun tethys() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val tethys = Tethys(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(10.35, tethys.visualMagnitude(o), DELTA_2)
+        assertEquals(10.35, tethys.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(10.15, tethys.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.29112, -18.5865, tethys.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.59366, -18.5072, tethys.equatorial(o), DELTA_4, true)
+        assertEquals(9.07210, -18.5072, tethys.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8449, -30.6154, tethys.horizontal(o), DELTA_4, true)
+        assertEquals(27.9959, -34.0458, tethys.galactic(o), DELTA_4, true)
+        assertEquals(-113.1620, 45.6669, tethys.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6324, -0.7754, tethys.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9301, -0.7774, tethys.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8884, tethys.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, tethys.constellation(o))
+        assertEquals(176.5482, tethys.elongation(o), DELTA_4, true)
+        assertEquals(0.3517, tethys.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * tethys.illumination(o), DELTA_1)
+        assertEquals(8.938, tethys.distance(o), DELTA_3)
+        assertEquals(9.951, tethys.distanceFromSun(o), DELTA_3)
+        assertEquals(11.350, tethys.orbitalVelocity(o), DELTA_3)
+        assertEquals(18.887, tethys.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000455, tethys.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun dione() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val dione = Dione(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(10.54, dione.visualMagnitude(o), DELTA_2)
+        assertEquals(10.54, dione.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(10.35, dione.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.28547, -18.5909, dione.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.58802, -18.5116, dione.equatorial(o), DELTA_4, true)
+        assertEquals(9.07248, -18.5116, dione.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8370, -30.6164, dione.horizontal(o), DELTA_4, true)
+        assertEquals(27.9887, -34.0424, dione.galactic(o), DELTA_4, true)
+        assertEquals(-113.1719, 45.6671, dione.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6261, -0.7781, dione.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9238, -0.7802, dione.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8942, dione.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, dione.constellation(o))
+        assertEquals(176.5414, dione.elongation(o), DELTA_4, true)
+        assertEquals(0.3525, dione.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * dione.illumination(o), DELTA_1)
+        assertEquals(8.936, dione.distance(o), DELTA_3)
+        assertEquals(9.948, dione.distanceFromSun(o), DELTA_3)
+        assertEquals(10.025, dione.orbitalVelocity(o), DELTA_3)
+        assertEquals(10.778, dione.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000481, dione.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun rhea() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val rhea = Rhea(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(9.84, rhea.visualMagnitude(o), DELTA_2)
+        assertEquals(9.84, rhea.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(9.65, rhea.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.29998, -18.5974, rhea.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.60254, -18.5180, rhea.equatorial(o), DELTA_4, true)
+        assertEquals(9.07151, -18.5180, rhea.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8421, -30.6019, rhea.horizontal(o), DELTA_4, true)
+        assertEquals(27.9872, -34.0575, rhea.galactic(o), DELTA_4, true)
+        assertEquals(-113.1632, 45.6532, rhea.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6376, -0.7881, rhea.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9353, -0.7901, rhea.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8870, rhea.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, rhea.constellation(o))
+        assertEquals(176.5503, rhea.elongation(o), DELTA_4, true)
+        assertEquals(0.3516, rhea.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * rhea.illumination(o), DELTA_1)
+        assertEquals(8.933, rhea.distance(o), DELTA_3)
+        assertEquals(9.946, rhea.distanceFromSun(o), DELTA_3)
+        assertEquals(8.477, rhea.orbitalVelocity(o), DELTA_3)
+        assertEquals(3.145, rhea.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000654, rhea.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun titan() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val titan = Titan(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(8.47, titan.visualMagnitude(o), DELTA_2)
+        assertEquals(8.47, titan.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(8.27, titan.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.34177, -18.5843, titan.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.64428, -18.5049, titan.equatorial(o), DELTA_4, true)
+        assertEquals(9.06873, -18.5049, titan.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8842, -30.5812, titan.horizontal(o), DELTA_4, true)
+        assertEquals(28.0189, -34.0899, titan.galactic(o), DELTA_4, true)
+        assertEquals(-113.1082, 45.6370, titan.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6793, -0.7860, titan.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9769, -0.7880, titan.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8524, titan.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, titan.constellation(o))
+        assertEquals(176.5914, titan.elongation(o), DELTA_4, true)
+        assertEquals(0.3471, titan.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * titan.illumination(o), DELTA_1)
+        assertEquals(8.942, titan.distance(o), DELTA_3)
+        assertEquals(9.955, titan.distanceFromSun(o), DELTA_3)
+        assertEquals(5.729, titan.orbitalVelocity(o), DELTA_3)
+        assertEquals(13.440, titan.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.00022, titan.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun iapetus() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val iapetus = Iapetus(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(11.25, iapetus.visualMagnitude(o), DELTA_2)
+        assertEquals(11.25, iapetus.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(11.05, iapetus.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.43277, -18.5884, iapetus.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.73524, -18.5088, iapetus.equatorial(o), DELTA_4, true)
+        assertEquals(9.06266, -18.5088, iapetus.hourAngle(o), DELTA_4, true)
+        assertEquals(229.9475, -30.5143, iapetus.horizontal(o), DELTA_4, true)
+        assertEquals(28.0511, -34.1721, iapetus.galactic(o), DELTA_4, true)
+        assertEquals(-113.0194, 45.5770, iapetus.supergalactic(o), DELTA_4, true)
+        assertEquals(309.7613, -0.8131, iapetus.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(310.0589, -0.8151, iapetus.ecliptic(o), DELTA_4, true)
+        assertEquals(131.7913, iapetus.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, iapetus.constellation(o))
+        assertEquals(176.6646, iapetus.elongation(o), DELTA_4, true)
+        assertEquals(0.3394, iapetus.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * iapetus.illumination(o), DELTA_1)
+        assertEquals(8.949, iapetus.distance(o), DELTA_3)
+        assertEquals(9.962, iapetus.distanceFromSun(o), DELTA_3)
+        assertEquals(3.359, iapetus.orbitalVelocity(o), DELTA_3)
+        assertEquals(11.429, iapetus.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000628, iapetus.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun hyperion() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+        val hyperion = Hyperion(saturn)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(14.38, hyperion.visualMagnitude(o), DELTA_2)
+        assertEquals(14.38, hyperion.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(14.18, hyperion.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.28259, -18.5723, hyperion.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.58511, -18.4930, hyperion.equatorial(o), DELTA_4, true)
+        assertEquals(9.07267, -18.4930, hyperion.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8509, -30.6309, hyperion.horizontal(o), DELTA_4, true)
+        assertEquals(28.0085, -34.0332, hyperion.galactic(o), DELTA_4, true)
+        assertEquals(-113.1573, 45.6829, hyperion.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6285, -0.7595, hyperion.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9261, -0.7615, hyperion.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8880, hyperion.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, hyperion.constellation(o))
+        assertEquals(176.5478, hyperion.elongation(o), DELTA_4, true)
+        assertEquals(0.3515, hyperion.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * hyperion.illumination(o), DELTA_1)
+        assertEquals(8.945, hyperion.distance(o), DELTA_3)
+        assertEquals(9.957, hyperion.distanceFromSun(o), DELTA_3)
+        assertEquals(5.669, hyperion.orbitalVelocity(o), DELTA_3)
+        assertEquals(14.657, hyperion.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000115, hyperion.angularSize(o) * 2, DELTA_6, true)
     }
 
     companion object {

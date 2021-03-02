@@ -5,6 +5,10 @@ import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.pmod
 import kotlin.math.*
 
+/**
+ * L1.2 theory of the galilan satellites by Valery LAINEY, Alain VIENNE and Luc DURIEZ.
+ * ftp://ftp.imcce.fr/pub/ephem/satel/galilean/L1/L1.2/
+ */
 object L12 {
 
     fun computeCoordinates(jd: Double, body: Int): DoubleArray {

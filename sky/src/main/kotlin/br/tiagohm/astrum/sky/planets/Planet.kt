@@ -2,10 +2,7 @@ package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.ephemeris.Elp82b
-import br.tiagohm.astrum.sky.core.ephemeris.L12
-import br.tiagohm.astrum.sky.core.ephemeris.MarsSat
-import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
+import br.tiagohm.astrum.sky.core.ephemeris.*
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
@@ -391,12 +388,12 @@ abstract class Planet internal constructor(
     /**
      * Returns the orbital velocity in km/s
      */
-    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * AU / SECONDS_PER_DAY
+    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * (AU / SECONDS_PER_DAY)
 
     /**
      * Returns the heliocentric velocity in km/s
      */
-    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * AU / SECONDS_PER_DAY
+    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * (AU / SECONDS_PER_DAY)
 
     override fun visualMagnitude(o: Observer, extra: Any?): Double {
         // Compute the phase angle i
@@ -496,6 +493,9 @@ abstract class Planet internal constructor(
 
     companion object {
 
+        /**
+         * Computes heliocentric position of Moon.
+         */
         fun computeMoonHeliocentricCoordinates(jd: Double): DoubleArray {
             val xyz6 = DoubleArray(6)
             val c = Elp82b.computeCoordinates(jd)
@@ -509,6 +509,9 @@ abstract class Planet internal constructor(
             return xyz6
         }
 
+        /**
+         * Computes heliocentric position of Earth.
+         */
         fun computeEarthHeliocentricCoordinates(jd: Double): DoubleArray {
             val xyz6 = Vsop87.computeCoordinates(jd, 2)
             val moon = Elp82b.computeCoordinates(jd)
@@ -522,14 +525,30 @@ abstract class Planet internal constructor(
             return xyz6
         }
 
+        /**
+         * Computes Mars's moons heliocentric position.
+         */
         fun computeMarsSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
             return MarsSat.computeCoordinates(jd, body)
         }
 
-        fun computeJupiterSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+        /**
+         * Computes Jupiter's moons heliocentric position.
+         */
+        fun computeL12HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
             return L12.computeCoordinates(jd, body)
         }
 
+        /**
+         * Computes Saturn's moons heliocentric position.
+         */
+        fun computeTass17HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+            return Tass17.computeCoordinates(jd, body)
+        }
+
+        /**
+         * Computes heliocentric position of the [planet].
+         */
         fun computePlanetHeliocentricCoordinates(jd: Double, planet: Int): DoubleArray {
             return Vsop87.computeCoordinates(jd, planet)
         }

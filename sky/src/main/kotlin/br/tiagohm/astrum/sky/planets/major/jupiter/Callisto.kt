@@ -28,7 +28,7 @@ class Callisto(parent: Jupiter) : Planet(
     override val meanOppositionMagnitude = 5.65
 
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
-        val xyz = computeJupiterSatHeliocentricCoordinates(jde, 3)
+        val xyz = computeL12HeliocentricCoordinates(jde, 3)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 

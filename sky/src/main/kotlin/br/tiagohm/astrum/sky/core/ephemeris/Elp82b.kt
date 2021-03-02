@@ -9,7 +9,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 /**
- * Ephemeride Lunaire Parisienne
+ * Ephemeride Lunaire Parisienne by Chapront-Touze M., Chapront J.
+ * ftp://ftp.imcce.fr/pub/ephem/moon/elp82b
  */
 object Elp82b {
 
