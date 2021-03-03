@@ -8,7 +8,7 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Distance
 
 /**
- *  Satellite orbiting Planet [T].
+ *  Satellite orbiting the planet [T].
  *
  * @param q Pericenter distance
  * @param e Eccentricity
@@ -19,7 +19,7 @@ import br.tiagohm.astrum.sky.core.units.distance.Distance
  * @param n Mean motion
  */
 open class Satellite<T : Planet>(
-    id: String,
+    name: String,
     parent: T,
     radius: Distance,
     q: Distance,
@@ -34,7 +34,7 @@ open class Satellite<T : Planet>(
     private val rotObliquity: Angle = Radians.ZERO,
     private val rotAscendingNode: Angle = Radians.ZERO,
 ) : Planet(
-    id,
+    name,
     radius,
     0.0,
     albedo,
@@ -42,8 +42,6 @@ open class Satellite<T : Planet>(
     PlanetType.MOON,
     parent,
 ) {
-
-    override val siderealPeriod by lazy { orbit!!.siderealPeriod }
 
     override val siderealDay by lazy { siderealPeriod }
 

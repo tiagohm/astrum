@@ -102,8 +102,8 @@ enum class Constellation(
 
     companion object {
 
-        fun find(o: Observer, pos: Triad): Constellation? {
-            val pos1875 = Algorithms.j2000ToJ1875(o.equinoxEquatorialToJ2000(pos, false))
+        fun find(o: Observer, posEquJNow: Triad): Constellation? {
+            val pos1875 = Algorithms.j2000ToJ1875(o.equinoxEquatorialToJ2000(posEquJNow, false))
             val (ra1875, dec1875) = Algorithms.rectangularToSphericalCoordinates(pos1875)
 
             var ra1875InHours = ra1875.radians.value * 12.0 / M_PI

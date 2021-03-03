@@ -5,7 +5,7 @@ enum class PlanetType {
     STAR,
     PLANET,
     MOON,
+    MINOR_PLANET, // Asteroids, Comets and Dwarf Planets.
     ARTIFICIAL,
-    MINOR_PLANET,
     UNDEFINED
 }

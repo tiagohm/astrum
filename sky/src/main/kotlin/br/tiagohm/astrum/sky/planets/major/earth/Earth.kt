@@ -25,10 +25,6 @@ class Earth(parent: Sun) : Planet(
     parent,
 ) {
 
-    init {
-        // TODO: For the planet moons with orbits relative to planets' equator...
-    }
-
     override val siderealDay = 0.99726963226279286992
 
     override var siderealPeriod = 365.256363004

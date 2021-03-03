@@ -50,7 +50,7 @@ open class MinorPlanet(
     parent,
 ) {
 
-    override val siderealDay = orbit!!.siderealPeriod
+    override val siderealDay by lazy { siderealPeriod }
 
     override fun computeRotObliquity(jde: Double) = Radians.ZERO
 

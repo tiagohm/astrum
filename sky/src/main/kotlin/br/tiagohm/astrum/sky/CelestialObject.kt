@@ -19,7 +19,7 @@ interface CelestialObject {
     /**
      * Returns a unique identifier for this object.
      */
-    val id: String
+    val name: String
 
     /**
      * Computes observer-centered equatorial coordinate at the current equinox.

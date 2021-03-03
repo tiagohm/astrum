@@ -25,7 +25,7 @@ import kotlin.math.*
 
 abstract class Planet internal constructor(
     // English planet name
-    final override val id: String,
+    final override val name: String,
     // Gets the equator radius of the planet
     radius: Distance,
     val oblateness: Double,
