@@ -30,6 +30,8 @@ class Uranus(parent: Sun) : Planet(
 
     override val meanOppositionMagnitude = 5.52
 
+    override val mass = 1.0 / 22902.981613
+
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 6)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])

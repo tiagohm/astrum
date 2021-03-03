@@ -28,6 +28,8 @@ class Jupiter(parent: Sun) : Planet(
 
     override val meanOppositionMagnitude = -2.7
 
+    override val mass = 1.0 / 1047.348625
+
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 4)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])

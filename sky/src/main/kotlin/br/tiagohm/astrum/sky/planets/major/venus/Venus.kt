@@ -26,6 +26,8 @@ class Venus(parent: Sun) : Planet(
 
     override val absoluteMagnitude = -5.18
 
+    override val mass = 1.0 / 408523.718658
+
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 1)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])

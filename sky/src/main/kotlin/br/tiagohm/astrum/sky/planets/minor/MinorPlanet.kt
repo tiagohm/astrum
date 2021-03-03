@@ -35,7 +35,7 @@ open class MinorPlanet(
     omega: Angle,
     w: Angle,
     t0: Double,
-    n: Angle = computeMeanMotion(e, q),
+    n: Angle = KeplerOrbit.computeMeanMotion(e, q),
     albedo: Double = 0.15,
     override val absoluteMagnitude: Double = -99.0,
     val slope: Double = -10.0,
@@ -82,20 +82,6 @@ open class MinorPlanet(
     }
 
     companion object {
-
-        /**
-         * Computes Mean Motion using Gaussian gravitational constant.
-         */
-        fun computeMeanMotion(e: Double, q: Distance): Radians {
-            val qp = q.au.value
-
-            return if (e == 1.0) {
-                Radians(0.01720209895 * (1.5 / qp) * sqrt(0.5 / qp))
-            } else {
-                val a = qp / (1.0 - e)
-                Radians(0.01720209895 / (abs(a) * sqrt(abs(a))))
-            }
-        }
 
         private val PACKED_EPOCH_REGEX = Regex("^([IJK])(\\d\\d)([1-9A-C])([1-9A-V])\$")
 

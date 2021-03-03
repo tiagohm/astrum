@@ -34,6 +34,8 @@ class Saturn(parent: Sun) : Planet(
 
     override val meanOppositionMagnitude = 0.67
 
+    override val mass = 1.0 / 3497.901768
+
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 5)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])

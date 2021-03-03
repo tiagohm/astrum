@@ -47,9 +47,17 @@ abstract class Planet internal constructor(
     private var axisRotation: Angle = Degrees.ZERO
     private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
 
+    /**
+     * Radius in AU.
+     */
     val radius = radius.au
 
     val oneMinusOblateness = 1.0 - oblateness
+
+    /**
+     * Mass in Solar masses.
+     */
+    open val mass: Double = 0.0
 
     /**
      * Gets duration of sidereal year, in earth days.

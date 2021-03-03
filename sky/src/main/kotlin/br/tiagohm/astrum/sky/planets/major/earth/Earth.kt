@@ -35,6 +35,8 @@ class Earth(parent: Sun) : Planet(
 
     override var absoluteMagnitude = -3.86
 
+    override val mass = 1.0 / 332946.048834
+
     override fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Degrees {
         return if (useNutation) SiderealTime.computeApparent(jd, jde)
         else SiderealTime.computeMean(jd, jde)

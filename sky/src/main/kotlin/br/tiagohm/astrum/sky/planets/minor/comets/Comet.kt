@@ -10,6 +10,17 @@ import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import kotlin.math.log10
 import kotlin.math.pow
 
+/**
+ * Comet.
+ *
+ * @param q Pericenter distance
+ * @param e Eccentricity
+ * @param i Inclination
+ * @param omega Longitude of ascending node
+ * @param w Argument of perihelion
+ * @param t0 Time at perihelion (JDE)
+ * @param n Mean motion
+ */
 class Comet(
     name: String,
     parent: Sun,
@@ -19,7 +30,7 @@ class Comet(
     omega: Angle,
     w: Angle,
     t0: Double,
-    n: Angle = computeMeanMotion(e, q),
+    n: Angle = KeplerOrbit.computeMeanMotion(e, q),
     albedo: Double = 0.15,
     absoluteMagnitude: Double = -99.0,
     slope: Double = -10.0,

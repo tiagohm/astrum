@@ -28,6 +28,8 @@ class Mars(parent: Sun) : Planet(
 
     override val meanOppositionMagnitude = -2.01
 
+    override val mass = 1.0 / 3098703.590291
+
     override fun computePosition(jde: Double): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 3)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])

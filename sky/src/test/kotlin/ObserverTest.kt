@@ -1,5 +1,7 @@
 import br.tiagohm.astrum.sky.AU
 import br.tiagohm.astrum.sky.Location
+import br.tiagohm.astrum.sky.M_PI
+import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.math.Duad
@@ -7,10 +9,12 @@ import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
+import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.core.units.distance.Meter
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
+import br.tiagohm.astrum.sky.planets.Satellite
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.major.earth.*
 import br.tiagohm.astrum.sky.planets.major.jupiter.*
@@ -1706,6 +1710,132 @@ class ObserverTest {
         assertEquals(5.669, hyperion.orbitalVelocity(o), DELTA_3)
         assertEquals(14.657, hyperion.heliocentricVelocity(o), DELTA_3)
         assertEquals(0.0000115, hyperion.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun leda() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val jupiter = Jupiter(sun)
+
+        // From Stellarium!
+        val e = 0.1849972068029340
+        val q = Kilometer(11202541.76637748 * (1 - e))
+        // val n = KeplerOrbit.computeMeanMotion(e, q)
+        val n = 2.0 * M_PI / 242.2566769525344 // period
+        val omega = 205.5729208452909
+        val longitudeOfPericenter = 133.1912542293990000
+        val argOfPericenter = (longitudeOfPericenter - omega) * M_PI_180
+        val meanLongitude = 276.4502233853120000
+        val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
+
+        val leda = Satellite(
+            "Leda",
+            jupiter,
+            Kilometer(5.0),
+            q,
+            e,
+            Degrees(28.26096889279179),
+            Degrees(omega),
+            Radians(argOfPericenter),
+            2454619.5 - MA / n,
+            0.04,
+            Radians(n),
+            13.5,
+        )
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        System.err.println(leda.orbit!!.siderealPeriod)
+
+        assertEquals(20.05, leda.visualMagnitude(o), DELTA_2)
+        assertEquals(20.05, leda.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(20.20, leda.meanOppositionMagnitude, DELTA_2)
+        assertEquals(330.19879, -13.0457, leda.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(330.48549, -12.9431, leda.equatorial(o), DELTA_4, true)
+        assertEquals(7.87931, -12.9431, leda.hourAngle(o), DELTA_4, true)
+        assertEquals(245.9515, -19.8403, leda.horizontal(o), DELTA_4, true)
+        assertEquals(43.7184, -47.7753, leda.galactic(o), DELTA_4, true)
+        assertEquals(-93.0254, 35.8088, leda.supergalactic(o), DELTA_4, true)
+        assertEquals(327.7199, -0.8315, leda.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(328.0176, -0.8328, leda.ecliptic(o), DELTA_4, true)
+        assertEquals(120.0640, leda.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AQR, leda.constellation(o))
+        assertEquals(165.2533, leda.elongation(o), DELTA_4, true)
+        assertEquals(2.9375, leda.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * leda.illumination(o), DELTA_1)
+        assertEquals(4.051, leda.distance(o), DELTA_3)
+        assertEquals(5.039, leda.distanceFromSun(o), DELTA_3)
+        assertEquals(3.206, leda.orbitalVelocity(o), DELTA_3)
+        assertEquals(13.911, leda.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.000000945, leda.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun janus() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val saturn = Saturn(sun)
+
+        // From Stellarium!
+        val e = 0.01039350532665206
+        val q = Kilometer(152044.1833237598760096396 * (1 - e))
+        // val n = KeplerOrbit.computeMeanMotion(e, q)
+        val n = 2.0 * M_PI / 0.7000394386551769 // period
+        val omega = 169.4950252408618
+        val longitudeOfPericenter = 481.1046065786531
+        val argOfPericenter = (longitudeOfPericenter - omega) * M_PI_180
+        val meanLongitude = 500.48456523833078
+        val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
+
+        val janus = Satellite(
+            "Janus",
+            saturn,
+            Kilometer(89.2),
+            q,
+            e,
+            Degrees(0.4924530371249293),
+            Degrees(omega),
+            Radians(argOfPericenter),
+            2457939.5 - MA / n,
+            0.5,
+            Radians(n),
+            4.9,
+        )
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        System.err.println(janus.orbit!!.siderealPeriod)
+
+        assertEquals(14.64, janus.visualMagnitude(o), DELTA_2)
+        assertEquals(14.64, janus.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(14.45, janus.meanOppositionMagnitude, DELTA_2)
+        assertEquals(312.29495, -18.5886, janus.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(312.59749, -18.5093, janus.equatorial(o), DELTA_4, true)
+        assertEquals(9.07185, -18.5093, janus.hourAngle(o), DELTA_4, true)
+        assertEquals(229.8459, -30.6113, janus.horizontal(o), DELTA_4, true)
+        assertEquals(27.9951, -34.0500, janus.galactic(o), DELTA_4, true)
+        assertEquals(-113.1601, 45.6629, janus.supergalactic(o), DELTA_4, true)
+        assertEquals(309.6354, -0.7784, janus.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(309.9330, -0.7804, janus.ecliptic(o), DELTA_4, true)
+        assertEquals(131.8867, janus.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.CAP, janus.constellation(o))
+        assertEquals(176.5503, janus.elongation(o), DELTA_4, true)
+        assertEquals(0.3515, janus.phaseAngle(o), DELTA_4, true)
+        assertEquals(100.0, 100 * janus.illumination(o), DELTA_1)
+        assertEquals(8.937, janus.distance(o), DELTA_3)
+        assertEquals(9.950, janus.distanceFromSun(o), DELTA_3)
+        assertEquals(15.962, janus.orbitalVelocity(o), DELTA_3)
+        assertEquals(22.182, janus.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000076, janus.angularSize(o) * 2, DELTA_6, true)
     }
 
     companion object {

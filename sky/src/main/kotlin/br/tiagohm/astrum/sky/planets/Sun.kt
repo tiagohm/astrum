@@ -30,6 +30,8 @@ class Sun : Planet(
     // A mean solar day (equals to Earth's day) has been added here for educational purposes
     override val meanSolarDay = 1.0
 
+    override val mass = 1.0
+
     override fun computeJ2000EquatorialPosition(o: Observer): Triad {
         return MAT_VSOP87_TO_J2000.multiplyWithoutTranslation(o.lightTimeSunPosition - o.computeHeliocentricEclipticPosition())
     }

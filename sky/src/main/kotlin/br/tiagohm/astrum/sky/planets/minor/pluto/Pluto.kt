@@ -35,6 +35,8 @@ class Pluto(parent: Sun) : MinorPlanet(
 
     override val meanOppositionMagnitude = 15.12
 
+    override val mass = 1.0 / 135836683.768617
+
     /**
      * Calculate Pluto's heliocentric ecliptical coordinates for given julian day.
      */

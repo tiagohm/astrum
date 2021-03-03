@@ -11,6 +11,17 @@ import br.tiagohm.astrum.sky.core.units.distance.Distance
 import java.lang.Math.cbrt
 import kotlin.math.*
 
+/**
+ * Keplerian Orbit.
+ *
+ * @param q Pericenter distance
+ * @param e Eccentricity
+ * @param i Inclination
+ * @param omega Longitude of ascending node
+ * @param w Argument of perihelion
+ * @param t0 Time at perihelion (JDE)
+ * @param n Mean motion
+ */
 data class KeplerOrbit(
     val q: Distance, // Pericenter Distance (AU)
     override val e: Double, // Eccentricity
@@ -111,6 +122,20 @@ data class KeplerOrbit(
             val a = semiMajorAxis.au.value
             // Solution for non-Solar central mass (Moons) we need to take central mass (in Solar units) into account. Tested with comparison of preconfigured Moon data.
             return if (a <= 0) 0.0 else M_2_PI / GAUSS_GRAV_K * sqrt(a * a * a / centralMass)
+        }
+
+        /**
+         * Computes Mean Motion using Gaussian gravitational constant.
+         */
+        fun computeMeanMotion(e: Double, q: Distance): Radians {
+            val qp = q.au.value
+
+            return if (e == 1.0) {
+                Radians(0.01720209895 * (1.5 / qp) * sqrt(0.5 / qp))
+            } else {
+                val a = qp / (1.0 - e)
+                Radians(0.01720209895 / (abs(a) * sqrt(abs(a))))
+            }
         }
 
         fun computeRotJ2000Longitude(obliquity: Angle, ascendingNode: Angle): Radians {
