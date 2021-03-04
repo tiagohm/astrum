@@ -9,6 +9,7 @@ import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.orbit.Orbit
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
@@ -45,7 +46,7 @@ abstract class Planet internal constructor(
 
     private var rotLocalToParent = Mat4.IDENTITY
     private var axisRotation: Angle = Degrees.ZERO
-    private val positionCache = HashMap<Double, Pair<Triad, Triad>>()
+    private val positionCache = HashMap<JulianDay, Pair<Triad, Triad>>()
 
     /**
      * Radius in AU.
@@ -138,13 +139,13 @@ abstract class Planet internal constructor(
     // On Earth, sidereal time on the other hand is the angle along the planet equator from RA0 to the meridian, i.e. hour angle of the first point of Aries.
     // For Earth (of course) it is sidereal time at Greenwich.
     // For planets and Moons, in this context this is the rotation angle W of the Prime meridian from the ascending node of the planet equator on the ICRF equator.
-    open fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean) = Degrees.ZERO
+    open fun computeSiderealTime(jd: JulianDay, jde: JulianDay, useNutation: Boolean) = Degrees.ZERO
 
-    protected open fun computePosition(jde: Double): Pair<Triad, Triad> {
+    protected open fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         return orbit!!.positionAndVelocityAtTimevInVSOP87Coordinates(jde)
     }
 
-    internal fun internalComputePosition(jde: Double): Pair<Triad, Triad> {
+    internal fun internalComputePosition(jde: JulianDay): Pair<Triad, Triad> {
         return if (positionCache.containsKey(jde)) {
             positionCache[jde]!!
         } else {
@@ -158,7 +159,7 @@ abstract class Planet internal constructor(
     // Compute the transformation matrix from the local Planet coordinate system to the parent Planet coordinate system.
     // In case of the planets, this makes the axis point to their respective celestial poles.
     // If only old-style rotational elements exist, we use the original algorithm (as of ~2010).
-    private fun computeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean) {
+    private fun computeTransformationMatrix(jd: JulianDay, jde: JulianDay, useNutation: Boolean) {
         axisRotation = computeSiderealTime(jd, jde, useNutation)
         // We have to call with both to correct this for earth with the new model.
         // For Earth, this is sidereal time for Greenwich, i.e. hour angle between meridian and First Point of Aries.
@@ -167,8 +168,8 @@ abstract class Planet internal constructor(
         rotLocalToParent = internalComputeTransformationMatrix(jd, jde, useNutation)
     }
 
-    internal fun computeEclipticPosition(jde: Double, o: Observer, useLightTravelTime: Boolean): Pair<Triad, Triad> {
-        val jd = jde - o.computeDeltaT(jde) / SECONDS_PER_DAY
+    internal fun computeEclipticPosition(jde: JulianDay, o: Observer, useLightTravelTime: Boolean): Pair<Triad, Triad> {
+        val jd = JulianDay(jde.value - o.computeDeltaT(jde)) / SECONDS_PER_DAY
 
         return if (useLightTravelTime) {
             val length =
@@ -185,7 +186,7 @@ abstract class Planet internal constructor(
         }
     }
 
-    protected open fun internalComputeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean): Mat4 {
+    protected open fun internalComputeTransformationMatrix(jd: JulianDay, jde: JulianDay, useNutation: Boolean): Mat4 {
         return Mat4.zrotation(computeRotAscendingNode()) * Mat4.xrotation(computeRotObliquity(jde))
     }
 
@@ -201,7 +202,7 @@ abstract class Planet internal constructor(
         return pos
     }
 
-    internal fun internalComputeHeliocentricEclipticPosition(jde: Double): Triad {
+    internal fun internalComputeHeliocentricEclipticPosition(jde: JulianDay): Triad {
         var pos = internalComputePosition(jde).first
         var p = parent
 
@@ -273,7 +274,7 @@ abstract class Planet internal constructor(
      * For the other planets, it must be the angle between axis and Normal to the VSOP_J2000 coordinate frame.
      * For moons, it may be the obliquity against its planet's equatorial plane.
      */
-    abstract fun computeRotObliquity(jde: Double): Angle
+    abstract fun computeRotObliquity(jde: JulianDay): Angle
 
     /**
      * Computes the longitude of ascending node of equator on the ecliptic.
@@ -305,13 +306,13 @@ abstract class Planet internal constructor(
         // It seems necessary to have ha in [-12,12]!
         if (ha > 12.0) ha -= 24.0
 
-        val jd = o.jd
+        val jd = o.jd.value
         val ct = (jd - jd.toInt()) * 24.0
         var transit = ct - ha * coeff // For Earth: coeff = (360.985647 / 360.0) = 1.0027379083333
 
         if (ha > 12.0 && ha <= 24.0) transit += 24.0
 
-        transit += o.dateTime.utcOffset + 12.0
+        transit += o.utcOffset + 12.0
 
         transit = transit.pmod(24.0)
 
@@ -339,7 +340,7 @@ abstract class Planet internal constructor(
     }
 
     // Used to compute shadows.
-    internal fun computeShadowMatrix(jde: Double): Mat4 {
+    internal fun computeShadowMatrix(jde: JulianDay): Mat4 {
         var res = Mat4.translation(internalComputePosition(jde).first) * rotLocalToParent
         var p = parent
 
@@ -504,7 +505,7 @@ abstract class Planet internal constructor(
         /**
          * Computes heliocentric position of Moon.
          */
-        fun computeMoonHeliocentricCoordinates(jd: Double): DoubleArray {
+        fun computeMoonHeliocentricCoordinates(jd: JulianDay): DoubleArray {
             val xyz6 = DoubleArray(6)
             val c = Elp82b.computeCoordinates(jd)
 
@@ -520,7 +521,7 @@ abstract class Planet internal constructor(
         /**
          * Computes heliocentric position of Earth.
          */
-        fun computeEarthHeliocentricCoordinates(jd: Double): DoubleArray {
+        fun computeEarthHeliocentricCoordinates(jd: JulianDay): DoubleArray {
             val xyz6 = Vsop87.computeCoordinates(jd, 2)
             val moon = Elp82b.computeCoordinates(jd)
 
@@ -536,35 +537,35 @@ abstract class Planet internal constructor(
         /**
          * Computes heliocentric position of Mars's moons.
          */
-        fun computeMarsSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+        fun computeMarsSatHeliocentricCoordinates(jd: JulianDay, body: Int): DoubleArray {
             return MarsSat.computeCoordinates(jd, body)
         }
 
         /**
          * Computes heliocentric position of Jupiter's moons.
          */
-        fun computeL12HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+        fun computeL12HeliocentricCoordinates(jd: JulianDay, body: Int): DoubleArray {
             return L12.computeCoordinates(jd, body)
         }
 
         /**
          * Computes heliocentric position of Saturn's moons.
          */
-        fun computeTass17HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+        fun computeTass17HeliocentricCoordinates(jd: JulianDay, body: Int): DoubleArray {
             return Tass17.computeCoordinates(jd, body)
         }
 
         /**
          * Computes heliocentric position of Uranus' moons.
          */
-        fun computeGust86HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+        fun computeGust86HeliocentricCoordinates(jd: JulianDay, body: Int): DoubleArray {
             return Gust86.computeCoordinates(jd, body)
         }
 
         /**
          * Computes heliocentric position of the [planet].
          */
-        fun computePlanetHeliocentricCoordinates(jd: Double, planet: Int): DoubleArray {
+        fun computePlanetHeliocentricCoordinates(jd: JulianDay, planet: Int): DoubleArray {
             return Vsop87.computeCoordinates(jd, planet)
         }
     }

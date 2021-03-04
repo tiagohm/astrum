@@ -2,12 +2,12 @@ package br.tiagohm.astrum.sky.core.time
 
 interface TimeCorrection {
 
-    fun compute(jd: Double): Double
+    fun compute(jd: JulianDay): Double
 
     companion object {
 
         val NONE = object : TimeCorrection {
-            override fun compute(jd: Double) = 0.0
+            override fun compute(jd: JulianDay) = 0.0
         }
     }
 }

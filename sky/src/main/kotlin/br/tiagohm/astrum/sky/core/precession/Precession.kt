@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.core.precession
 import br.tiagohm.astrum.sky.JD_DAY
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.abs
@@ -23,14 +24,16 @@ data class Precession(
         private var lastJDE = 0.0
         private var precession = ZERO
 
-        fun computeVondrakEpsilon(jde: Double) = computeVondrak(jde).epsilon
+        fun computeVondrakEpsilon(jde: JulianDay) = computeVondrak(jde).epsilon
 
-        fun computeVondrak(jde: Double): Precession {
-            if (abs(jde - lastJDE) >= JD_DAY) {
-                lastJDE = jde
+        fun computeVondrak(jde: JulianDay): Precession {
+            val JDE = jde.value
+
+            if (abs(JDE - lastJDE) >= JD_DAY) {
+                lastJDE = JDE
 
                 // Julian centuries from J2000.0
-                val T = (jde - 2451545.0) * (1.0 / 36525.0)
+                val T = (JDE - 2451545.0) * (1.0 / 36525.0)
 
                 val T2pi = T * M_2_PI
 

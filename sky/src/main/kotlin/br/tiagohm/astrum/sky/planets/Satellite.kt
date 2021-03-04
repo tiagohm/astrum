@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets
 import br.tiagohm.astrum.sky.J2000
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Distance
@@ -27,7 +28,7 @@ open class Satellite<T : Planet>(
     i: Angle,
     omega: Angle,
     w: Angle,
-    t0: Double,
+    t0: JulianDay,
     albedo: Double,
     n: Angle = KeplerOrbit.computeMeanMotion(e, q),
     override val absoluteMagnitude: Double = -99.0,
@@ -45,7 +46,7 @@ open class Satellite<T : Planet>(
 
     override val siderealDay by lazy { siderealPeriod }
 
-    final override fun computeRotObliquity(jde: Double) = rotObliquity
+    final override fun computeRotObliquity(jde: JulianDay) = rotObliquity
 
     final override fun computeRotAscendingNode() = rotAscendingNode
 }

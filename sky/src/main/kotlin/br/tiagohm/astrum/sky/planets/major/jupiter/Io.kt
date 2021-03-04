@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.jupiter
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
@@ -27,12 +28,12 @@ class Io(parent: Jupiter) : Planet(
 
     override val meanOppositionMagnitude = 5.02
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computeL12HeliocentricCoordinates(jde, 0)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(0.0386258511268327)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(0.0386258511268327)
 
     override fun computeRotAscendingNode() = Radians(-0.3890901056071774)
 

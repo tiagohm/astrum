@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
@@ -36,9 +37,9 @@ class Sun : Planet(
         return MAT_VSOP87_TO_J2000.multiplyWithoutTranslation(o.lightTimeSunPosition - o.computeHeliocentricEclipticPosition())
     }
 
-    override fun computePosition(jde: Double) = Triad.ZERO to Triad.ZERO
+    override fun computePosition(jde: JulianDay) = Triad.ZERO to Triad.ZERO
 
-    override fun computeRotObliquity(jde: Double) = Radians(0.12653637076958889433)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(0.12653637076958889433)
 
     override fun computeRotAscendingNode() = Radians(1.3223623836794924)
 

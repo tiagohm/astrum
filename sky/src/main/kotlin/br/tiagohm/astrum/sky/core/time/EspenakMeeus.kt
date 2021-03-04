@@ -2,13 +2,16 @@ package br.tiagohm.astrum.sky.core.time
 
 object EspenakMeeus : TimeCorrection {
 
-    override fun compute(jd: Double): Double {
+    override fun compute(jd: JulianDay): Double {
         // Note: the method here is adapted from
         // "Five Millennium Canon of Solar Eclipses" [Espenak and Meeus, 2006]
         // A summary is described here:
         // http://eclipse.gsfc.nasa.gov/SEhelp/deltatpoly2004.html
 
-        val (year, month, day) = DateTime.fromJulianDay(jd)
+        val date = DateTime.fromJulianDay(jd)
+        val year = date.year
+        val month = date.monthValue
+        val day = date.dayOfMonth
         val y = DateTime.yearAsFraction(year, month, day)
 
         // Set the default value for Delta T

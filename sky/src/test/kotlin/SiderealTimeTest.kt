@@ -1,5 +1,6 @@
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.time.EspenakMeeus
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.distance.AU
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -50,7 +51,7 @@ class SiderealTimeTest {
         )
 
         for (d in data) {
-            val jd = d[0]
+            val jd = JulianDay(d[0])
             val jde = jd - EspenakMeeus.compute(jd) / 86400.0
             val h = d[1]
             val m = d[2]
@@ -77,7 +78,7 @@ class SiderealTimeTest {
         )
 
         for (d in data) {
-            val jd = d[0]
+            val jd = JulianDay(d[0])
             val jde = jd - EspenakMeeus.compute(jd) / 86400.0
             val h = d[1]
             val m = d[2]

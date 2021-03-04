@@ -1,4 +1,5 @@
 import br.tiagohm.astrum.sky.core.ephemeris.Vsop87
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -28,7 +29,7 @@ class EphemerisTest {
     fun testEphemeris(eph: Map<Double, DoubleArray>, id: Int, error: Double) {
         for (jd in eph.keys) {
             val xyz0 = eph[jd]!!
-            val xyz1 = Vsop87.computeCoordinates(jd, id)
+            val xyz1 = Vsop87.computeCoordinates(JulianDay(jd), id)
 
             assertEquals(xyz0[0], xyz1[0], error)
             assertEquals(xyz0[1], xyz1[1], error)

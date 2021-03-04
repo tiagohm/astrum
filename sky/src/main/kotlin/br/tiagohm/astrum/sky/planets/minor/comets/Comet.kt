@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.planets.minor.comets
 
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.distance.Distance
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
@@ -29,7 +30,7 @@ class Comet(
     i: Angle,
     omega: Angle,
     w: Angle,
-    t0: Double,
+    t0: JulianDay,
     n: Angle = KeplerOrbit.computeMeanMotion(e, q),
     albedo: Double = 0.15,
     absoluteMagnitude: Double = -99.0,

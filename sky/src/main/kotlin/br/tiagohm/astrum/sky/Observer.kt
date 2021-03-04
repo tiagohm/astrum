@@ -5,6 +5,7 @@ import br.tiagohm.astrum.sky.atmosphere.Refraction
 import br.tiagohm.astrum.sky.core.math.*
 import br.tiagohm.astrum.sky.core.nutation.Nutation
 import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.MoonSecularAcceleration
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.core.units.angle.Angle
@@ -22,7 +23,8 @@ import kotlin.math.*
 data class Observer(
     val home: Earth,
     val site: Location,
-    val dateTime: DateTime,
+    val jd: JulianDay,
+    val utcOffset: Double = DateTime.currentUTCOffset(),
     val timeCorrection: TimeCorrectionType = TimeCorrectionType.ESPEANAK_MEEUS,
     val pressure: Pressure = Refraction.DEFAULT_PRESSURE,
     val temperature: Temperature = Refraction.DEFAULT_TEMPERATURE,
@@ -36,11 +38,9 @@ data class Observer(
     val refraction = Refraction(pressure, temperature)
     val extinction = Extinction(extinctionCoefficient)
 
-    val jde by lazy { JD[0] + JD[1] / SECONDS_PER_DAY }
+    val jde by lazy { JulianDay(JD[0] + JD[1] / SECONDS_PER_DAY) }
 
-    val jd by lazy { JD[0] }
-
-    val mjd by lazy { JD[0] - 2400000.5 }
+    val mjd by lazy { JulianDay(JD[0] - 2400000.5) }
 
     private val matAltAzToEquinoxEqu: Mat4
     private val matEquinoxEquToAltAz: Mat4
@@ -58,8 +58,8 @@ data class Observer(
         private set
 
     init {
-        JD[0] = dateTime.jd
-        JD[1] = computeDeltaT(dateTime.jd)
+        JD[0] = jd.value
+        JD[1] = computeDeltaT(jd)
 
         home.update(this)
 
@@ -104,7 +104,7 @@ data class Observer(
         }
     }
 
-    fun computeDeltaT(jd: Double): Double {
+    fun computeDeltaT(jd: JulianDay): Double {
         var deltaT = timeCorrection.compute(jd)
 
         if (!timeCorrection.deltaTdontUseMoon) {

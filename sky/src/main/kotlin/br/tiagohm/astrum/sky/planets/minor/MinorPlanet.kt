@@ -4,7 +4,7 @@ import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
-import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
@@ -34,7 +34,7 @@ open class MinorPlanet(
     i: Angle,
     omega: Angle,
     w: Angle,
-    t0: Double,
+    t0: JulianDay,
     n: Angle = KeplerOrbit.computeMeanMotion(e, q),
     albedo: Double = 0.15,
     override val absoluteMagnitude: Double = -99.0,
@@ -52,7 +52,7 @@ open class MinorPlanet(
 
     override val siderealDay by lazy { siderealPeriod }
 
-    override fun computeRotObliquity(jde: Double) = Radians.ZERO
+    override fun computeRotObliquity(jde: JulianDay) = Radians.ZERO
 
     override fun computeRotAscendingNode() = Radians.ZERO
 
@@ -130,7 +130,7 @@ open class MinorPlanet(
             val month = unpackDayOrMonthNumber(epochM.groupValues[3][0])
             val day = unpackDayOrMonthNumber(epochM.groupValues[4][0])
             // Epoch is at .0 TT, i.e. midnight
-            val epochJD = DateTime.computeJDFromDate(year, month, day, 0, 0, 0, 0, 0.0)
+            val epochJD = JulianDay(year, month, day, 0, 0, 0, 0, 0.0)
 
             return MinorPlanet(
                 name,

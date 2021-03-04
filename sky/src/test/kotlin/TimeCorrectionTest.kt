@@ -1,5 +1,5 @@
-import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.EspenakMeeus
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.MeeusSimons
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -42,7 +42,7 @@ class TimeCorrectionTest {
         )
 
         for (year in data.keys) {
-            val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0, 0.0)
+            val jd = JulianDay(year, 1, 1, 0, 0, 0, 0, 0.0)
             val deltaT = MeeusSimons.compute(jd)
             assertEquals(data[year]!!, deltaT, 1.0)
         }
@@ -106,7 +106,7 @@ class TimeCorrectionTest {
         )
 
         for (year in data.keys) {
-            val jd = DateTime.computeJDFromDate(year, 1, 1, 0, 0, 0, 0, 0.0)
+            val jd = JulianDay(year, 1, 1, 0, 0, 0, 0, 0.0)
             val deltaT = EspenakMeeus.compute(jd)
             val result = data[year]!!.first
             val error = data[year]!!.second

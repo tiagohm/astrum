@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -10,12 +11,12 @@ import kotlin.math.sin
  */
 object Tass17 {
 
-    fun computeCoordinates(jd: Double, body: Int): DoubleArray {
+    fun computeCoordinates(jd: JulianDay, body: Int): DoubleArray {
         return computeOsculatingCoordinates(jd, jd, body)
     }
 
-    fun computeOsculatingCoordinates(jd0: Double, jd: Double, body: Int): DoubleArray {
-        val t = jd0 - 2444240.0
+    fun computeOsculatingCoordinates(jd0: JulianDay, jd: JulianDay, body: Int): DoubleArray {
+        val t = jd0.value - 2444240.0
 
         val ts = doubleArrayOf(t0, t1, t2)
         val es = arrayOf(elem0, elem1, elem2)
@@ -27,7 +28,7 @@ object Tass17 {
         t2 = ts[2]
 
         val be = elem.sliceArray(body * 6 until body * 6 + 6)
-        val x = Algorithms.ellipticToRectangularN(SATS[body].mu, be, jd - jd0)
+        val x = Algorithms.ellipticToRectangularN(SATS[body].mu, be, jd.value - jd0.value)
 
         return doubleArrayOf(
             TASS17_TO_VSOP87[0] * x[0] + TASS17_TO_VSOP87[1] * x[1] + TASS17_TO_VSOP87[2] * x[2],

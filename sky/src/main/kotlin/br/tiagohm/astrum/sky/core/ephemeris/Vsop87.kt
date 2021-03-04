@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.readByteArrayFromResources
 import br.tiagohm.astrum.sky.readDoubleArrayFromResources
 import kotlin.math.abs
@@ -14,12 +15,12 @@ import kotlin.math.sin
  */
 object Vsop87 {
 
-    fun computeCoordinates(jd: Double, body: Int): DoubleArray {
+    fun computeCoordinates(jd: JulianDay, body: Int): DoubleArray {
         return computeOsculatingCoordinates(jd, jd, body)
     }
 
-    fun computeOsculatingCoordinates(jd0: Double, jd: Double, body: Int): DoubleArray {
-        val t = (jd0 - 2451545.0) / 365250.0
+    fun computeOsculatingCoordinates(jd0: JulianDay, jd: JulianDay, body: Int): DoubleArray {
+        val t = (jd0.value - 2451545.0) / 365250.0
 
         val ts = doubleArrayOf(t0, t1, t2)
         val es = arrayOf(elem0, elem1, elem2)
@@ -32,7 +33,7 @@ object Vsop87 {
 
         val be = elem.sliceArray(body * 6 until body * 6 + 6)
 
-        return Algorithms.ellipticToRectangularA(MU[body], be, jd - jd0)
+        return Algorithms.ellipticToRectangularA(MU[body], be, jd.value - jd0.value)
     }
 
     private fun computeVsop87Elem(t: Double, elem: DoubleArray) {

@@ -2,9 +2,9 @@ package br.tiagohm.astrum.sky.core.time
 
 object MeeusSimons : TimeCorrection {
 
-    override fun compute(jd: Double): Double {
+    override fun compute(jd: JulianDay): Double {
         val year = DateTime.fromJulianDay(jd).year
-        val ub = (jd - 2451545.0) / 36525.0
+        val ub = (jd.value - 2451545.0) / 36525.0
 
         return when {
             year < 1620 -> 0.0

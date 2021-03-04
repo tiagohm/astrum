@@ -5,6 +5,7 @@ import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
@@ -36,12 +37,12 @@ class Saturn(parent: Sun) : Planet(
 
     override val mass = 1.0 / 3497.901768
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 5)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(0.4896026430986047)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(0.4896026430986047)
 
     override fun computeRotAscendingNode() = Radians(2.9588132951645223)
 
@@ -82,7 +83,7 @@ class Saturn(parent: Sun) : Planet(
 
     fun computeRingsIllumination(o: Observer): Double {
         // Implemented from Meeus, Astr.Alg.1992
-        val T = (o.jde - 2451545.0) / 36525.0
+        val T = (o.jde.value - 2451545.0) / 36525.0
         val i = Degrees((0.000004 * T - 0.012998) * T + 28.075216).radians
         val Omega = Degrees((0.000412 * T + 1.394681) * T + 169.508470).radians
         val se = computeHeliocentricEclipticPosition(o) - o.home.computeHeliocentricEclipticPosition(o)

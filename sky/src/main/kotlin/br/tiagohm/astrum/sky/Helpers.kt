@@ -3,7 +3,7 @@ package br.tiagohm.astrum.sky
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.precession.Precession
-import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import java.io.InputStream
@@ -23,7 +23,7 @@ const val M_3_PI = 3 * M_PI
 const val M_PI_2 = M_PI / 2
 const val GAUSS_GRAV_K = 0.01720209895
 const val GAUSS_GRAV_K_SQ = GAUSS_GRAV_K * GAUSS_GRAV_K
-const val J2000 = 2451545.0 // epoch J2000: 12 UT on 1 Jan 2000
+val J2000 = JulianDay(2451545.0) // epoch J2000: 12 UT on 1 Jan 2000
 const val SPEED_OF_LIGHT = 299792.458 // (km/sec)
 val EPS_0 = Degrees(23.4392803055555555555556) // Ecliptic obliquity of J2000.0, degrees
 const val M_PI_180 = M_PI / 180.0
@@ -61,7 +61,7 @@ val MAT_J2000_TO_SUPERGALACTIC = Mat4(
 val MAT_SUPERGALACTIC_TO_J2000 = MAT_J2000_TO_SUPERGALACTIC.transpose()
 
 val MAT_J2000_TO_J1875 by lazy {
-    val jdB1875 = DateTime.computeJDFromBesselianEpoch(1875.0)
+    val jdB1875 = JulianDay.fromBesselianEpoch(1875.0)
     val p = Precession.computeVondrak(jdB1875)
 
     (Mat4.xrotation(Radians(84381.406 * 1.0 / 3600.0 * M_PI / 180.0)) *

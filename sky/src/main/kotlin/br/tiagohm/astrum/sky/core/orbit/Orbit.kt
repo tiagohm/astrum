@@ -1,11 +1,12 @@
 package br.tiagohm.astrum.sky.core.orbit
 
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.distance.Distance
 
 interface Orbit {
 
-    fun positionAndVelocityAtTimevInVSOP87Coordinates(jde: Double): Pair<Triad, Triad>
+    fun positionAndVelocityAtTimevInVSOP87Coordinates(jde: JulianDay): Pair<Triad, Triad>
 
     val semiMajorAxis: Distance
 

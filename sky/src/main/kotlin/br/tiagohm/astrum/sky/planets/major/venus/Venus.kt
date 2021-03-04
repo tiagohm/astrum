@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.venus
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
@@ -28,12 +29,12 @@ class Venus(parent: Sun) : Planet(
 
     override val mass = 1.0 / 408523.718658
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 1)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(0.021624851729521666)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(0.021624851729521666)
 
     override fun computeRotAscendingNode() = Radians(2.097642769084066)
 

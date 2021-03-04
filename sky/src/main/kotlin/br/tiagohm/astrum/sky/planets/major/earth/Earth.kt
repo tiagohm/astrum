@@ -6,6 +6,7 @@ import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.nutation.Nutation
 import br.tiagohm.astrum.sky.core.precession.Precession
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
@@ -33,17 +34,17 @@ class Earth(parent: Sun) : Planet(
 
     override val mass = 1.0 / 332946.048834
 
-    override fun computeSiderealTime(jd: Double, jde: Double, useNutation: Boolean): Degrees {
+    override fun computeSiderealTime(jd: JulianDay, jde: JulianDay, useNutation: Boolean): Degrees {
         return if (useNutation) SiderealTime.computeApparent(jd, jde)
         else SiderealTime.computeMean(jd, jde)
     }
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computeEarthHeliocentricCoordinates(jde)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun internalComputeTransformationMatrix(jd: Double, jde: Double, useNutation: Boolean): Mat4 {
+    override fun internalComputeTransformationMatrix(jd: JulianDay, jde: JulianDay, useNutation: Boolean): Mat4 {
         // We follow Capitaine's (2003) formulation P=Rz(chi)*Rx(-omega)*Rz(-psi)*Rx(eps). (Explan.Suppl. 2013, 6.28)
         // ADS: 2011A&A...534A..22V = A&A 534, A22 (2011): Vondrak, Capitane, Wallace: New Precession Expressions, valid for long time intervals:
         // See also Hilton et al., Report on Precession and the Ecliptic. Cel.Mech.Dyn.Astr. 94:351-367 (2006), eqn (6) and (21).
@@ -70,7 +71,7 @@ class Earth(parent: Sun) : Planet(
         return rotLocalToParent
     }
 
-    override fun computeRotObliquity(jde: Double) = Precession.computeVondrakEpsilon(jde)
+    override fun computeRotObliquity(jde: JulianDay) = Precession.computeVondrakEpsilon(jde)
 
     override fun computeRotAscendingNode() = Radians.PI
 

@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -11,12 +12,12 @@ import kotlin.math.sin
  */
 object MarsSat {
 
-    fun computeCoordinates(jd: Double, body: Int): DoubleArray {
+    fun computeCoordinates(jd: JulianDay, body: Int): DoubleArray {
         return computeOsculatingCoordinates(jd, jd, body)
     }
 
-    fun computeOsculatingCoordinates(jd0: Double, jd: Double, body: Int): DoubleArray {
-        val t = jd0 - 2451545.0 + 6491.5
+    fun computeOsculatingCoordinates(jd0: JulianDay, jd: JulianDay, body: Int): DoubleArray {
+        val t = jd0.value - 2451545.0 + 6491.5
 
         val ts = doubleArrayOf(t0, t1, t2)
         val es = arrayOf(elem0, elem1, elem2)
@@ -32,7 +33,7 @@ object MarsSat {
         generateMarsSatToVSOP87(t, vsop87)
 
         val be = elem.sliceArray(body * 6 until body * 6 + 6)
-        val x = Algorithms.ellipticToRectangularA(SATS[body].mu, be, jd - jd0)
+        val x = Algorithms.ellipticToRectangularA(SATS[body].mu, be, jd.value - jd0.value)
 
         return doubleArrayOf(
             vsop87[0] * x[0] + vsop87[1] * x[1] + vsop87[2] * x[2],

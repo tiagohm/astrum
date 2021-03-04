@@ -6,7 +6,7 @@ import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
@@ -44,7 +44,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.36244, -15.7656),
@@ -66,7 +66,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.35828, -15.7673),
@@ -88,7 +88,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.36441, -15.7649),
@@ -110,7 +110,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.35672, -15.7673),
@@ -132,7 +132,7 @@ class ObserverTest {
         testFrom(
             sun, earth,
             SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
             // Coordinates from Stellarium!!!
             listOf(
                 Duad(319.35536, -15.7681),
@@ -160,8 +160,8 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             SAO_JOSE_DAS_PALMEIRAS,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
-            TimeCorrectionType.NONE,
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            timeCorrection = TimeCorrectionType.NONE,
             useTopocentricCoordinates = true,
             useNutation = true,
             useLightTravelTime = true,
@@ -170,7 +170,7 @@ class ObserverTest {
         val mercury = Mercury(sun)
 
         for (i in 5 until 12) {
-            val oi = o0.copy(dateTime = DateTime(2021, 2, i, 9, 0, 0))
+            val oi = o0.copy(jd = JulianDay(2021, 2, i, 9, 0, 0))
             var pos = mercury.equatorial(oi)
 
             when (i) {
@@ -197,7 +197,7 @@ class ObserverTest {
         }
 
         for (i in 4 downTo 1) {
-            val oi = o0.copy(dateTime = DateTime(2021, 2, i, 9, 0, 0))
+            val oi = o0.copy(jd = JulianDay(2021, 2, i, 9, 0, 0))
             var pos = mercury.equatorial(oi)
 
             when (i) {
@@ -226,7 +226,7 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0),
+            JulianDay(2021, 2, 5, 9, 0, 0),
         )
 
         assertTrue(Neptune(sun).isAboveHorizon(o0))
@@ -236,7 +236,7 @@ class ObserverTest {
         val o1 = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 21, 0, 0),
+            JulianDay(2021, 2, 5, 21, 0, 0),
         )
 
         assertTrue(!Neptune(sun).isAboveHorizon(o1))
@@ -248,9 +248,9 @@ class ObserverTest {
         sun: Sun,
         home: Earth,
         site: Location,
-        dateTime: DateTime,
+        jd: JulianDay,
         positions: List<Duad?>,
-        deltaTAlgorithm: TimeCorrectionType = TimeCorrectionType.NONE,
+        timeCorrection: TimeCorrectionType = TimeCorrectionType.NONE,
         useTopocentricCoordinates: Boolean = false,
         useNutation: Boolean = false,
         useLightTravelTime: Boolean = false,
@@ -259,8 +259,8 @@ class ObserverTest {
         val o = Observer(
             home,
             site,
-            dateTime,
-            deltaTAlgorithm,
+            jd,
+            timeCorrection = timeCorrection,
             useTopocentricCoordinates = useTopocentricCoordinates,
             useNutation = useNutation,
             useLightTravelTime = useLightTravelTime,
@@ -295,7 +295,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(-106.3196, sun.parallacticAngle(o), DELTA_4, true)
@@ -317,7 +317,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(319.06728, -15.8555, sun.equatorialJ2000(o), DELTA_4, true)
@@ -339,7 +339,7 @@ class ObserverTest {
         val o0 = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(90.7432, 43.3413, sun.horizontal(o0, apparent = false), DELTA_4, true)
@@ -355,7 +355,7 @@ class ObserverTest {
         val o1 = Observer(
             earth,
             Location("Tokyo", Degrees(35.689499), Degrees(139.691711), Meter(44.0)),
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(285.4773, -46.2733, sun.horizontal(o1, apparent = false), DELTA_4, true)
@@ -376,7 +376,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(90.7432, 43.3589, sun.horizontal(o), DELTA_4, true)
@@ -398,7 +398,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(270.7432, 43.3589, sun.horizontal(o, true), DELTA_4, true)
@@ -420,7 +420,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(20.72784, -15.7682, sun.hourAngle(o, false), DELTA_4, true)
@@ -442,7 +442,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(20.72897, -15.7732, sun.hourAngle(o), DELTA_4, true)
@@ -464,7 +464,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(34.1094, -39.0728, sun.galactic(o), DELTA_4, true)
@@ -486,7 +486,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(-104.0866, 42.9741, sun.supergalactic(o), DELTA_4, true)
@@ -508,7 +508,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(316.6135, 0.0017, sun.eclipticJ2000(o), DELTA_4, true)
@@ -530,7 +530,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(316.9039, 0.00000, sun.ecliptic(o), DELTA_4, true)
@@ -552,7 +552,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         // TODO: moons, DSOs, etc
@@ -577,7 +577,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(0.986, sun.distance(o), DELTA_3)
@@ -600,7 +600,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(0.0, sun.distanceFromSun(o), DELTA_3)
@@ -624,7 +624,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(0.0, sun.elongation(o), DELTA_3)
@@ -647,7 +647,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(Double.NaN, sun.phaseAngle(o), DELTA_3)
@@ -670,7 +670,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(0.0, sun.synodicPeriod(o), DELTA_2)
@@ -692,7 +692,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(0.0, sun.orbitalVelocity(o), DELTA_3)
@@ -715,7 +715,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(Double.NaN, sun.illumination(o), DELTA_3)
@@ -737,7 +737,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 9, 0, 0), // 2459251.000000
+            JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
         assertEquals(18.0184, o.computeMeanSiderealTime(), DELTA_4)
@@ -752,7 +752,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 2, 5, 13, 0, 0), // All planets in the sky
+            JulianDay(2021, 2, 5, 13, 0, 0), // All planets in the sky
         )
 
         assertEquals(1.02, sun.airmass(o), DELTA_2)
@@ -874,7 +874,7 @@ class ObserverTest {
         val sun = Sun()
         val earth = Earth(sun)
 
-        val dt = DateTime(2021, 2, 5, 9, 0, 0) // 2459251.000000
+        val dt = JulianDay(2021, 2, 5, 9, 0, 0) // 2459251.000000
 
         val o = Observer(
             earth,
@@ -885,17 +885,17 @@ class ObserverTest {
         val jupiter = Jupiter(sun)
 
         assertEquals(Constellation.CAP, jupiter.constellation(o))
-        assertEquals(Constellation.AQR, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2022))))
-        assertEquals(Constellation.PSC, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2023))))
-        assertEquals(Constellation.ARI, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2024))))
-        assertEquals(Constellation.TAU, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2025))))
-        assertEquals(Constellation.GEM, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2026))))
-        assertEquals(Constellation.LEO, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2027))))
-        assertEquals(Constellation.VIR, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2028))))
-        assertEquals(Constellation.LIB, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2030))))
-        assertEquals(Constellation.OPH, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2031))))
-        assertEquals(Constellation.SGR, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2032))))
-        assertEquals(Constellation.CAP, jupiter.constellation(o.copy(dateTime = dt.copy(year = 2033))))
+        assertEquals(Constellation.AQR, jupiter.constellation(o.copy(jd = JulianDay(2022, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.PSC, jupiter.constellation(o.copy(jd = JulianDay(2023, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.ARI, jupiter.constellation(o.copy(jd = JulianDay(2024, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.TAU, jupiter.constellation(o.copy(jd = JulianDay(2025, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.GEM, jupiter.constellation(o.copy(jd = JulianDay(2026, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.LEO, jupiter.constellation(o.copy(jd = JulianDay(2027, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.VIR, jupiter.constellation(o.copy(jd = JulianDay(2028, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.LIB, jupiter.constellation(o.copy(jd = JulianDay(2030, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.OPH, jupiter.constellation(o.copy(jd = JulianDay(2031, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.SGR, jupiter.constellation(o.copy(jd = JulianDay(2032, 2, 5, 9, 0, 0))))
+        assertEquals(Constellation.CAP, jupiter.constellation(o.copy(jd = JulianDay(2033, 2, 5, 9, 0, 0))))
     }
 
     @Test
@@ -903,7 +903,7 @@ class ObserverTest {
         val sun = Sun()
         val earth = Earth(sun)
 
-        val dt = DateTime(2021, 2, 5, 9, 0, 0) // 2459251.000000
+        val dt = JulianDay(2021, 2, 5, 9, 0, 0) // 2459251.000000
 
         val o = Observer(
             earth,
@@ -912,10 +912,10 @@ class ObserverTest {
         )
 
         assertEquals(23.4371, o.computeEclipticObliquity(), DELTA_4, true)
-        assertEquals(23.4372, o.copy(dateTime = dt.copy(day = 10)).computeEclipticObliquity(), DELTA_4, true)
-        assertEquals(23.6893, o.copy(dateTime = dt.copy(year = 46)).computeEclipticObliquity(), DELTA_4, true)
-        assertEquals(24.2108, o.copy(dateTime = dt.copy(year = -6046)).computeEclipticObliquity(), DELTA_4, true)
-        assertEquals(22.9481, o.copy(dateTime = dt.copy(year = 6046)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(23.4372, o.copy(jd = JulianDay(2021, 2, 10, 9, 0, 0)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(23.6893, o.copy(jd = JulianDay(46, 2, 5, 9, 0, 0)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(24.2108, o.copy(jd = JulianDay(-6046, 2, 5, 9, 0, 0)).computeEclipticObliquity(), DELTA_4, true)
+        assertEquals(22.9481, o.copy(jd = JulianDay(6046, 2, 5, 9, 0, 0)).computeEclipticObliquity(), DELTA_4, true)
     }
 
     @Test
@@ -930,7 +930,7 @@ class ObserverTest {
         val sun = Sun()
         val earth = Earth(sun)
 
-        val dt = DateTime(2021, 2, 5, 9, 0, 0) // 2459251.000000
+        val dt = JulianDay(2021, 2, 5, 9, 0, 0) // 2459251.000000
 
         val o = Observer(
             earth,
@@ -941,28 +941,28 @@ class ObserverTest {
         val jupiter = Jupiter(sun)
 
         assertEquals(0.00903, jupiter.angularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.01053, jupiter.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.01053, jupiter.angularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
 
         val saturn = Saturn(sun)
 
         assertEquals(0.00982, saturn.angularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.01088, saturn.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.01088, saturn.angularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
         assertEquals(0.00422, saturn.spheroidAngularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.00467, saturn.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00467, saturn.spheroidAngularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
 
         val uranus = Uranus(sun)
 
         assertEquals(0.00376, uranus.angularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.00360, uranus.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00360, uranus.angularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
         assertEquals(0.00098, uranus.spheroidAngularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.00094, uranus.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00094, uranus.spheroidAngularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
 
         val neptune = Neptune(sun)
 
         assertEquals(0.00157, neptune.angularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.00158, neptune.angularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00158, neptune.angularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
         assertEquals(0.00062, neptune.spheroidAngularSize(o) * 2, DELTA_5, true)
-        assertEquals(0.00062, neptune.spheroidAngularSize(o.copy(dateTime = dt.copy(month = 5))) * 2, DELTA_5, true)
+        assertEquals(0.00062, neptune.spheroidAngularSize(o.copy(jd = JulianDay(2021, 5, 5, 9, 0, 0))) * 2, DELTA_5, true)
     }
 
     @Test
@@ -973,18 +973,18 @@ class ObserverTest {
 
         val site = Location("Rangpur", Degrees(25.9896), Degrees(87.0868), Meter(14.0))
 
-        val a = Observer(earth, site, DateTime(2009, 7, 22, 5, 57, 28, utcOffset = 6.0))
+        val a = Observer(earth, site, JulianDay(2009, 7, 22, 5, 57, 28, utcOffset = 6.0))
         assertEquals(69.5333, 4.5405, sun.horizontal(a), DELTA_4, true)
         assertEquals(69.6924, 5.0706, moon.horizontal(a), DELTA_4, true)
 
         assertEquals(0.0, a.eclipseObscuration(moon), DELTA_2)
         assertEquals(-25.26, sun.visualMagnitudeWithExtinction(a, moon), DELTA_2)
 
-        val b = Observer(earth, site, DateTime(2009, 7, 22, 6, 37, 28, utcOffset = 6.0))
+        val b = Observer(earth, site, JulianDay(2009, 7, 22, 6, 37, 28, utcOffset = 6.0))
         assertEquals(61.73, b.eclipseObscuration(moon), DELTA_2)
         assertEquals(-25.09, sun.visualMagnitudeWithExtinction(b, moon), DELTA_2)
 
-        val c = Observer(earth, site, DateTime(2009, 7, 22, 6, 57, 28, utcOffset = 6.0))
+        val c = Observer(earth, site, JulianDay(2009, 7, 22, 6, 57, 28, utcOffset = 6.0))
         assertEquals(100.0, c.eclipseObscuration(moon), DELTA_2)
         assertEquals(-16.54, sun.visualMagnitudeWithExtinction(c, moon), DELTA_2)
         assertEquals(75.3662, 17.2680, sun.horizontal(c), DELTA_4, true)
@@ -1003,44 +1003,44 @@ class ObserverTest {
         val earth = Earth(sun)
         val moon = Moon(earth)
 
-        val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, DateTime(2021, 2, 11, 15, 0, 0))
+        val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, JulianDay(2021, 2, 11, 15, 0, 0))
 
-        o.copy(dateTime = DateTime(2021, 2, 11, 16, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 2, 11, 16, 0, 0)).let {
             assertEquals(LunarPhase.NEW_MOON, moon.phase(it))
             assertEquals(29.5, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 2, 11, 18, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 2, 11, 18, 0, 0)).let {
             assertEquals(LunarPhase.WAXING_CRESCENT, moon.phase(it))
             assertEquals(DELTA_1, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 2, 19, 15, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 2, 19, 15, 0, 0)).let {
             assertEquals(LunarPhase.FIRST_QUARTER, moon.phase(it))
             assertEquals(7.4, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 2, 20, 21, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 2, 20, 21, 0, 0)).let {
             assertEquals(LunarPhase.WAXING_GIBBOUS, moon.phase(it))
             assertEquals(8.5, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 2, 27, 5, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 2, 27, 5, 0, 0)).let {
             assertEquals(LunarPhase.FULL_MOON, moon.phase(it))
             assertEquals(14.8, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 2, 27, 21, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 2, 27, 21, 0, 0)).let {
             assertEquals(LunarPhase.WANING_GIBBOUS, moon.phase(it))
             assertEquals(15.5, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 3, 5, 23, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 3, 5, 23, 0, 0)).let {
             assertEquals(LunarPhase.THIRD_QUARTER, moon.phase(it))
             assertEquals(22.2, moon.age(it), DELTA_1)
         }
 
-        o.copy(dateTime = DateTime(2021, 3, 7, 2, 0, 0)).let {
+        o.copy(jd = JulianDay(2021, 3, 7, 2, 0, 0)).let {
             assertEquals(LunarPhase.WANING_CRESCENT, moon.phase(it))
             assertEquals(23.4, moon.age(it), DELTA_1)
         }
@@ -1052,7 +1052,7 @@ class ObserverTest {
         val earth = Earth(sun)
         val moon = Moon(earth)
 
-        val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, DateTime(2022, 5, 15, 22, 31, 0))
+        val o = Observer(earth, PICO_DOS_DIAS_OBSERVATORY, JulianDay(2022, 5, 15, 22, 31, 0))
 
         // https://www.timeanddate.com/eclipse/lunar/2022-may-16
 
@@ -1067,7 +1067,7 @@ class ObserverTest {
         }
 
         // Penumbral Eclipse begins
-        o.copy(dateTime = DateTime(2022, 5, 15, 22, 32, 5)).let {
+        o.copy(jd = JulianDay(2022, 5, 15, 22, 32, 5)).let {
             assertEquals(82.366, 70.5680, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
             assertEquals(0.00003, le.penumbralMagnitude, DELTA_5)
@@ -1076,7 +1076,7 @@ class ObserverTest {
         }
 
         // Full Eclipse begins
-        o.copy(dateTime = DateTime(2022, 5, 15, 23, 27, 52)).let {
+        o.copy(jd = JulianDay(2022, 5, 15, 23, 27, 52)).let {
             assertEquals(61.3293, 82.7327, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
             assertEquals(0.95943, le.penumbralMagnitude, DELTA_5)
@@ -1085,7 +1085,7 @@ class ObserverTest {
         }
 
         // Maximum Eclipse
-        o.copy(dateTime = DateTime(2022, 5, 16, 1, 11, 20)).let {
+        o.copy(jd = JulianDay(2022, 5, 16, 1, 11, 20)).let {
             assertEquals(LunarPhase.FULL_MOON, moon.phase(it))
             assertEquals(277.2745, 72.3696, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
@@ -1095,7 +1095,7 @@ class ObserverTest {
         }
 
         // Full Eclipse ends
-        o.copy(dateTime = DateTime(2022, 5, 16, 1, 53, 57)).let {
+        o.copy(jd = JulianDay(2022, 5, 16, 1, 53, 57)).let {
             assertEquals(271.2277, 62.8147, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
             assertEquals(1.95858, le.penumbralMagnitude, DELTA_5)
@@ -1104,7 +1104,7 @@ class ObserverTest {
         }
 
         // Partial Eclipse ends
-        o.copy(dateTime = DateTime(2022, 5, 16, 2, 55, 8)).let {
+        o.copy(jd = JulianDay(2022, 5, 16, 2, 55, 8)).let {
             assertEquals(LunarPhase.WANING_GIBBOUS, moon.phase(it))
             assertEquals(265.7446, 49.0918, moon.horizontal(it), DELTA_3, true)
             val le = LunarEclipse.compute(it, moon)
@@ -1114,7 +1114,7 @@ class ObserverTest {
         }
 
         // Penumbral Eclipse ends
-        o.copy(dateTime = DateTime(2022, 5, 16, 3, 50, 51)).let {
+        o.copy(jd = JulianDay(2022, 5, 16, 3, 50, 51)).let {
             assertEquals(261.6425, 36.7049, moon.horizontal(it), DELTA_3, true)
             assertTrue(!LunarEclipse.compute(it, moon).isEclipsing)
             assertEquals(-12.17, moon.visualMagnitudeWithExtinction(it), DELTA_2)
@@ -1132,7 +1132,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         // Phobos
@@ -1195,7 +1195,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         // Io
@@ -1329,7 +1329,7 @@ class ObserverTest {
             Degrees(28.26096889279179),
             Degrees(omega),
             Radians(argOfPericenter),
-            2454619.5 - MA / n,
+            JulianDay(2454619.5 - MA / n),
             0.04,
             Radians(n),
             13.5,
@@ -1338,7 +1338,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         System.err.println(leda.orbit!!.siderealPeriod)
@@ -1390,7 +1390,7 @@ class ObserverTest {
             inclination,
             ascendingNode,
             argOfPericenter,
-            timeAtPericenter,
+            JulianDay(timeAtPericenter),
             meanMotion,
             0.09,
             3.4,
@@ -1401,7 +1401,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(9.07, ceres.visualMagnitude(o), DELTA_2)
@@ -1449,7 +1449,7 @@ class ObserverTest {
             inclination,
             ascendingNode,
             argOfPericenter,
-            timeAtPericenter,
+            JulianDay(timeAtPericenter),
             albedo = 0.1,
             absoluteMagnitude = 12.5,
             slope = 3.2,
@@ -1459,7 +1459,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2020, 7, 5, 9, 0, 0), // 2459036.000000
+            JulianDay(2020, 7, 5, 9, 0, 0), // 2459036.000000
         )
 
         assertEquals(8.51, neowise.visualMagnitude(o), DELTA_2)
@@ -1497,7 +1497,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(13.04, mimas.visualMagnitude(o), DELTA_2)
@@ -1533,7 +1533,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(11.85, enceladus.visualMagnitude(o), DELTA_2)
@@ -1569,7 +1569,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(10.35, tethys.visualMagnitude(o), DELTA_2)
@@ -1605,7 +1605,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(10.54, dione.visualMagnitude(o), DELTA_2)
@@ -1641,7 +1641,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(9.84, rhea.visualMagnitude(o), DELTA_2)
@@ -1677,7 +1677,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(8.47, titan.visualMagnitude(o), DELTA_2)
@@ -1713,7 +1713,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(11.25, iapetus.visualMagnitude(o), DELTA_2)
@@ -1749,7 +1749,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(14.38, hyperion.visualMagnitude(o), DELTA_2)
@@ -1801,7 +1801,7 @@ class ObserverTest {
             Degrees(0.4924530371249293),
             Degrees(omega),
             Radians(argOfPericenter),
-            2457939.5 - MA / n,
+            JulianDay(2457939.5 - MA / n),
             0.5,
             Radians(n),
             4.9,
@@ -1810,7 +1810,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         System.err.println(janus.orbit!!.siderealPeriod)
@@ -1848,7 +1848,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(16.55, miranda.visualMagnitude(o), DELTA_2)
@@ -1884,7 +1884,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(14.40, ariel.visualMagnitude(o), DELTA_2)
@@ -1920,7 +1920,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(15.05, umbriel.visualMagnitude(o), DELTA_2)
@@ -1956,7 +1956,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(13.97, titania.visualMagnitude(o), DELTA_2)
@@ -1992,7 +1992,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(14.18, oberon.visualMagnitude(o), DELTA_2)
@@ -2044,7 +2044,7 @@ class ObserverTest {
             Degrees(1.706664669034183),
             Degrees(omega),
             Radians(argOfPericenter),
-            2457939.5 - MA / n,
+            JulianDay(2457939.5 - MA / n),
             0.07,
             Radians(n),
             11.1,
@@ -2053,7 +2053,7 @@ class ObserverTest {
         val o = Observer(
             earth,
             PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
         assertEquals(24.05, ophelia.visualMagnitude(o), DELTA_2)

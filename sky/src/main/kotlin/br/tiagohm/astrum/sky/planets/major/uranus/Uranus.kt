@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.uranus
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
@@ -32,12 +33,12 @@ class Uranus(parent: Sun) : Planet(
 
     override val mass = 1.0 / 22902.981613
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 6)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(1.4360256624251349)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(1.4360256624251349)
 
     override fun computeRotAscendingNode() = Radians(-0.21560564768092383)
 

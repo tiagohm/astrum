@@ -4,6 +4,7 @@ import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
@@ -28,7 +29,7 @@ data class KeplerOrbit(
     val i: Angle, // Inclination
     val omega: Angle, // Longitude of ascending node
     val w: Angle, // Argument of perihelion
-    val t0: Double, // Time at perihelion (JDE)
+    val t0: JulianDay, // Time at perihelion (JDE)
     val n: Angle, // Mean motion (for parabolic orbits: W/dt in Heafner's presentation, ch5.5) [radians/day]
     val parentRotObliquity: Angle = Radians.ZERO, // Comets/Minor Planets only have parent==sun, no need for these? Oh yes: Double, VSOP/J2000 eq frames!
     val parentRotAscendingnode: Angle = Radians.ZERO,
@@ -38,7 +39,7 @@ data class KeplerOrbit(
 
     private val rotateToVsop87 = DoubleArray(9)
 
-    private val initOrbit: (KeplerOrbit, Double) -> Pair<Double, Double> = when {
+    private val initOrbit: (KeplerOrbit, JulianDay) -> Pair<Double, Double> = when {
         e < 1.0 -> ::initEllipticalOrbit
         e > 1.0 -> ::initHyperbolicOrbit
         else -> ::initParabolicOrbit
@@ -75,7 +76,7 @@ data class KeplerOrbit(
         rotateToVsop87[8] = cobl
     }
 
-    override fun positionAndVelocityAtTimevInVSOP87Coordinates(jde: Double): Pair<Triad, Triad> {
+    override fun positionAndVelocityAtTimevInVSOP87Coordinates(jde: JulianDay): Pair<Triad, Triad> {
         // Laguerre-Conway seems stable enough to go for <1.0
         val (rCosNu, rSinNu) = initOrbit(this, jde - t0)
 
@@ -153,12 +154,12 @@ data class KeplerOrbit(
         }
 
         // Solve true anomaly nu for elliptical orbit with Laguerre-Conway's method. (May have high e)
-        private fun initEllipticalOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
+        private fun initEllipticalOrbit(orbit: KeplerOrbit, dt: JulianDay): Pair<Double, Double> {
             val e = orbit.e
             val q = orbit.q.au.value
             val n = orbit.n
             val a = q / (1.0 - e)
-            val M = (n.radians.value * dt).pmod(M_2_PI)
+            val M = (n.radians.value * dt.value).pmod(M_2_PI)
 
             //	Comet orbits are quite often near-parabolic, where this may still only converge slowly.
             //	Better always use Laguerre-Conway. See Heafner, Ch. 5.3
@@ -190,12 +191,12 @@ data class KeplerOrbit(
         }
 
         // Solve true anomaly nu for hyperbolic "orbit" (better: trajectory) around the sun.
-        private fun initHyperbolicOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
+        private fun initHyperbolicOrbit(orbit: KeplerOrbit, dt: JulianDay): Pair<Double, Double> {
             val e = orbit.e
             val q = orbit.q.au.value
             val n = orbit.n
             val a = q / (e - 1.0)
-            val M = n.radians.value * dt
+            val M = n.radians.value * dt.value
 
             assert(a > 0.0)
 
@@ -222,10 +223,10 @@ data class KeplerOrbit(
         }
 
         // Solve true anomaly nu for parabolic orbit around the sun.
-        private fun initParabolicOrbit(orbit: KeplerOrbit, dt: Double): Pair<Double, Double> {
+        private fun initParabolicOrbit(orbit: KeplerOrbit, dt: JulianDay): Pair<Double, Double> {
             val q = orbit.q.au.value
             val n = orbit.n.radians.value
-            val W = dt * n
+            val W = dt.value * n
             val Y = cbrt(W + sqrt(W * W + 1.0))
             val tanNu2 = Y - 1.0 / Y // Heafner (5.5.8) has an error here, writes (Y-1)/Y.
             val rCosNu = q * (1.0 - tanNu2 * tanNu2)

@@ -1,4 +1,5 @@
 import br.tiagohm.astrum.sky.core.time.DateTime
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -90,49 +91,48 @@ class DateTimeTest {
     @Test
     fun testJDFromDate() {
         val data = mapOf(
-            2500000.0 to DateTime(2132, 8, 31, 12),
-            2454466.5 to DateTime(2008, 1, 1),
-            2454466.0 to DateTime(2007, 12, 31, 12),
-            2451545.0 to DateTime(2000, 1, 1, 12),
-            2442413.5 to DateTime(1975, 1, 1),
-            2433282.5 to DateTime(1950, 1, 1),
-            2415020.5 to DateTime(1900, 1, 1),
-            2405889.5 to DateTime(1875, 1, 1),
-            2400000.0 to DateTime(1858, 11, 16, 12),
-            2396758.5 to DateTime(1850, 1, 1),
-            2385800.5 to DateTime(1820, 1, 1),
-            2378496.5 to DateTime(1800, 1, 1),
-            2110516.0 to DateTime(1066, 4, 12, 12),
-            1720693.0 to DateTime(-1, 1, 1, 12),
-            366.0 to DateTime(-4711, 1, 1, 12),
-            -1.0 to DateTime(-4713, 12, 31, 12),
+            2500000.0 to JulianDay(2132, 8, 31, 12, utcOffset = 0.0),
+            2454466.5 to JulianDay(2008, 1, 1, utcOffset = 0.0),
+            2454466.0 to JulianDay(2007, 12, 31, 12, utcOffset = 0.0),
+            2451545.0 to JulianDay(2000, 1, 1, 12, utcOffset = 0.0),
+            2442413.5 to JulianDay(1975, 1, 1, utcOffset = 0.0),
+            2433282.5 to JulianDay(1950, 1, 1, utcOffset = 0.0),
+            2415020.5 to JulianDay(1900, 1, 1, utcOffset = 0.0),
+            2405889.5 to JulianDay(1875, 1, 1, utcOffset = 0.0),
+            2400000.0 to JulianDay(1858, 11, 16, 12, utcOffset = 0.0),
+            2396758.5 to JulianDay(1850, 1, 1, utcOffset = 0.0),
+            2385800.5 to JulianDay(1820, 1, 1, utcOffset = 0.0),
+            2378496.5 to JulianDay(1800, 1, 1, utcOffset = 0.0),
+            2110516.0 to JulianDay(1066, 4, 12, 12, utcOffset = 0.0),
+            1720693.0 to JulianDay(-1, 1, 1, 12, utcOffset = 0.0),
+            366.0 to JulianDay(-4711, 1, 1, 12, utcOffset = 0.0),
+            -1.0 to JulianDay(-4713, 12, 31, 12, utcOffset = 0.0),
         )
 
         for (jd in data.keys) {
-            val dt = DateTime.fromJulianDay(jd)
-            assertEquals(data[jd]!!, dt)
+            assertEquals(data[jd]!!.value, jd)
         }
     }
 
     @Test
     fun utcOffset() {
-        val dt0 = DateTime(2021, 2, 5, 12, 0, 0, utcOffset = 0.0) // 2459251.000000
-        assertEquals(2459251.0, dt0.jd)
+        val dt0 = JulianDay(2021, 2, 5, 12, 0, 0, utcOffset = 0.0) // 2459251.000000
+        assertEquals(2459251.0, dt0.value)
 
-        val dt1 = DateTime(2021, 2, 5, 9, 0, 0, utcOffset = -3.0)
-        assertEquals(2459251.0, dt1.jd)
+        val dt1 = JulianDay(2021, 2, 5, 9, 0, 0, utcOffset = -3.0)
+        assertEquals(2459251.0, dt1.value)
 
-        val dt2 = DateTime(2021, 2, 5, 15, 0, 0, utcOffset = 3.0)
-        assertEquals(2459251.0, dt2.jd)
+        val dt2 = JulianDay(2021, 2, 5, 15, 0, 0, utcOffset = 3.0)
+        assertEquals(2459251.0, dt2.value)
 
-        val dt3 = DateTime(2021, 2, 5, 0, 0, 0, utcOffset = -12.0)
-        assertEquals(2459251.0, dt3.jd)
+        val dt3 = JulianDay(2021, 2, 5, 0, 0, 0, utcOffset = -12.0)
+        assertEquals(2459251.0, dt3.value)
 
-        val dt4 = DateTime(2021, 2, 6, 0, 0, 0, utcOffset = 12.0)
-        assertEquals(2459251.0, dt4.jd)
+        val dt4 = JulianDay(2021, 2, 6, 0, 0, 0, utcOffset = 12.0)
+        assertEquals(2459251.0, dt4.value)
 
-        val dt5 = DateTime(2021, 2, 5, 11, 30, 0, utcOffset = -0.5)
-        assertEquals(2459251.0, dt5.jd)
+        val dt5 = JulianDay(2021, 2, 5, 11, 30, 0, utcOffset = -0.5)
+        assertEquals(2459251.0, dt5.value)
     }
 
     companion object {

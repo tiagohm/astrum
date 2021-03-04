@@ -13,8 +13,12 @@ object MoonSecularAcceleration {
      * @param nd value of n-dot (secular acceleration of the Moon) which should be used in the lunar ephemeris instead of the default values.
      * @param useDE43x true if function should adapt calculation of the secular acceleration of the Moon to the DE43x ephemeris
      */
-    fun compute(jd: Double, nd: Double, useDE43x: Boolean = false): Double {
-        val (year, month, day) = DateTime.fromJulianDay(jd)
+    fun compute(jd: JulianDay, nd: Double, useDE43x: Boolean = false): Double {
+        val date = DateTime.fromJulianDay(jd)
+        val year = date.year
+        val month = date.monthValue
+        val day = date.dayOfMonth
+
         val t = (DateTime.yearAsFraction(year, month, day) - 1955.5) / 100.0
 
         // n.dot for secular acceleration of the Moon in ELP2000-82B

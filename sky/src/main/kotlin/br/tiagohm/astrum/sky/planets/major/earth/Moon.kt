@@ -6,6 +6,7 @@ import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
@@ -30,12 +31,12 @@ class Moon(parent: Earth) : Planet(
 
     override val meanOppositionMagnitude = -12.74
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computeMoonHeliocentricCoordinates(jde)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(3.7723828609181886E-4)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(3.7723828609181886E-4)
 
     override fun computeRotAscendingNode() = Radians(-0.09356927531260717)
 

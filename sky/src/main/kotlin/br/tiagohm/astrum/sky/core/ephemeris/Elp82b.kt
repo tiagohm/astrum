@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.M_PI
 import br.tiagohm.astrum.sky.core.Algorithms
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.readByteArrayFromResources
 import br.tiagohm.astrum.sky.readDoubleArrayFromResources
 import kotlin.math.cos
@@ -14,8 +15,8 @@ import kotlin.math.sqrt
  */
 object Elp82b {
 
-    fun computeCoordinates(jd: Double): DoubleArray {
-        val t = (jd - 2451545.0) / 36525.0
+    fun computeCoordinates(jd: JulianDay): DoubleArray {
+        val t = (jd.value - 2451545.0) / 36525.0
         val r = DoubleArray(3)
         val ts = doubleArrayOf(t0, t1, t2)
         val es = arrayOf(r0, r1, r2)

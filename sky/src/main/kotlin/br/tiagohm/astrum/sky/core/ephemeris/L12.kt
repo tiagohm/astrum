@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.core.ephemeris
 
 import br.tiagohm.astrum.sky.EPSILON
 import br.tiagohm.astrum.sky.M_2_PI
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.pmod
 import kotlin.math.*
 
@@ -11,13 +12,13 @@ import kotlin.math.*
  */
 object L12 {
 
-    fun computeCoordinates(jd: Double, body: Int): DoubleArray {
+    fun computeCoordinates(jd: JulianDay, body: Int): DoubleArray {
         val sat = SATS[body]
         val elem = DoubleArray(6)
         val xv = arrayOf(DoubleArray(3), DoubleArray(3))
         val pv = DoubleArray(6)
 
-        val t = jd - 2433282.5
+        val t = jd.value - 2433282.5
 
         var s = 0.0
 

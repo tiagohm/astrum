@@ -2,6 +2,7 @@ package br.tiagohm.astrum.sky.core.nutation
 
 import br.tiagohm.astrum.sky.JD_HOUR
 import br.tiagohm.astrum.sky.M_ARCSEC_RAD
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.abs
@@ -21,18 +22,20 @@ data class Nutation(
         private var deltaPsi = 0.0
         private var deltaEpsilon = 0.0
 
-        fun compute(jde: Double): Nutation {
-            if ((jde <= NUT_BEGIN - NUT_TRANSITION) || (jde >= NUT_END + NUT_TRANSITION)) {
+        fun compute(jde: JulianDay): Nutation {
+            val JDE = jde.value
+
+            if ((JDE <= NUT_BEGIN - NUT_TRANSITION) || (JDE >= NUT_END + NUT_TRANSITION)) {
                 return EMPTY
             }
 
-            if (abs(jde - lastJDENut) >= JD_HOUR) {
-                lastJDENut = jde
+            if (abs(JDE - lastJDENut) >= JD_HOUR) {
+                lastJDENut = JDE
 
                 var DeltaPsi = 0.0
                 var DeltaEpsilon = 0.0
 
-                val t = (jde - 2451545.0) / 36525.0
+                val t = (JDE - 2451545.0) / 36525.0
                 // Mean anomaly of Moon
                 val l = 485868.249036 + 1717915923.2178 * t
                 // Mean anomaly of Sun
@@ -63,8 +66,8 @@ data class Nutation(
             }
 
             val limiter = when {
-                jde < NUT_BEGIN -> 1.0 - (NUT_BEGIN - jde) / NUT_TRANSITION
-                jde > NUT_END -> 1.0 - (jde - NUT_END) / NUT_TRANSITION
+                JDE < NUT_BEGIN -> 1.0 - (NUT_BEGIN - JDE) / NUT_TRANSITION
+                JDE > NUT_END -> 1.0 - (JDE - NUT_END) / NUT_TRANSITION
                 else -> 1.0
             }
 

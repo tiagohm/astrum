@@ -3,6 +3,7 @@ package br.tiagohm.astrum.sky.planets.major.mars
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
@@ -30,12 +31,12 @@ class Mars(parent: Sun) : Planet(
 
     override val mass = 1.0 / 3098703.590291
 
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         val xyz = computePlanetHeliocentricCoordinates(jde, 3)
         return Triad(xyz[0], xyz[1], xyz[2]) to Triad(xyz[3], xyz[4], xyz[5])
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(0.44338065731385523)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(0.44338065731385523)
 
     override fun computeRotAscendingNode() = Radians(1.4808002454424123)
 

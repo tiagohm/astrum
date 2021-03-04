@@ -4,6 +4,7 @@ import br.tiagohm.astrum.sky.M_PI_180
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
@@ -22,7 +23,7 @@ class Pluto(parent: Sun) : MinorPlanet(
     Radians(0.29825933192269555762),
     Radians(1.92644133465723380742),
     Radians(1.96519085060668286585),
-    2447654.529313563835,
+    JulianDay(2447654.529313563835),
     Radians(0.00006943722388998144),
     0.55,
     -0.4,
@@ -40,12 +41,12 @@ class Pluto(parent: Sun) : MinorPlanet(
     /**
      * Calculate Pluto's heliocentric ecliptical coordinates for given julian day.
      */
-    override fun computePosition(jde: Double): Pair<Triad, Triad> {
+    override fun computePosition(jde: JulianDay): Pair<Triad, Triad> {
         // Meeus, Astron. Algorithms 2nd ed (1998). Chap 37. Equ 37.1
         // This function is accurate to within 0.07" in longitude, 0.02" in latitude and 0.000006 AU in radius.
         // Note: This function is not valid outside the period of 1885-2099.
         // Get julian centuries since J2000
-        val t = (jde - 2451545) / 36525
+        val t = (jde.value - 2451545) / 36525
         // Calculate mean longitudes for jupiter, saturn and pluto
         val J = 34.35 + 3034.9057 * t
         val S = 50.08 + 1222.1138 * t
@@ -75,7 +76,7 @@ class Pluto(parent: Sun) : MinorPlanet(
         return Triad(R * pos[0], R * pos[1], R * pos[2]) to Triad.ZERO
     }
 
-    override fun computeRotObliquity(jde: Double) = Radians(1.9690025972455527)
+    override fun computeRotObliquity(jde: JulianDay) = Radians(1.9690025972455527)
 
     override fun computeRotAscendingNode() = Radians(3.96802141178535)
 
