@@ -24,7 +24,7 @@ import br.tiagohm.astrum.sky.planets.major.mars.Phobos
 import br.tiagohm.astrum.sky.planets.major.mercury.Mercury
 import br.tiagohm.astrum.sky.planets.major.neptune.Neptune
 import br.tiagohm.astrum.sky.planets.major.saturn.*
-import br.tiagohm.astrum.sky.planets.major.uranus.Uranus
+import br.tiagohm.astrum.sky.planets.major.uranus.*
 import br.tiagohm.astrum.sky.planets.major.venus.Venus
 import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import br.tiagohm.astrum.sky.planets.minor.comets.Comet
@@ -1304,6 +1304,69 @@ class ObserverTest {
     }
 
     @Test
+    fun leda() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val jupiter = Jupiter(sun)
+
+        // From Stellarium!
+        val e = 0.1849972068029340
+        val q = Kilometer(11202541.76637748 * (1 - e))
+        // val n = KeplerOrbit.computeMeanMotion(e, q)
+        val n = 2.0 * M_PI / 242.2566769525344 // period
+        val omega = 205.5729208452909
+        val longitudeOfPericenter = 133.1912542293990000
+        val argOfPericenter = (longitudeOfPericenter - omega) * M_PI_180
+        val meanLongitude = 276.4502233853120000
+        val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
+
+        val leda = Satellite(
+            "Leda",
+            jupiter,
+            Kilometer(5.0),
+            q,
+            e,
+            Degrees(28.26096889279179),
+            Degrees(omega),
+            Radians(argOfPericenter),
+            2454619.5 - MA / n,
+            0.04,
+            Radians(n),
+            13.5,
+        )
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        System.err.println(leda.orbit!!.siderealPeriod)
+
+        assertEquals(20.05, leda.visualMagnitude(o), DELTA_2)
+        assertEquals(20.05, leda.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(20.20, leda.meanOppositionMagnitude, DELTA_2)
+        assertEquals(330.19879, -13.0457, leda.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(330.48549, -12.9431, leda.equatorial(o), DELTA_4, true)
+        assertEquals(7.87931, -12.9431, leda.hourAngle(o), DELTA_4, true)
+        assertEquals(245.9515, -19.8403, leda.horizontal(o), DELTA_4, true)
+        assertEquals(43.7184, -47.7753, leda.galactic(o), DELTA_4, true)
+        assertEquals(-93.0254, 35.8088, leda.supergalactic(o), DELTA_4, true)
+        assertEquals(327.7199, -0.8315, leda.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(328.0176, -0.8328, leda.ecliptic(o), DELTA_4, true)
+        assertEquals(120.0640, leda.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.AQR, leda.constellation(o))
+        assertEquals(165.2533, leda.elongation(o), DELTA_4, true)
+        assertEquals(2.9375, leda.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * leda.illumination(o), DELTA_1)
+        assertEquals(4.051, leda.distance(o), DELTA_3)
+        assertEquals(5.039, leda.distanceFromSun(o), DELTA_3)
+        assertEquals(3.206, leda.orbitalVelocity(o), DELTA_3)
+        assertEquals(13.911, leda.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.000000945, leda.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
     fun asteroids() {
         val sun = Sun()
         val earth = Earth(sun)
@@ -1713,69 +1776,6 @@ class ObserverTest {
     }
 
     @Test
-    fun leda() {
-        val sun = Sun()
-        val earth = Earth(sun)
-        val jupiter = Jupiter(sun)
-
-        // From Stellarium!
-        val e = 0.1849972068029340
-        val q = Kilometer(11202541.76637748 * (1 - e))
-        // val n = KeplerOrbit.computeMeanMotion(e, q)
-        val n = 2.0 * M_PI / 242.2566769525344 // period
-        val omega = 205.5729208452909
-        val longitudeOfPericenter = 133.1912542293990000
-        val argOfPericenter = (longitudeOfPericenter - omega) * M_PI_180
-        val meanLongitude = 276.4502233853120000
-        val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
-
-        val leda = Satellite(
-            "Leda",
-            jupiter,
-            Kilometer(5.0),
-            q,
-            e,
-            Degrees(28.26096889279179),
-            Degrees(omega),
-            Radians(argOfPericenter),
-            2454619.5 - MA / n,
-            0.04,
-            Radians(n),
-            13.5,
-        )
-
-        val o = Observer(
-            earth,
-            PICO_DOS_DIAS_OBSERVATORY,
-            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
-        )
-
-        System.err.println(leda.orbit!!.siderealPeriod)
-
-        assertEquals(20.05, leda.visualMagnitude(o), DELTA_2)
-        assertEquals(20.05, leda.visualMagnitudeWithExtinction(o), DELTA_2)
-        assertEquals(20.20, leda.meanOppositionMagnitude, DELTA_2)
-        assertEquals(330.19879, -13.0457, leda.equatorialJ2000(o), DELTA_4, true)
-        assertEquals(330.48549, -12.9431, leda.equatorial(o), DELTA_4, true)
-        assertEquals(7.87931, -12.9431, leda.hourAngle(o), DELTA_4, true)
-        assertEquals(245.9515, -19.8403, leda.horizontal(o), DELTA_4, true)
-        assertEquals(43.7184, -47.7753, leda.galactic(o), DELTA_4, true)
-        assertEquals(-93.0254, 35.8088, leda.supergalactic(o), DELTA_4, true)
-        assertEquals(327.7199, -0.8315, leda.eclipticJ2000(o), DELTA_4, true)
-        assertEquals(328.0176, -0.8328, leda.ecliptic(o), DELTA_4, true)
-        assertEquals(120.0640, leda.parallacticAngle(o), DELTA_4, true)
-        assertEquals(Constellation.AQR, leda.constellation(o))
-        assertEquals(165.2533, leda.elongation(o), DELTA_4, true)
-        assertEquals(2.9375, leda.phaseAngle(o), DELTA_4, true)
-        assertEquals(99.9, 100 * leda.illumination(o), DELTA_1)
-        assertEquals(4.051, leda.distance(o), DELTA_3)
-        assertEquals(5.039, leda.distanceFromSun(o), DELTA_3)
-        assertEquals(3.206, leda.orbitalVelocity(o), DELTA_3)
-        assertEquals(13.911, leda.heliocentricVelocity(o), DELTA_3)
-        assertEquals(0.000000945, leda.angularSize(o) * 2, DELTA_6, true)
-    }
-
-    @Test
     fun janus() {
         val sun = Sun()
         val earth = Earth(sun)
@@ -1836,6 +1836,246 @@ class ObserverTest {
         assertEquals(15.962, janus.orbitalVelocity(o), DELTA_3)
         assertEquals(22.182, janus.heliocentricVelocity(o), DELTA_3)
         assertEquals(0.0000076, janus.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun miranda() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val uranus = Uranus(sun)
+        val miranda = Miranda(uranus)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(16.55, miranda.visualMagnitude(o), DELTA_2)
+        assertEquals(16.81, miranda.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(16.31, miranda.meanOppositionMagnitude, DELTA_2)
+        assertEquals(42.07319, 15.7623, miranda.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(42.36851, 15.8508, miranda.equatorial(o), DELTA_4, true)
+        assertEquals(3.08560, 15.8331, miranda.hourAngle(o), DELTA_4, true)
+        assertEquals(306.0864, 30.6332, miranda.horizontal(o), DELTA_4, true)
+        assertEquals(159.8680, -38.5876, miranda.galactic(o), DELTA_4, true)
+        assertEquals(-39.1050, -21.4656, miranda.supergalactic(o), DELTA_4, true)
+        assertEquals(44.4063, -0.4176, miranda.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(44.7039, -0.4154, miranda.ecliptic(o), DELTA_4, true)
+        assertEquals(129.1165, miranda.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.ARI, miranda.constellation(o))
+        assertEquals(88.5899, miranda.elongation(o), DELTA_4, true)
+        assertEquals(2.9442, miranda.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * miranda.illumination(o), DELTA_1)
+        assertEquals(19.742, miranda.distance(o), DELTA_3)
+        assertEquals(19.743, miranda.distanceFromSun(o), DELTA_3)
+        assertEquals(6.680, miranda.orbitalVelocity(o), DELTA_3)
+        assertEquals(12.021, miranda.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.00000914, miranda.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun ariel() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val uranus = Uranus(sun)
+        val ariel = Ariel(uranus)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(14.40, ariel.visualMagnitude(o), DELTA_2)
+        assertEquals(14.66, ariel.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(14.16, ariel.meanOppositionMagnitude, DELTA_2)
+        assertEquals(42.07555, 15.7616, ariel.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(42.37087, 15.8500, ariel.equatorial(o), DELTA_4, true)
+        assertEquals(3.08545, 15.8323, ariel.hourAngle(o), DELTA_4, true)
+        assertEquals(306.0873, 30.6354, ariel.horizontal(o), DELTA_4, true)
+        assertEquals(159.8710, -38.5869, ariel.galactic(o), DELTA_4, true)
+        assertEquals(-39.1048, -21.4680, ariel.supergalactic(o), DELTA_4, true)
+        assertEquals(44.4082, -0.4190, ariel.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(44.7058, -0.4168, ariel.ecliptic(o), DELTA_4, true)
+        assertEquals(129.1176, ariel.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.ARI, ariel.constellation(o))
+        assertEquals(88.5880, ariel.elongation(o), DELTA_4, true)
+        assertEquals(2.9443, ariel.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * ariel.illumination(o), DELTA_1)
+        assertEquals(19.742, ariel.distance(o), DELTA_3)
+        assertEquals(19.743, ariel.distanceFromSun(o), DELTA_3)
+        assertEquals(5.508, ariel.orbitalVelocity(o), DELTA_3)
+        assertEquals(11.561, ariel.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000224, ariel.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun umbriel() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val uranus = Uranus(sun)
+        val umbriel = Umbriel(uranus)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(15.05, umbriel.visualMagnitude(o), DELTA_2)
+        assertEquals(15.31, umbriel.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(14.81, umbriel.meanOppositionMagnitude, DELTA_2)
+        assertEquals(42.07649, 15.7605, umbriel.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(42.37181, 15.8490, umbriel.equatorial(o), DELTA_4, true)
+        assertEquals(3.08538, 15.8313, umbriel.hourAngle(o), DELTA_4, true)
+        assertEquals(306.0870, 30.6368, umbriel.horizontal(o), DELTA_4, true)
+        assertEquals(159.8727, -38.5873, umbriel.galactic(o), DELTA_4, true)
+        assertEquals(-39.1054, -21.4693, umbriel.supergalactic(o), DELTA_4, true)
+        assertEquals(44.4088, -0.4202, umbriel.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(44.7064, -0.4181, umbriel.ecliptic(o), DELTA_4, true)
+        assertEquals(129.1177, umbriel.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.ARI, umbriel.constellation(o))
+        assertEquals(88.5874, umbriel.elongation(o), DELTA_4, true)
+        assertEquals(2.9443, umbriel.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * umbriel.illumination(o), DELTA_1)
+        assertEquals(19.742, umbriel.distance(o), DELTA_3)
+        assertEquals(19.743, umbriel.distanceFromSun(o), DELTA_3)
+        assertEquals(4.659, umbriel.orbitalVelocity(o), DELTA_3)
+        assertEquals(10.719, umbriel.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000226, umbriel.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun titania() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val uranus = Uranus(sun)
+        val titania = Titania(uranus)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(13.97, titania.visualMagnitude(o), DELTA_2)
+        assertEquals(14.23, titania.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(13.73, titania.meanOppositionMagnitude, DELTA_2)
+        assertEquals(42.07334, 15.7563, titania.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(42.36865, 15.8448, titania.equatorial(o), DELTA_4, true)
+        assertEquals(3.08559, 15.8271, titania.hourAngle(o), DELTA_4, true)
+        assertEquals(306.0810, 30.6371, titania.horizontal(o), DELTA_4, true)
+        assertEquals(159.8724, -38.5925, titania.galactic(o), DELTA_4, true)
+        assertEquals(-39.1108, -21.4682, titania.supergalactic(o), DELTA_4, true)
+        assertEquals(44.4046, -0.4233, titania.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(44.7023, -0.4212, titania.ecliptic(o), DELTA_4, true)
+        assertEquals(129.1138, titania.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.ARI, titania.constellation(o))
+        assertEquals(88.5916, titania.elongation(o), DELTA_4, true)
+        assertEquals(2.9442, titania.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * titania.illumination(o), DELTA_1)
+        assertEquals(19.742, titania.distance(o), DELTA_3)
+        assertEquals(19.744, titania.distanceFromSun(o), DELTA_3)
+        assertEquals(3.650, titania.orbitalVelocity(o), DELTA_3)
+        assertEquals(9.662, titania.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000306, titania.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun oberon() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val uranus = Uranus(sun)
+        val oberon = Oberon(uranus)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(14.18, oberon.visualMagnitude(o), DELTA_2)
+        assertEquals(14.44, oberon.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(13.94, oberon.meanOppositionMagnitude, DELTA_2)
+        assertEquals(42.07790, 15.7543, oberon.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(42.37321, 15.8428, oberon.equatorial(o), DELTA_4, true)
+        assertEquals(3.08529, 15.8251, oberon.hourAngle(o), DELTA_4, true)
+        assertEquals(306.0825, 30.6417, oberon.horizontal(o), DELTA_4, true)
+        assertEquals(159.8785, -38.5917, oberon.galactic(o), DELTA_4, true)
+        assertEquals(-39.1108, -21.4730, oberon.supergalactic(o), DELTA_4, true)
+        assertEquals(44.4082, -0.4265, oberon.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(44.7059, -0.4244, oberon.ecliptic(o), DELTA_4, true)
+        assertEquals(129.1158, oberon.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.ARI, oberon.constellation(o))
+        assertEquals(88.5880, oberon.elongation(o), DELTA_4, true)
+        assertEquals(2.9443, oberon.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * oberon.illumination(o), DELTA_1)
+        assertEquals(19.741, oberon.distance(o), DELTA_3)
+        assertEquals(19.743, oberon.distanceFromSun(o), DELTA_3)
+        assertEquals(3.150, oberon.orbitalVelocity(o), DELTA_3)
+        assertEquals(9.396, oberon.heliocentricVelocity(o), DELTA_3)
+        assertEquals(0.0000295, oberon.angularSize(o) * 2, DELTA_6, true)
+    }
+
+    @Test
+    fun ophelia() {
+        val sun = Sun()
+        val earth = Earth(sun)
+        val uranus = Uranus(sun)
+
+        // From Stellarium!
+        val e = 0.01076472821818208
+        val q = Kilometer(53842.62468965198265381549 * (1 - e))
+        // val n = KeplerOrbit.computeMeanMotion(e, q)
+        val n = 2.0 * M_PI / -0.3774574820706313 // period
+        val omega = 167.6374567371435
+        val longitudeOfPericenter = 181.2480236190866
+        val argOfPericenter = (longitudeOfPericenter - omega) * M_PI_180
+        val meanLongitude = 232.27393980920791
+        val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
+
+        val ophelia = Satellite(
+            "Ophelia",
+            uranus,
+            Kilometer(15.0),
+            q,
+            e,
+            Degrees(1.706664669034183),
+            Degrees(omega),
+            Radians(argOfPericenter),
+            2457939.5 - MA / n,
+            0.07,
+            Radians(n),
+            11.1,
+        )
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            DateTime(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(24.05, ophelia.visualMagnitude(o), DELTA_2)
+        assertEquals(24.31, ophelia.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(23.81, ophelia.meanOppositionMagnitude, DELTA_2)
+        assertEquals(42.07339, 15.7638, ophelia.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(42.36871, 15.8523, ophelia.equatorial(o), DELTA_4, true)
+        assertEquals(3.08559, 15.8346, ophelia.hourAngle(o), DELTA_4, true)
+        assertEquals(306.0879, 30.6324, ophelia.horizontal(o), DELTA_4, true)
+        assertEquals(159.8671, -38.5862, ophelia.galactic(o), DELTA_4, true)
+        assertEquals(-39.1035, -21.4652, ophelia.supergalactic(o), DELTA_4, true)
+        assertEquals(44.4069, -0.4162, ophelia.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(44.7045, -0.4140, ophelia.ecliptic(o), DELTA_4, true)
+        assertEquals(129.1173, ophelia.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.ARI, ophelia.constellation(o))
+        assertEquals(88.5893, ophelia.elongation(o), DELTA_4, true)
+        assertEquals(2.9442, ophelia.phaseAngle(o), DELTA_4, true)
+        assertEquals(99.9, 100 * ophelia.illumination(o), DELTA_1)
+        assertEquals(19.742, ophelia.distance(o), DELTA_3)
+        assertEquals(19.743, ophelia.distanceFromSun(o), DELTA_3)
+        assertEquals(10.306, ophelia.orbitalVelocity(o), DELTA_3)
+        assertEquals(8.892, ophelia.heliocentricVelocity(o), DELTA_3)
     }
 
     companion object {

@@ -534,24 +534,31 @@ abstract class Planet internal constructor(
         }
 
         /**
-         * Computes Mars's moons heliocentric position.
+         * Computes heliocentric position of Mars's moons.
          */
         fun computeMarsSatHeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
             return MarsSat.computeCoordinates(jd, body)
         }
 
         /**
-         * Computes Jupiter's moons heliocentric position.
+         * Computes heliocentric position of Jupiter's moons.
          */
         fun computeL12HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
             return L12.computeCoordinates(jd, body)
         }
 
         /**
-         * Computes Saturn's moons heliocentric position.
+         * Computes heliocentric position of Saturn's moons.
          */
         fun computeTass17HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
             return Tass17.computeCoordinates(jd, body)
+        }
+
+        /**
+         * Computes heliocentric position of Uranus' moons.
+         */
+        fun computeGust86HeliocentricCoordinates(jd: Double, body: Int): DoubleArray {
+            return Gust86.computeCoordinates(jd, body)
         }
 
         /**
