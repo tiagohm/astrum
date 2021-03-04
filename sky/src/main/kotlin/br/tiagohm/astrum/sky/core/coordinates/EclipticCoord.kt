@@ -11,14 +11,14 @@ import kotlin.math.atan2
 /**
  * Represents the Ecliptic Coordinate System.
  */
-class Ecliptic(val lambda: Angle, val beta: Angle) : Spherical(lambda, beta) {
+class EclipticCoord(val lambda: Angle, val beta: Angle) : SphericalCoord(lambda, beta) {
 
     /**
      * Converts Ecliptic Coordinate System to Equatorial Coordinate System.
      */
-    fun toEquatorial(e: Angle): Equatorial {
+    fun toEquatorial(e: Angle): EquatorialCoord {
         val ra = atan2(sin(lambda) * cos(e) - tan(beta) * sin(e), cos(lambda))
         val dec = asin(sin(beta) * cos(e) + cos(beta) * sin(e) * sin(lambda))
-        return Equatorial(Radians(ra), Radians(dec))
+        return EquatorialCoord(Radians(ra), Radians(dec))
     }
 }

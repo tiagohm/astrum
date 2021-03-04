@@ -1,9 +1,9 @@
 package br.tiagohm.astrum.sky.core
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.core.coordinates.Geographic
-import br.tiagohm.astrum.sky.core.coordinates.Horizontal
-import br.tiagohm.astrum.sky.core.coordinates.Spherical
+import br.tiagohm.astrum.sky.core.coordinates.GeographicCoord
+import br.tiagohm.astrum.sky.core.coordinates.HorizontalCoord
+import br.tiagohm.astrum.sky.core.coordinates.SphericalCoord
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
@@ -87,7 +87,7 @@ object Algorithms {
         return ellipticToRectangular(a, n, elem, dt)
     }
 
-    inline fun rectangularToSphericalCoordinates(a: Triad) = Spherical(a.longitude, a.latitude)
+    inline fun rectangularToSphericalCoordinates(a: Triad) = SphericalCoord(a.longitude, a.latitude)
 
     fun sphericalToRectangularCoordinates(longitude: Angle, latitude: Angle): Triad {
         return cos(latitude).let { Triad(cos(longitude) * it, sin(longitude) * it, sin(latitude)) }
@@ -99,7 +99,7 @@ object Algorithms {
 
     inline fun j2000ToJ1875(a: Triad) = MAT_J2000_TO_J1875 * a
 
-    fun distanceKm(planet: Planet, a: Geographic, b: Geographic): Double {
+    fun distanceKm(planet: Planet, a: GeographicCoord, b: GeographicCoord): Double {
         val f = planet.oblateness // Flattening
         val radius = planet.radius.kilometer.value
 
@@ -125,7 +125,7 @@ object Algorithms {
         return D * (1.0 + f * (H1 * sinF * sinF * cosG * cosG - H2 * cosF * cosF * sinG * sinG))
     }
 
-    fun azimuth(from: Horizontal, to: Horizontal, southAzimuth: Boolean = false): Radians {
+    fun azimuth(from: HorizontalCoord, to: HorizontalCoord, southAzimuth: Boolean = false): Radians {
         val (a, b) = from
         val (c, d) = to
 
@@ -133,7 +133,7 @@ object Algorithms {
         return Radians(az).normalized
     }
 
-    fun azimuth(from: Geographic, to: Geographic, southAzimuth: Boolean = false): Radians {
+    fun azimuth(from: GeographicCoord, to: GeographicCoord, southAzimuth: Boolean = false): Radians {
         val (a, b) = from
         val (c, d) = to
 

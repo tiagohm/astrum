@@ -5,7 +5,7 @@ import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.coordinates.Geographic
+import br.tiagohm.astrum.sky.core.coordinates.GeographicCoord
 import br.tiagohm.astrum.sky.core.time.SiderealTime
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
@@ -14,7 +14,7 @@ import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.*
 
 data class SolarEclipse(
-    val position: Geographic,
+    val position: GeographicCoord,
     val magnitude: Double,
     val distance: Double,
     val azimuth: Angle,
@@ -117,11 +117,11 @@ data class SolarEclipse(
                     mag = L1 / (L1 + L2)
                 }
 
-                val target = Geographic(Degrees(lon), Degrees(lat))
+                val target = GeographicCoord(Degrees(lon), Degrees(lat))
 
                 // Shadow axis is touching Earth
                 if (lat < 90.0) {
-                    val obs = Geographic(op.site.longitude, op.site.latitude)
+                    val obs = GeographicCoord(op.site.longitude, op.site.latitude)
                     distance = Algorithms.distanceKm(op.home, obs, target)
                     azimuth = Algorithms.azimuth(obs, target, southAzimuth).degrees
                 }

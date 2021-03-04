@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.sky.core.coordinates.Coordinate
+import br.tiagohm.astrum.sky.core.coordinates.Coord
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
@@ -23,7 +23,7 @@ fun assertEquals(expected: Duad, actual: Duad, delta: Double) {
     }
 }
 
-fun assertEquals(x: Double, y: Double, actual: Coordinate, delta: Double, isDegrees: Boolean = false) {
+fun assertEquals(x: Double, y: Double, actual: Coord, delta: Double, isDegrees: Boolean = false) {
     if (isDegrees) {
         assertEquals(x, actual.x.degrees.value, delta)
         assertEquals(y, actual.y.degrees.value, delta)

@@ -4,7 +4,7 @@ import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.coordinates.Equatorial
+import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
@@ -47,10 +47,10 @@ class Moon(parent: Earth) : Planet(
         val op = o.copy(useTopocentricCoordinates = false)
         val eclJDE = parent!!.computeRotObliquity(op.jde)
         val (raMoon, decMoon) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(op))
-        val equMoon = Equatorial(raMoon, decMoon)
+        val equMoon = EquatorialCoord(raMoon, decMoon)
         val (lambdaMoon) = equMoon.toEcliptic(eclJDE)
         val (raSun, decSun) = Algorithms.rectangularToSphericalCoordinates(parent.parent!!.computeEquinoxEquatorialPosition(op))
-        val equSun = Equatorial(raSun, decSun)
+        val equSun = EquatorialCoord(raSun, decSun)
         val (lambdaSun) = equSun.toEcliptic(eclJDE)
         return (lambdaMoon - lambdaSun).normalized
     }

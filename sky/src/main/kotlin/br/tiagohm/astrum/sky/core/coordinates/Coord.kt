@@ -2,7 +2,7 @@ package br.tiagohm.astrum.sky.core.coordinates
 
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 
-interface Coordinate {
+interface Coord {
 
     /**
      * Coordinate X.

@@ -6,10 +6,10 @@ import br.tiagohm.astrum.sky.core.units.angle.Angle
  * Represents a generic spherical coordinate system.
  */
 @Suppress("NOTHING_TO_INLINE")
-open class Spherical(
+open class SphericalCoord(
     override val x: Angle,
     override val y: Angle,
-) : Coordinate {
+) : Coord {
 
     inline operator fun component1() = x
 
@@ -19,7 +19,7 @@ open class Spherical(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Spherical
+        other as SphericalCoord
 
         if (x != other.x) return false
         if (y != other.y) return false

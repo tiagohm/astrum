@@ -186,66 +186,66 @@ interface CelestialObject {
 
     fun computeHeliocentricEclipticVelocity(o: Observer): Triad
 
-    fun equatorialJ2000(o: Observer): Equatorial {
+    fun equatorialJ2000(o: Observer): EquatorialCoord {
         val pos = computeJ2000EquatorialPosition(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Equatorial(a.normalized, b)
+        return EquatorialCoord(a.normalized, b)
     }
 
-    fun equatorial(o: Observer): Equatorial {
+    fun equatorial(o: Observer): EquatorialCoord {
         val pos = computeEquinoxEquatorialPosition(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Equatorial(a.normalized, b)
+        return EquatorialCoord(a.normalized, b)
     }
 
     fun hourAngle(
         o: Observer,
         apparent: Boolean = true
-    ): HourAngle {
+    ): EquatorialCoord {
         val pos = if (apparent) computeSiderealPositionApparent(o) else computeSiderealPositionGeometric(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
-        return HourAngle(Radians(M_2_PI - a.radians.value).degrees.normalized / 15.0, b)
+        return EquatorialCoord(Radians(M_2_PI - a.radians.value).degrees.normalized / 15.0, b)
     }
 
     fun horizontal(
         o: Observer,
         southAzimuth: Boolean = false,
         apparent: Boolean = true
-    ): Horizontal {
+    ): HorizontalCoord {
         val pos = if (apparent) computeAltAzPositionApparent(o) else computeAltAzPositionGeometric(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
         val direction = if (southAzimuth) M_2_PI else M_3_PI // N is zero, E is 90 degrees
         val az = (direction - a.radians.value).let { if (it > M_2_PI) it - M_2_PI else it }
-        return Horizontal(Radians(az), b)
+        return HorizontalCoord(Radians(az), b)
     }
 
-    fun galactic(o: Observer): Galactic {
+    fun galactic(o: Observer): GalacticCoord {
         val pos = computeGalacticPosition(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Galactic(a, b)
+        return GalacticCoord(a, b)
     }
 
-    fun supergalactic(o: Observer): Supergalactic {
+    fun supergalactic(o: Observer): SupergalacticCoord {
         val pos = computeSupergalacticPosition(o)
         val (a, b) = Algorithms.rectangularToSphericalCoordinates(pos)
-        return Supergalactic(a, b)
+        return SupergalacticCoord(a, b)
     }
 
-    fun eclipticJ2000(o: Observer): Ecliptic {
+    fun eclipticJ2000(o: Observer): EclipticCoord {
         val eclJ2000 = o.home.computeRotObliquity(J2000)
         val (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeJ2000EquatorialPosition(o))
-        val equ = Equatorial(ra, dec)
+        val equ = EquatorialCoord(ra, dec)
         var (lambda, beta) = equ.toEcliptic(eclJ2000)
         if (lambda < Radians.ZERO) lambda += Radians.TWO_PI
-        return Ecliptic(lambda, beta)
+        return EclipticCoord(lambda, beta)
     }
 
-    fun ecliptic(o: Observer): Ecliptic {
+    fun ecliptic(o: Observer): EclipticCoord {
         val (ra, dec) = Algorithms.rectangularToSphericalCoordinates(computeEquinoxEquatorialPosition(o))
-        val equ = Equatorial(ra, dec)
+        val equ = EquatorialCoord(ra, dec)
         var (lambda, beta) = equ.toEcliptic(o.computeEclipticObliquity())
         if (lambda < Radians.ZERO) lambda += Radians.TWO_PI
-        return Ecliptic(lambda, beta)
+        return EclipticCoord(lambda, beta)
     }
 
     fun constellation(o: Observer) = Constellation.find(o, computeEquinoxEquatorialPosition(o))!!
