@@ -150,9 +150,9 @@ object Algorithms {
         ts: DoubleArray,
         es: Array<DoubleArray>,
     ) {
-        if (ts[1] < -1E99) {
-            ts[0] = -1E100
-            ts[2] = -1E100
+        if (ts[1] < -1E+99) {
+            ts[0] = -1E+100
+            ts[2] = -1E+100
             ts[1] = t
             computer(ts[1], es[1])
             for (i in 0 until dim) elem[i] = es[1][i]
@@ -161,12 +161,12 @@ object Algorithms {
 
         if (t <= ts[1]) {
             if (ts[1] - deltaT <= t) {
-                if (ts[0] < -1E99) {
+                if (ts[0] < -1E+99) {
                     ts[0] = ts[1] - deltaT
                     computer(ts[0], es[0])
                 }
             } else if (ts[1] - 2.0 * deltaT <= t) {
-                if (ts[0] < -1E99) {
+                if (ts[0] < -1E+99) {
                     ts[0] = ts[1] - deltaT
                     computer(ts[0], es[0])
                 }
@@ -182,8 +182,8 @@ object Algorithms {
 
                 computer(ts[0], es[0])
             } else {
-                ts[0] = -1E100
-                ts[2] = -1E100
+                ts[0] = -1E+100
+                ts[2] = -1E+100
                 ts[1] = t
 
                 computer(ts[1], es[1])
@@ -200,12 +200,12 @@ object Algorithms {
             for (i in 0 until dim) elem[i] = fact * (es[0][i] * f0 + es[1][i] * f1)
         } else {
             if (ts[1] + deltaT >= t) {
-                if (ts[2] < -1E99) {
+                if (ts[2] < -1E+99) {
                     ts[2] = ts[1] + deltaT
                     computer(ts[2], es[2])
                 }
             } else if (ts[1] + 2.0 * deltaT >= t) {
-                if (ts[2] < -1E99) {
+                if (ts[2] < -1E+99) {
                     ts[2] = ts[1] + deltaT
                     computer(ts[2], es[2])
                 }
@@ -222,8 +222,8 @@ object Algorithms {
 
                 computer(ts[2], es[2])
             } else {
-                ts[0] = -1E100
-                ts[2] = -1E100
+                ts[0] = -1E+100
+                ts[2] = -1E+100
                 ts[1] = t
 
                 computer(ts[1], es[1])

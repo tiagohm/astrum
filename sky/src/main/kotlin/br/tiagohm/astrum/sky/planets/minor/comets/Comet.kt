@@ -71,7 +71,7 @@ class Comet(
         val common = 1.0 - 10.0.pow((-2.0 * r))
         val D = Do * common * (1.0 - 10.0.pow(-r)) * 1000.0
         val Lo = 10.0.pow(((-0.0075 * mhelio - 0.19) * mhelio + 2.1))
-        val L = Lo * (1.0 - 10.0.pow(-4.0 * r)) * common * 1E6
+        val L = Lo * (1.0 - 10.0.pow(-4.0 * r)) * common * 1E+6
         return Kilometer(D) to Kilometer(L)
     }
 }

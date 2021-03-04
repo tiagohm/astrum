@@ -356,9 +356,9 @@ object Gust86 {
     private const val DIM = 5 * 6
     private const val DELTA_T = 1.0 // 1 day
 
-    private var t0 = -1E100
-    private var t1 = -1E100
-    private var t2 = -1E100
+    private var t0 = -1E+100
+    private var t1 = -1E+100
+    private var t2 = -1E+100
 
     private val elem = DoubleArray(DIM)
     private val elem0 = DoubleArray(DIM)

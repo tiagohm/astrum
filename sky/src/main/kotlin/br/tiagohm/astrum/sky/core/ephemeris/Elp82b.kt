@@ -243,9 +243,9 @@ object Elp82b {
 
     private val COEFFICIENTS by lazy { readDoubleArrayFromResources("ELP82B_COEFFICIENTS.dat") }
 
-    private var t0 = -1E100
-    private var t1 = -1E100
-    private var t2 = -1E100
+    private var t0 = -1E+100
+    private var t1 = -1E+100
+    private var t2 = -1E+100
 
     private val r0 = DoubleArray(3)
     private val r1 = DoubleArray(3)
