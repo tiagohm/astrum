@@ -1341,8 +1341,6 @@ class ObserverTest {
             JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
 
-        System.err.println(leda.orbit!!.siderealPeriod)
-
         assertEquals(20.05, leda.visualMagnitude(o), DELTA_2)
         assertEquals(20.05, leda.visualMagnitudeWithExtinction(o), DELTA_2)
         assertEquals(20.20, leda.meanOppositionMagnitude, DELTA_2)
@@ -1812,8 +1810,6 @@ class ObserverTest {
             PICO_DOS_DIAS_OBSERVATORY,
             JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
         )
-
-        System.err.println(janus.orbit!!.siderealPeriod)
 
         assertEquals(14.64, janus.visualMagnitude(o), DELTA_2)
         assertEquals(14.64, janus.visualMagnitudeWithExtinction(o), DELTA_2)

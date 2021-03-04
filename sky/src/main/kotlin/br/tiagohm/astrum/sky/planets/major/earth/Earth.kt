@@ -26,9 +26,9 @@ class Earth(parent: Sun) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 0.99726963226279286992
+    override val siderealDay = SIDEREAL_DAY
 
-    override var siderealPeriod = 365.256363004
+    override var siderealPeriod = SIDEREAL_PERIOD
 
     override var absoluteMagnitude = -3.86
 
@@ -102,5 +102,12 @@ class Earth(parent: Sun) : Planet(
                 shadowFactor,
             )
         }
+    }
+
+    companion object {
+
+        const val MEAN_SOLAR_DAY = 0.9999999600364323
+        const val SIDEREAL_DAY = 0.99726963226279286992
+        const val SIDEREAL_PERIOD = 365.256363004
     }
 }

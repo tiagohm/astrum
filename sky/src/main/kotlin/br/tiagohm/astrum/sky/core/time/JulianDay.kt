@@ -1,5 +1,11 @@
 package br.tiagohm.astrum.sky.core.time
 
+import br.tiagohm.astrum.sky.JD_HOUR
+import br.tiagohm.astrum.sky.JD_MINUTE
+import br.tiagohm.astrum.sky.JD_SECOND
+import br.tiagohm.astrum.sky.planets.major.earth.Earth
+import java.time.ZonedDateTime
+
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
 inline class JulianDay(val value: Double) {
 
@@ -14,7 +20,106 @@ inline class JulianDay(val value: Double) {
         utcOffset: Double = DateTime.currentUTCOffset(),
     ) : this(computeJDFromDate(year, month, day, hour, minute, second, millisecond, utcOffset))
 
-    fun toCalendar() = DateTime.fromJulianDay(this)
+    constructor(dateTime: ZonedDateTime) : this(
+        dateTime.year,
+        dateTime.monthValue,
+        dateTime.dayOfMonth,
+        dateTime.hour,
+        dateTime.minute,
+        dateTime.second,
+        dateTime.nano / 1000000,
+        dateTime.offset.totalSeconds / 3600.0,
+    )
+
+    fun toDateTime() = DateTime.fromJulianDay(this)
+
+    inline fun addSolarDay(n: Double) = JulianDay(value + n * Earth.MEAN_SOLAR_DAY)
+
+    inline fun addSecond(n: Double = 1.0) = addSolarDay(JD_SECOND * n)
+
+    inline fun addMinute(n: Double = 1.0) = addSolarDay(JD_MINUTE * n)
+
+    inline fun addHour(n: Double = 1.0) = addSolarDay(JD_HOUR * n)
+
+    inline fun addDay(n: Double = 1.0) = addSolarDay(n)
+
+    inline fun addWeek(n: Double = 1.0) = addSolarDay(7.0 * n)
+
+    inline fun addSiderealDay(n: Double = 1.0) = JulianDay(value + n * Earth.SIDEREAL_DAY)
+
+    inline fun addSiderealWeek(n: Double = 1.0) = addSiderealDay(7.0 * n)
+
+    inline fun addSiderealYear(n: Double = 1.0) = addSolarDay(n * Earth.SIDEREAL_PERIOD)
+
+    inline fun addSynodicMonth(n: Double = 1.0) = addSolarDay(n * 29.530588853)
+
+    inline fun addSaros(n: Double = 1.0) = addSynodicMonth(n * 223.0)
+
+    inline fun addDraconicMonth(n: Double = 1.0) = addSolarDay(n * 27.212220817)
+
+    inline fun addMeanTropicalMonth(n: Double = 1.0) = addSolarDay(n * 27.321582241)
+
+    inline fun addAnomalisticMonth(n: Double = 1.0) = addSolarDay(n * 27.554549878)
+
+    inline fun addAnomalisticYear(n: Double = 1.0) = addSolarDay(n * 365.259636)
+
+    inline fun addDraconicYear(n: Double = 1.0) = addSolarDay(n * 346.620075883)
+
+    fun addTropicalYear(n: Double = 1.0): JulianDay {
+        // Source: J. Meeus. More Mathematical Astronomy Morsels. 2002, p. 358.
+        // Meeus, J. & Savoie, D. The history of the tropical year. Journal of the British Astronomical Association, vol.102, no.1, p.40-42
+        // http://articles.adsabs.harvard.edu//full/1992JBAA..102...40M
+        val T = (value - 2451545.0) / 365250.0
+        return addSolarDay(n * (365.242189623 - T * (0.000061522 - T * (0.0000000609 + T * 0.00000026525))))
+    }
+
+    // Source: https://en.wikipedia.org/wiki/Tropical_year#Mean_tropical_year_current_value
+    // The mean tropical year on January 1, 2000
+    inline fun addMeanTropicalYear(n: Double = 1.0) = addSolarDay(n * 365.2421897)
+
+    inline fun addJulianYear(n: Double = 1.0) = addSolarDay(n * 365.25)
+
+    inline fun addGaussianYear(n: Double = 1.0) = addSolarDay(n * 365.2568983)
+
+    inline fun subtractSolarDay(n: Double) = JulianDay(value - n * Earth.MEAN_SOLAR_DAY)
+
+    inline fun subtractSecond(n: Double = 1.0) = subtractSolarDay(JD_SECOND * n)
+
+    inline fun subtractMinute(n: Double = 1.0) = subtractSolarDay(JD_MINUTE * n)
+
+    inline fun subtractHour(n: Double = 1.0) = subtractSolarDay(JD_HOUR * n)
+
+    inline fun subtractDay(n: Double = 1.0) = subtractSolarDay(n)
+
+    inline fun subtractWeek(n: Double = 1.0) = subtractSolarDay(7.0 * n)
+
+    inline fun subtractSiderealDay(n: Double = 1.0) = JulianDay(value - n * Earth.SIDEREAL_DAY)
+
+    inline fun subtractSiderealWeek(n: Double = 1.0) = subtractSiderealDay(7.0 * n)
+
+    inline fun subtractSiderealYear(n: Double = 1.0) = subtractSolarDay(n * Earth.SIDEREAL_PERIOD)
+
+    inline fun subtractSynodicMonth(n: Double = 1.0) = subtractSolarDay(n * 29.530588853)
+
+    inline fun subtractSaros(n: Double = 1.0) = subtractSynodicMonth(n * 223.0)
+
+    inline fun subtractDraconicMonth(n: Double = 1.0) = subtractSolarDay(n * 27.212220817)
+
+    inline fun subtractMeanTropicalMonth(n: Double = 1.0) = subtractSolarDay(n * 27.321582241)
+
+    inline fun subtractAnomalisticMonth(n: Double = 1.0) = subtractSolarDay(n * 27.554549878)
+
+    inline fun subtractAnomalisticYear(n: Double = 1.0) = subtractSolarDay(n * 365.259636)
+
+    inline fun subtractDraconicYear(n: Double = 1.0) = subtractSolarDay(n * 346.620075883)
+
+    fun subtractTropicalYear(n: Double = 1.0) = addTropicalYear(-n)
+
+    inline fun subtractMeanTropicalYear(n: Double = 1.0) = subtractSolarDay(n * 365.2421897)
+
+    inline fun subtractJulianYear(n: Double = 1.0) = subtractSolarDay(n * 365.25)
+
+    inline fun subtractGaussianYear(n: Double = 1.0) = subtractSolarDay(n * 365.2568983)
 
     inline operator fun plus(jd: JulianDay) = JulianDay(value + jd.value)
 
