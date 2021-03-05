@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.core.units.distance
 
-import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.AU_KM
 import br.tiagohm.astrum.sky.LIGHT_YEAR
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
@@ -13,7 +13,7 @@ inline class Meter(override val value: Double) : Distance {
         get() = Kilometer(value / 1000.0)
 
     override val au: AU
-        get() = AU(value / (AU * 1000.0))
+        get() = AU(value / (AU_KM * 1000.0))
 
     override val lightYear: LightYear
         get() = LightYear(value / LIGHT_YEAR)

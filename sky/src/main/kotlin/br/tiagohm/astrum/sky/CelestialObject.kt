@@ -7,10 +7,12 @@ import br.tiagohm.astrum.sky.core.coordinates.*
 import br.tiagohm.astrum.sky.core.math.*
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.AU
+import br.tiagohm.astrum.sky.core.units.distance.Distance
 import kotlin.math.acos
+import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.cos
-import kotlin.math.sqrt
 
 interface CelestialObject {
 
@@ -19,7 +21,7 @@ interface CelestialObject {
     /**
      * Returns a unique identifier for this object.
      */
-    val name: String
+    val id: String
 
     /**
      * Computes observer-centered equatorial coordinate at the current equinox.
@@ -110,7 +112,17 @@ interface CelestialObject {
     /**
      * Computes today's time of rise, transit and set in decimal hours for celestial object for current location.
      */
-    fun rts(o: Observer, hasAtmosphere: Boolean = true): Triad
+    fun rts(o: Observer, hasAtmosphere: Boolean = true): Triad {
+        var hz = Radians.ZERO // Horizon parallax factor
+
+        if (hasAtmosphere) {
+            // Canonical refraction at horizon is -34'. Replace by pressure-dependent value here!
+            val zero = Triad(1.0, 0.0, 0.0)
+            hz += Radians(asin(o.refraction.backward(zero)[2]))
+        }
+
+        return computeRTSTime(o, this, hz)
+    }
 
     /**
      * Returns object's apparent V magnitude as seen from observer, without including extinction.
@@ -122,7 +134,16 @@ interface CelestialObject {
      * Returns object's apparent V magnitude as seen from observer including extinction.
      * For Sun, pass Moon instance on extra parameter to take into account solar eclipse.
      */
-    fun visualMagnitudeWithExtinction(o: Observer, extra: Any? = null): Double
+    fun visualMagnitudeWithExtinction(o: Observer, extra: Any? = null): Double {
+        val mag = visualMagnitude(o, extra)
+
+        return if (isAboveHorizon(o)) {
+            val altAzPos = computeAltAzPositionGeometric(o).normalized
+            o.extinction.forward(altAzPos, mag)
+        } else {
+            mag
+        }
+    }
 
     /**
      * Airmass computation at observer.
@@ -142,49 +163,14 @@ interface CelestialObject {
     fun angularSize(o: Observer): Angle
 
     /**
-     * Computes the phase angle for an observer.
+     * Computes the distance from this object to observer.
      */
-    fun phaseAngle(o: Observer): Radians {
-        val observerHelioPos = o.computeHeliocentricEclipticPosition()
-        val observerRq = observerHelioPos.lengthSquared
-        val planetHelioPos = computeHeliocentricEclipticPosition(o)
-        val planetRq = planetHelioPos.lengthSquared
-        val observerPlanetRq = (observerHelioPos - planetHelioPos).lengthSquared
-        val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * sqrt(observerPlanetRq * planetRq))
-        return Radians(acos(cosChi))
-    }
-
-    /**
-     * Computes the distance in AU to the given observer.
-     */
-    fun distance(o: Observer): Double {
-        val obsHelioPos = o.computeHeliocentricEclipticPosition()
-        return (obsHelioPos - computeHeliocentricEclipticPosition(o)).length
-    }
-
-    /**
-     * Computes the distance from Sun in AU to the given observer.
-     */
-    fun distanceFromSun(o: Observer) = computeHeliocentricEclipticPosition(o).length
+    fun distance(o: Observer): Distance = AU.ZERO
 
     /**
      * Computes observer-centered equatorial coordinates at equinox J2000.
      */
-    fun computeJ2000EquatorialPosition(o: Observer): Triad {
-        return MAT_VSOP87_TO_J2000
-            .multiplyWithoutTranslation(computeHeliocentricEclipticPosition(o) - o.computeHeliocentricEclipticPosition())
-    }
-
-    /**
-     * Computes the Planet position in Cartesian ecliptic (J2000) coordinates in AU, centered on the parent
-     */
-    fun computeEclipticPosition(o: Observer): Triad
-
-    fun computeHeliocentricEclipticPosition(o: Observer): Triad
-
-    fun computeEclipticVelocity(o: Observer): Triad
-
-    fun computeHeliocentricEclipticVelocity(o: Observer): Triad
+    fun computeJ2000EquatorialPosition(o: Observer): Triad
 
     fun equatorialJ2000(o: Observer): EquatorialCoord {
         val pos = computeJ2000EquatorialPosition(o)
@@ -250,6 +236,52 @@ interface CelestialObject {
 
     fun constellation(o: Observer) = Constellation.find(o, computeEquinoxEquatorialPosition(o))!!
 
-    // Returns a key/value map with data about an object's position, magnitude and so on.
-    // fun getInfo(o: Observer): Map<String, Any?>
+    companion object {
+
+        fun computeRTSTime(o: Observer, co: CelestialObject, hz: Angle): Triad {
+            val phi = o.site.latitude.radians
+            val coeff = o.home.meanSolarDay / o.home.siderealDay
+
+            val coord = Algorithms.rectangularToSphericalCoordinates(co.computeSiderealPositionGeometric(o))
+            val ra = M_2_PI - coord.x.radians.value
+            val dec = coord.y
+
+            var ha = ra * 12.0 / M_PI
+            if (ha > 24.0) ha -= 24.0
+            // It seems necessary to have ha in [-12,12]!
+            if (ha > 12.0) ha -= 24.0
+
+            val jd = o.jd.value
+            val ct = (jd - jd.toInt()) * 24.0
+            var transit = ct - ha * coeff // For Earth: coeff = (360.985647 / 360.0) = 1.0027379083333
+
+            if (ha > 12.0 && ha <= 24.0) transit += 24.0
+
+            transit += o.utcOffset + 12.0
+
+            transit = transit.pmod(24.0)
+
+            val cosH = (sin(hz) - sin(phi) * sin(dec)) / (cos(phi) * cos(dec))
+
+            val rise: Double
+            val set: Double
+
+            // Circumpolar
+            if (cosH < -1.0) {
+                rise = 100.0
+                set = 100.0
+            }
+            // Never rises
+            else if (cosH > 1.0) {
+                rise = -100.0
+                set = -100.0
+            } else {
+                val HC = acos(cosH) * 12.0 * coeff / M_PI
+                rise = (transit - HC).pmod(24.0)
+                set = (transit + HC).pmod(24.0)
+            }
+
+            return Triad(rise, transit, set)
+        }
+    }
 }

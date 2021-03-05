@@ -49,12 +49,12 @@ data class LunarEclipse(
 
             if (raDiff < 3 || raDiff > 357) {
                 val sdistanceAu = sEquPos.length
-                val mdistanceKm = mEquPos.length * AU
+                val mdistanceKm = mEquPos.length * AU_KM
                 // Moon's distance in Earth's radius
                 val mdistanceER = mdistanceKm / 6378.1366
 
                 // Sun's horizontal parallax
-                val sHP = 3600.0 * asin(6378.1366 / (AU * sdistanceAu)) * M_180_PI
+                val sHP = 3600.0 * asin(6378.1366 / (AU_KM * sdistanceAu)) * M_180_PI
                 // Sun's semi-diameter
                 val sSD = 959.64 / sdistanceAu
                 // Moon's horizontal parallax

@@ -1,18 +1,16 @@
 package br.tiagohm.astrum.sky.planets
 
 import br.tiagohm.astrum.sky.*
-import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.ephemeris.*
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.math.cos
-import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.orbit.Orbit
 import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Distance
 import br.tiagohm.astrum.sky.planets.major.earth.Moon
 import br.tiagohm.astrum.sky.planets.major.jupiter.Jupiter
@@ -26,7 +24,7 @@ import kotlin.math.*
 
 abstract class Planet internal constructor(
     // English planet name
-    final override val name: String,
+    final override val id: String,
     // Gets the equator radius of the planet
     radius: Distance,
     val oblateness: Double,
@@ -174,7 +172,7 @@ abstract class Planet internal constructor(
         return if (useLightTravelTime) {
             val length =
                 (internalComputeHeliocentricEclipticPosition(jde) - o.home.internalComputeHeliocentricEclipticPosition(jde)).length
-            val lsc = length * (AU / (SPEED_OF_LIGHT * SECONDS_PER_DAY))
+            val lsc = length * (AU_KM / (SPEED_OF_LIGHT * SECONDS_PER_DAY))
 
             val pos = internalComputePosition(jde - lsc)
             computeTransformationMatrix(jd - lsc, jde - lsc, o.useNutation)
@@ -190,7 +188,29 @@ abstract class Planet internal constructor(
         return Mat4.zrotation(computeRotAscendingNode()) * Mat4.xrotation(computeRotObliquity(jde))
     }
 
-    override fun computeHeliocentricEclipticPosition(o: Observer): Triad {
+    fun phaseAngle(o: Observer): Radians {
+        val observerHelioPos = o.computeHeliocentricEclipticPosition()
+        val observerRq = observerHelioPos.lengthSquared
+        val planetHelioPos = computeHeliocentricEclipticPosition(o)
+        val planetRq = planetHelioPos.lengthSquared
+        val observerPlanetRq = (observerHelioPos - planetHelioPos).lengthSquared
+        val cosChi = (observerPlanetRq + planetRq - observerRq) / (2.0 * sqrt(observerPlanetRq * planetRq))
+        return Radians(acos(cosChi))
+    }
+
+    override fun distance(o: Observer): Distance {
+        val obsHelioPos = o.computeHeliocentricEclipticPosition()
+        return AU((obsHelioPos - computeHeliocentricEclipticPosition(o)).length)
+    }
+
+    fun distanceFromSun(o: Observer) = computeHeliocentricEclipticPosition(o).length
+
+    override fun computeJ2000EquatorialPosition(o: Observer): Triad {
+        return MAT_VSOP87_TO_J2000
+            .multiplyWithoutTranslation(computeHeliocentricEclipticPosition(o) - o.computeHeliocentricEclipticPosition())
+    }
+
+    fun computeHeliocentricEclipticPosition(o: Observer): Triad {
         var pos = computeEclipticPosition(o)
         var p = parent
 
@@ -214,15 +234,21 @@ abstract class Planet internal constructor(
         return pos
     }
 
-    override fun computeEclipticPosition(o: Observer): Triad {
+    /**
+     * Computes the Planet position in Cartesian ecliptic (J2000) coordinates in AU, centered on the parent
+     */
+    open fun computeEclipticPosition(o: Observer): Triad {
         return computeEclipticPosition(o.jde, o, o.useLightTravelTime).first
     }
 
-    override fun computeEclipticVelocity(o: Observer): Triad {
+    /**
+     * Computes the Planet velocity in Cartesian ecliptic (J2000) coordinates in AU, centered on the parent
+     */
+    open fun computeEclipticVelocity(o: Observer): Triad {
         return computeEclipticPosition(o.jde, o, o.useLightTravelTime).second
     }
 
-    override fun computeHeliocentricEclipticVelocity(o: Observer): Triad {
+    fun computeHeliocentricEclipticVelocity(o: Observer): Triad {
         var pos = computeEclipticVelocity(o)
         var p = parent
 
@@ -294,49 +320,7 @@ abstract class Planet internal constructor(
     }
 
     internal open fun internalComputeRTSTime(o: Observer, hz: Angle, hasAtmosphere: Boolean): Triad {
-        val phi = o.site.latitude.radians
-        val coeff = o.home.computeMeanSolarDay() / o.home.siderealDay
-
-        val coord = Algorithms.rectangularToSphericalCoordinates(computeSiderealPositionGeometric(o))
-        val ra = M_2_PI - coord.x.radians.value
-        val dec = coord.y
-
-        var ha = ra * 12.0 / M_PI
-        if (ha > 24.0) ha -= 24.0
-        // It seems necessary to have ha in [-12,12]!
-        if (ha > 12.0) ha -= 24.0
-
-        val jd = o.jd.value
-        val ct = (jd - jd.toInt()) * 24.0
-        var transit = ct - ha * coeff // For Earth: coeff = (360.985647 / 360.0) = 1.0027379083333
-
-        if (ha > 12.0 && ha <= 24.0) transit += 24.0
-
-        transit += o.utcOffset + 12.0
-
-        transit = transit.pmod(24.0)
-
-        val cosH = (sin(hz) - sin(phi) * sin(dec)) / (cos(phi) * cos(dec))
-
-        val rise: Double
-        val set: Double
-
-        // Circumpolar
-        if (cosH < -1.0) {
-            rise = 100.0
-            set = 100.0
-        }
-        // Never rises
-        else if (cosH > 1.0) {
-            rise = -100.0
-            set = -100.0
-        } else {
-            val HC = acos(cosH) * 12.0 * coeff / M_PI
-            rise = (transit - HC).pmod(24.0)
-            set = (transit + HC).pmod(24.0)
-        }
-
-        return Triad(rise, transit, set)
+        return CelestialObject.computeRTSTime(o, this, hz)
     }
 
     // Used to compute shadows.
@@ -397,12 +381,12 @@ abstract class Planet internal constructor(
     /**
      * Returns the orbital velocity in km/s
      */
-    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * (AU / SECONDS_PER_DAY)
+    fun orbitalVelocity(o: Observer) = computeEclipticVelocity(o).length * (AU_KM / SECONDS_PER_DAY)
 
     /**
      * Returns the heliocentric velocity in km/s
      */
-    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * (AU / SECONDS_PER_DAY)
+    fun heliocentricVelocity(o: Observer) = computeHeliocentricEclipticVelocity(o).length * (AU_KM / SECONDS_PER_DAY)
 
     override fun visualMagnitude(o: Observer, extra: Any?): Double {
         // Compute the phase angle i
@@ -487,17 +471,6 @@ abstract class Planet internal constructor(
         val p = (1.0 - phaseAngle.radians.value / M_PI) * cosChi + sqrt(1.0 - cosChi * cosChi) / M_PI
         val F = 2.0 * albedo * radius * radius * p / (3.0 * observerPlanetRq * planetRq) * shadowFactor
         return -26.73 - 2.5 * log10(F)
-    }
-
-    final override fun visualMagnitudeWithExtinction(o: Observer, extra: Any?): Double {
-        val mag = visualMagnitude(o, extra)
-
-        return if (isAboveHorizon(o)) {
-            val altAzPos = computeAltAzPositionGeometric(o).normalized
-            o.extinction.forward(altAzPos, mag)
-        } else {
-            mag
-        }
     }
 
     companion object {

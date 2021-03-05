@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.AU_KM
 import br.tiagohm.astrum.sky.M_180_PI
 import br.tiagohm.astrum.sky.M_2_PI
 import br.tiagohm.astrum.sky.Observer
@@ -49,7 +49,7 @@ data class SolarEclipse(
 
                 val sdistanceAu = sEquPos.length
                 // Moon's distance in Earth's radius
-                val mdistanceER = mEquPos.length * (AU / 6378.1366)
+                val mdistanceER = mEquPos.length * (AU_KM / 6378.1366)
                 // Greenwich Apparent Sidereal Time
                 val gast = SiderealTime.computeApparent(op.jd, op.jde)
 

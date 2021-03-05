@@ -1,8 +1,4 @@
-import br.tiagohm.astrum.sky.AU
-import br.tiagohm.astrum.sky.Location
-import br.tiagohm.astrum.sky.M_PI
-import br.tiagohm.astrum.sky.M_PI_180
-import br.tiagohm.astrum.sky.Observer
+import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Triad
@@ -13,6 +9,7 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.core.units.distance.Meter
+import br.tiagohm.astrum.sky.nebula.Nebula
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Satellite
 import br.tiagohm.astrum.sky.planets.Sun
@@ -32,6 +29,7 @@ import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.io.File
 
 class ObserverTest {
 
@@ -555,8 +553,6 @@ class ObserverTest {
             JulianDay(2021, 2, 5, 9, 0, 0), // 2459251.000000
         )
 
-        // TODO: moons, DSOs, etc
-
         assertEquals(Triad(5.7500, 12.2833, 18.8167), sun.rts(o), DELTA_2)
         assertEquals(Triad(6.283333, 12.633333, 19.0), Mercury(sun).rts(o), DELTA_2)
         assertEquals(Triad(4.85, 11.483, 18.117), Venus(sun).rts(o), DELTA_2)
@@ -588,7 +584,7 @@ class ObserverTest {
         assertEquals(10.947, Saturn(sun).distance(o), DELTA_3)
         assertEquals(19.914, Uranus(sun).distance(o), DELTA_3)
         assertEquals(30.753, Neptune(sun).distance(o), DELTA_3)
-        assertEquals(365486.706 / AU, Moon(earth).distance(o), DELTA_3)
+        assertEquals(365486.706 / AU_KM, Moon(earth).distance(o), DELTA_3)
         assertEquals(35.130, Pluto(sun).distance(o), DELTA_3)
     }
 
@@ -2072,6 +2068,44 @@ class ObserverTest {
         assertEquals(19.743, ophelia.distanceFromSun(o), DELTA_3)
         assertEquals(10.306, ophelia.orbitalVelocity(o), DELTA_3)
         assertEquals(8.892, ophelia.heliocentricVelocity(o), DELTA_3)
+    }
+
+    @Test
+    fun nebula() {
+        val data = Nebula.load(File(System.getProperty("user.home") + "/catalog.dat"))
+        val ngc4565 = data.find { it.ngc == 4565 }!!
+
+        System.err.println(ngc4565)
+
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            JulianDay(2021, 8, 5, 15, 0, 0), // 2459432.250000
+        )
+
+        assertEquals(134.0, ngc4565.orientation, DELTA_1, isDegrees = true)
+        assertEquals(0.265, ngc4565.majorAxisSize, DELTA_3, isDegrees = true)
+        assertEquals(0.03083, ngc4565.minorAxisSize, DELTA_3, isDegrees = true)
+        assertEquals(24.729, ngc4565.surfaceBrightness, DELTA_3)
+        assertEquals(1.18, ngc4565.bMag - ngc4565.vMag, DELTA_2)
+
+        assertEquals(12.43, ngc4565.visualMagnitude(o), DELTA_2)
+        assertEquals(12.63, ngc4565.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(189.08668, 25.9874, ngc4565.equatorialJ2000(o), DELTA_4, true)
+        assertEquals(189.35088, 25.8702, ngc4565.equatorial(o), DELTA_4, true)
+        assertEquals(23.30503, 25.8512, ngc4565.hourAngle(o), DELTA_4, true)
+        assertEquals(12.3785, 40.5713, ngc4565.horizontal(o), DELTA_4, true)
+        assertEquals(-129.2399, 86.4379, ngc4565.galactic(o), DELTA_4, true)
+        assertEquals(90.2108, 2.7641, ngc4565.supergalactic(o), DELTA_4, true)
+        assertEquals(177.1589, 27.2894, ngc4565.eclipticJ2000(o), DELTA_4, true)
+        assertEquals(177.4580, 27.2893, ngc4565.ecliptic(o), DELTA_4, true)
+        assertEquals(-167.2899, ngc4565.parallacticAngle(o), DELTA_4, true)
+        assertEquals(Constellation.COM, ngc4565.constellation(o))
+        assertEquals(56790080.4143, ngc4565.distance(o).lightYear.value, DELTA_3)
+        assertEquals(Triad(10.4104, 15.697, 20.983), ngc4565.rts(o), DELTA_3)
     }
 
     companion object {

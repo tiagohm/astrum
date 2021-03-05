@@ -136,7 +136,7 @@ data class Observer(
     /**
      * Computes the distance between observer and home planet center in meters
      */
-    fun computeDistanceFromCenterInMeters() = computeDistanceFromCenter() * AU
+    fun computeDistanceFromCenterInMeters() = computeDistanceFromCenter() * AU_KM
 
     /**
      * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude in radians.
@@ -237,7 +237,7 @@ data class Observer(
     private fun computeLightTimeSunPosition() {
         val obsPosJDE = home.internalComputeHeliocentricEclipticPosition(jde)
         val obsDist = obsPosJDE.length
-        val obsPosJDEbefore = home.internalComputeHeliocentricEclipticPosition(jde - obsDist * (AU / (SPEED_OF_LIGHT * SECONDS_PER_DAY)))
+        val obsPosJDEbefore = home.internalComputeHeliocentricEclipticPosition(jde - obsDist * (AU_KM / (SPEED_OF_LIGHT * SECONDS_PER_DAY)))
         lightTimeSunPosition = obsPosJDE - obsPosJDEbefore
     }
 

@@ -1,5 +1,6 @@
 package br.tiagohm.astrum.sky.constellations
 
+import br.tiagohm.astrum.sky.getResourceAsStream
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.util.*
@@ -26,7 +27,7 @@ data class ConstellationLine(
         }
 
         fun load(): List<ConstellationLine> {
-            return Thread.currentThread().contextClassLoader.getResourceAsStream("CONSTELLATION_SPANS.dat")?.let {
+            return getResourceAsStream("CONSTELLATION_SPANS.dat")?.let {
                 val lines = BufferedInputStream(it).bufferedReader().readLines()
                 val res = ArrayList<ConstellationLine>(357)
 

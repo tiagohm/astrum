@@ -32,4 +32,6 @@ open class SphericalCoord(
         result = 31 * result + y.hashCode()
         return result
     }
+
+    override fun toString() = "${javaClass.simpleName}(x: $x, y: $y)"
 }

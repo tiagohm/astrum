@@ -22,4 +22,9 @@ open class EquatorialCoord(val ra: Angle, val dec: Angle) : SphericalCoord(ra, d
         val beta = asin(sin(dec) * cos(ecl) - cos(dec) * sin(ecl) * sin(ra))
         return EclipticCoord(Radians(lambda), Radians(beta))
     }
+
+    companion object {
+
+        val ZERO = EquatorialCoord(Radians.ZERO, Radians.ZERO)
+    }
 }

@@ -21,4 +21,9 @@ class EclipticCoord(val lambda: Angle, val beta: Angle) : SphericalCoord(lambda,
         val dec = asin(sin(beta) * cos(e) + cos(beta) * sin(e) * sin(lambda))
         return EquatorialCoord(Radians(ra), Radians(dec))
     }
+
+    companion object {
+
+        val ZERO = EclipticCoord(Radians.ZERO, Radians.ZERO)
+    }
 }

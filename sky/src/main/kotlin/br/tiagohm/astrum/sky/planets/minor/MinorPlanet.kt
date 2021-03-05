@@ -27,7 +27,7 @@ import kotlin.math.*
  * @param n Mean motion
  */
 open class MinorPlanet(
-    name: String,
+    id: String,
     parent: Sun,
     q: Distance,
     e: Double,
@@ -41,7 +41,7 @@ open class MinorPlanet(
     val slope: Double = -10.0,
     radius: Distance = Kilometer(1.0),
 ) : Planet(
-    name,
+    id,
     radius,
     0.0,
     albedo,

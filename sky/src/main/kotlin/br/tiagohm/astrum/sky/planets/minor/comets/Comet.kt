@@ -23,7 +23,7 @@ import kotlin.math.pow
  * @param n Mean motion
  */
 class Comet(
-    name: String,
+    id: String,
     parent: Sun,
     q: Distance,
     e: Double,
@@ -36,7 +36,7 @@ class Comet(
     absoluteMagnitude: Double = -99.0,
     slope: Double = -10.0,
     radius: Distance = Kilometer(1.0)
-) : MinorPlanet(name, parent, q, e, i, omega, w, t0, n, albedo, absoluteMagnitude, slope, radius) {
+) : MinorPlanet(id, parent, q, e, i, omega, w, t0, n, albedo, absoluteMagnitude, slope, radius) {
 
     override val siderealPeriod by lazy {
         val a = orbit!!.semiMajorAxis

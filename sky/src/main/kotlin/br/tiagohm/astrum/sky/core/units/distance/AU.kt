@@ -1,15 +1,15 @@
 package br.tiagohm.astrum.sky.core.units.distance
 
-import br.tiagohm.astrum.sky.AU
+import br.tiagohm.astrum.sky.AU_KM
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
 inline class AU(override val value: Double) : Distance {
 
     override val meter: Meter
-        get() = Meter(value * AU * 1000.0)
+        get() = Meter(value * AU_KM * 1000.0)
 
     override val kilometer: Kilometer
-        get() = Kilometer(value * AU)
+        get() = Kilometer(value * AU_KM)
 
     override val au: AU
         get() = this
