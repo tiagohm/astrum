@@ -49,13 +49,13 @@ data class Nebula(
     val minorAxisSize: Angle = Degrees.ZERO, // Minor axis size in degrees
     val orientation: Angle = Degrees.ZERO, // Orientation angle in degrees
     val distance: Distance = LightYear.ZERO, // distance
-    val distanceErr: Double = 0.0, // Error of distance
+    val distanceError: Double = 0.0, // Error of distance
     val redshift: Double = 0.0,
-    val redshiftErr: Double = 0.0,
+    val redshiftError: Double = 0.0,
     val parallax: Double = 0.0, // Parallax in milliarcseconds (mas)
-    val parallaxErr: Double = 0.0,
+    val parallaxError: Double = 0.0,
     val surfaceBrightness: Double = 0.0, // mag/arcsec²
-    val pos: EquatorialCoord = EquatorialCoord.ZERO,
+    val posEquJ2000: EquatorialCoord = EquatorialCoord.ZERO,
     val nebulaType: NebulaType = NebulaType.UNKNOWN,
     val h400: Boolean = false,
     val bennett: Boolean = false,
@@ -63,7 +63,7 @@ data class Nebula(
     val names: List<String> = emptyList(),
 ) : CelestialObject {
 
-    private val xyz by lazy { Algorithms.sphericalToRectangularCoordinates(pos.ra, pos.dec) }
+    private val xyz by lazy { Algorithms.sphericalToRectangularCoordinates(posEquJ2000.ra, posEquJ2000.dec) }
 
     override val type = PlanetType.DSO
 
