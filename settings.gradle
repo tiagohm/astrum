@@ -3,3 +3,4 @@ plugins {
 }
 
 include ":sky"
+include ":tools"
