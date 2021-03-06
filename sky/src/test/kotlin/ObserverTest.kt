@@ -1,5 +1,6 @@
 import br.tiagohm.astrum.sky.*
 import br.tiagohm.astrum.sky.constellations.Constellation
+import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.JulianDay
@@ -8,8 +9,10 @@ import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
+import br.tiagohm.astrum.sky.core.units.distance.LightYear
 import br.tiagohm.astrum.sky.core.units.distance.Meter
 import br.tiagohm.astrum.sky.nebula.Nebula
+import br.tiagohm.astrum.sky.nebula.NebulaType
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Satellite
 import br.tiagohm.astrum.sky.planets.Sun
@@ -29,7 +32,6 @@ import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.io.File
 
 class ObserverTest {
 
@@ -2072,10 +2074,24 @@ class ObserverTest {
 
     @Test
     fun nebula() {
-        val data = Nebula.load(File(System.getProperty("user.home") + "/catalog.dat"))
-        val ngc4565 = data.find { it.ngc == 4565 }!!
-
-        System.err.println(ngc4565)
+        val ngc4565 = Nebula(
+            id = "4238",
+            ngc = 4565, ic = 3543, c = 38, pgc = 42038, ugc = 7772,
+            mType = "SA(s)b?",
+            bMag = 13.609999656677246,
+            vMag = 12.430000305175781,
+            majorAxisSize = Degrees(0.26499998569488525),
+            minorAxisSize = Degrees(0.030833333730697632),
+            orientation = Degrees(134.0),
+            distance = LightYear(5.679008041430424E7),
+            distanceErr = 261103.8179968011,
+            redshift = 0.004209999926388264,
+            redshiftErr = 1.4000000373926014E-4,
+            surfaceBrightness = 24.729903347700766,
+            pos = EquatorialCoord(Radians(3.300185203552246), Radians(0.4535655677318573)),
+            nebulaType = NebulaType.GALAXY,
+            h400 = true,
+        )
 
         val sun = Sun()
         val earth = Earth(sun)

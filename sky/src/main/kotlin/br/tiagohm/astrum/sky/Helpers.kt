@@ -128,5 +128,3 @@ fun readIntArrayFromResources(name: String): IntArray {
 fun readByteArrayFromResources(name: String): ByteArray {
     return getResourceAsStream(name)?.readBytes() ?: ByteArray(0)
 }
-
-
