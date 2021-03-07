@@ -11,7 +11,10 @@ import br.tiagohm.astrum.sky.core.units.distance.Distance
 import br.tiagohm.astrum.sky.core.units.distance.LightYear
 import kotlin.math.min
 
-data class Nebula(
+/**
+ * Deep Sky Object.
+ */
+open class Nebula(
     override val id: String = "",
     val m: Int = 0, // Messier Catalog number
     val ngc: Int = 0, // New General Catalog number
@@ -68,8 +71,6 @@ data class Nebula(
     override val type = PlanetType.DSO
 
     override fun distance(o: Observer) = distance
-
-    override fun constellation(o: Observer) = super.constellation(o)
 
     override fun visualMagnitude(o: Observer, extra: Any?) = min(vMag, bMag)
 
