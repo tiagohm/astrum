@@ -27,5 +27,40 @@ open class EquatorialCoord(val ra: Angle, val dec: Angle) : SphericalCoord(ra, d
     companion object {
 
         val ZERO = EquatorialCoord(Radians.ZERO, Radians.ZERO)
+
+        /**
+         * Computes the angular separation in radians of 2 coordinates.
+         */
+        fun angularSeparation(a: EquatorialCoord, b: EquatorialCoord): Radians {
+            val a1 = a.ra.radians.value
+            val d1 = a.dec.radians.value
+            val a2 = b.ra.radians.value
+            val d2 = b.dec.radians.value
+
+            val x = (cos(d1) * sin(d2)) - (sin(d1) * cos(d2) * cos(a2 - a1))
+            val y = cos(d2) * sin(a2 - a1)
+            val z = (sin(d1) * sin(d2)) + (cos(d1) * cos(d2) * cos(a2 - a1))
+
+            val d = atan2(sqrt(x * x + y * y), z)
+
+            return Radians(d)
+        }
+
+        /**
+         * Computes the position angle of a body with respect to another body.
+         */
+        fun positionAngle(a: EquatorialCoord, b: EquatorialCoord): Radians {
+            val a1 = a.ra.radians.value
+            val d1 = a.dec.radians.value
+            val a2 = b.ra.radians.value
+            val d2 = b.dec.radians.value
+
+            val x = (cos(d2) * tan(d1)) - (sin(d2) * cos(a1 - a2))
+            val y = sin(a1 - a2)
+
+            val p = atan2(y, x)
+
+            return Radians(p)
+        }
     }
 }

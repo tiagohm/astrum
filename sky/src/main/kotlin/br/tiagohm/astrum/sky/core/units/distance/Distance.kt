@@ -13,4 +13,10 @@ interface Distance : Unit, Comparable<Distance> {
     val lightYear: LightYear
 
     val parsec: Parsec
+
+    /**
+     * Gets time in seconds for light to travel that distance.
+     */
+    val lightTime: Double
+        get() = au.value * 0.005775183
 }

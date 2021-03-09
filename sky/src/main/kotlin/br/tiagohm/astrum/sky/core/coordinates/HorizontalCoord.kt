@@ -6,7 +6,13 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 /**
  * Represents the Horizontal Coordinate System.
  */
-class HorizontalCoord(val az: Angle, val alt: Angle) : SphericalCoord(az, alt) {
+class HorizontalCoord(val azimuth: Angle, val altitude: Angle) : SphericalCoord(azimuth, altitude) {
+
+    /**
+     * Gets direction of the [azimuth].
+     */
+    val direction: Direction
+        get() = Direction.values()[(azimuth.degrees.value / 22.5).toInt()]
 
     companion object {
 

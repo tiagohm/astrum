@@ -38,7 +38,7 @@ open class MinorPlanet(
     albedo: Double = 0.15,
     override val absoluteMagnitude: Double = -99.0,
     val slope: Double = -10.0,
-    radius: Distance = Kilometer(1.0),
+    radius: Distance = computeRadius(absoluteMagnitude, albedo),
 ) : Planet(
     radius,
     0.0,
@@ -81,6 +81,10 @@ open class MinorPlanet(
 
     companion object {
 
+        fun computeRadius(absoluteMagnitude: Double, albedo: Double): Kilometer {
+            return Kilometer(ceil(0.5 * (1329 / sqrt(albedo)) * 10.0.pow(-0.2 * absoluteMagnitude)))
+        }
+
         private val PACKED_EPOCH_REGEX = Regex("^([IJK])(\\d\\d)([1-9A-C])([1-9A-V])\$")
 
         // TODO: Mover isso para o módulo database
@@ -109,7 +113,6 @@ open class MinorPlanet(
             // as described here: http://www.physics.sfasu.edu/astro/asteroids/sizemagnitude.html
             val albedo = 0.15 // Assumed
             // Original formula is for diameter!
-            val radius = ceil(0.5 * (1329 / sqrt(albedo)) * 10.0.pow(-0.2 * absoluteMagnitude))
 
             val epochM = PACKED_EPOCH_REGEX.matchEntire(epoch) ?: throw IOException("Invalid epoch format: $line")
 
@@ -143,7 +146,6 @@ open class MinorPlanet(
                 albedo,
                 absoluteMagnitude,
                 slope,
-                Kilometer(radius),
             )
         }
     }

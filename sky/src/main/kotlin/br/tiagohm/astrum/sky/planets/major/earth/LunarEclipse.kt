@@ -87,6 +87,7 @@ data class LunarEclipse(
                 val pMag = (L1 - m) / (2.0 * mSD) // Penumbral magnitude
                 val uMag = (L2 - m) / (2.0 * mSD) // Umbral magnitude
 
+                // TODO: Eclipse type
                 if (pMag > 1E-6 || uMag > 1E-6) return LunarEclipse(pMag, uMag)
             }
 
