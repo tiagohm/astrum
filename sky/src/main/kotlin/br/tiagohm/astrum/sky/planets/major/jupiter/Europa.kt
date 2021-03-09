@@ -11,7 +11,6 @@ import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Europa(parent: Jupiter) : Planet(
-    "Europa",
     Kilometer(1560.8),
     0.0,
     0.67,

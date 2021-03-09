@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Ariel(parent: Uranus) :
-    Planet(
-        "Ariel",
-        Kilometer(578.9),
-        0.0,
-        0.39,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Ariel(parent: Uranus) : Planet(
+    Kilometer(578.9),
+    0.0,
+    0.39,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = -2.5203788716692395966
 

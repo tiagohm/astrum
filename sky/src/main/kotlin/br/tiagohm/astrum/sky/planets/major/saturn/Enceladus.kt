@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Enceladus(parent: Saturn) :
-    Planet(
-        "Enceladus",
-        Kilometer(252.1),
-        0.0,
-        1.0,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Enceladus(parent: Saturn) : Planet(
+    Kilometer(252.1),
+    0.0,
+    1.0,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 1.37021808371228325713
 

@@ -12,7 +12,6 @@ import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Mars(parent: Sun) : Planet(
-    "Mars",
     Kilometer(3396.19),
     0.005886,
     0.150,

@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Hyperion(parent: Saturn) :
-    Planet(
-        "Hyperion",
-        Kilometer(135.0),
-        0.0,
-        0.3,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Hyperion(parent: Saturn) : Planet(
+    Kilometer(135.0),
+    0.0,
+    0.3,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 21.2766088
 

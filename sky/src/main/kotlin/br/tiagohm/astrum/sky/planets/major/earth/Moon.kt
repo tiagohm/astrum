@@ -14,7 +14,6 @@ import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Moon(parent: Earth) : Planet(
-    "Moon",
     Kilometer(1737.4),
     0.0,
     0.12,

@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Iapetus(parent: Saturn) :
-    Planet(
-        "Iapetus",
-        Kilometer(734.3),
-        0.0,
-        0.2,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Iapetus(parent: Saturn) : Planet(
+    Kilometer(734.3),
+    0.0,
+    0.2,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 79.33084957257860431121
 

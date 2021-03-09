@@ -12,7 +12,6 @@ import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Venus(parent: Sun) : Planet(
-    "Venus",
     Kilometer(6051.8),
     0.0,
     0.77,

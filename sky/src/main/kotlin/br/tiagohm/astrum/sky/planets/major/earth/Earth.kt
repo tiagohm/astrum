@@ -17,7 +17,6 @@ import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Earth(parent: Sun) : Planet(
-    "Earth",
     Kilometer(6378.1366),
     0.003352810664747481,
     0.3,

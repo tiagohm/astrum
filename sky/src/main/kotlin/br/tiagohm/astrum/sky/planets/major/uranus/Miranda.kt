@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Miranda(parent: Uranus) :
-    Planet(
-        "Miranda",
-        Kilometer(235.8),
-        0.0,
-        0.32,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Miranda(parent: Uranus) : Planet(
+    Kilometer(235.8),
+    0.0,
+    0.32,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = -1.4134792329110396078
 

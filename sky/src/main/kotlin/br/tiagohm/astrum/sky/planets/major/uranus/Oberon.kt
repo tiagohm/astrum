@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Oberon(parent: Uranus) :
-    Planet(
-        "Oberon",
-        Kilometer(761.4),
-        0.0,
-        0.23,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Oberon(parent: Uranus) : Planet(
+    Kilometer(761.4),
+    0.0,
+    0.23,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = -13.46323198077665884857
 

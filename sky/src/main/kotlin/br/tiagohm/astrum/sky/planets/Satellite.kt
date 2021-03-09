@@ -20,7 +20,6 @@ import br.tiagohm.astrum.sky.core.units.distance.Distance
  * @param n Mean motion
  */
 open class Satellite<T : Planet>(
-    id: String,
     parent: T,
     radius: Distance,
     q: Distance,
@@ -35,11 +34,13 @@ open class Satellite<T : Planet>(
     private val rotObliquity: Angle = Radians.ZERO,
     private val rotAscendingNode: Angle = Radians.ZERO,
 ) : Planet(
-    id,
     radius,
     0.0,
     albedo,
-    KeplerOrbit(q, e, i, omega, w, t0, n, parent.computeRotObliquity(J2000), parent.computeRotAscendingNode(), centralMass = parent.mass),
+    KeplerOrbit(
+        q.au, e, i.radians, omega.radians, w.radians, t0, n.radians,
+        parent.computeRotObliquity(J2000).radians, parent.computeRotAscendingNode().radians, centralMass = parent.mass
+    ),
     PlanetType.MOON,
     parent,
 ) {

@@ -12,7 +12,6 @@ import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Mercury(parent: Sun) : Planet(
-    "Mercury",
     Kilometer(2440.53),
     0.0009301258,
     0.06,

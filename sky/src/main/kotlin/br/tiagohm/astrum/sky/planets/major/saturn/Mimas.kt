@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Mimas(parent: Saturn) :
-    Planet(
-        "Mimas",
-        Kilometer(198.2),
-        0.0,
-        0.5,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Mimas(parent: Saturn) : Planet(
+    Kilometer(198.2),
+    0.0,
+    0.5,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 0.94242181017475497786
 

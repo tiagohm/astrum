@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Tethys(parent: Saturn) :
-    Planet(
-        "Tethys",
-        Kilometer(531.0),
-        0.0,
-        0.8,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Tethys(parent: Saturn) : Planet(
+    Kilometer(531.0),
+    0.0,
+    0.8,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 1.88780256077113714123
 

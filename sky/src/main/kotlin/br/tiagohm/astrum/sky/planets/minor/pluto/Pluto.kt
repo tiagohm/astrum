@@ -16,7 +16,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Pluto(parent: Sun) : MinorPlanet(
-    "(134340) Pluto",
     parent,
     AU(29.5739917738007),
     0.250248713478499,

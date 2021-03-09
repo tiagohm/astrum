@@ -17,7 +17,6 @@ import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.*
 
 class Saturn(parent: Sun) : Planet(
-    "Saturn",
     Kilometer(60268.0),
     0.09796243446,
     0.50,

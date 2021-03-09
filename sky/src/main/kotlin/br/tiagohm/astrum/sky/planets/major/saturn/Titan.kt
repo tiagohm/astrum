@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Titan(parent: Saturn) :
-    Planet(
-        "Titan",
-        Kilometer(2575.0),
-        0.0,
-        0.2,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Titan(parent: Saturn) : Planet(
+    Kilometer(2575.0),
+    0.0,
+    0.2,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 15.94544757648862889384
 

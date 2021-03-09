@@ -16,12 +16,10 @@ import kotlin.math.cos
 
 interface CelestialObject {
 
-    val type: PlanetType
-
     /**
-     * Returns a unique identifier for this object.
+     * The celestial body type.
      */
-    val id: String
+    val type: PlanetType
 
     /**
      * Computes observer-centered equatorial coordinate at the current equinox.

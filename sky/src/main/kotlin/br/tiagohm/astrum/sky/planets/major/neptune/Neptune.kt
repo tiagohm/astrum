@@ -13,7 +13,6 @@ import br.tiagohm.astrum.sky.planets.Ring
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Neptune(parent: Sun) : Planet(
-    "Neptune",
     Kilometer(24764.0),
     0.01708124697,
     0.62,

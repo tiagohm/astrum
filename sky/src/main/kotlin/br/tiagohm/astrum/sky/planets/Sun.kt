@@ -12,7 +12,6 @@ import kotlin.math.max
 import kotlin.math.sqrt
 
 class Sun : Planet(
-    "Sun",
     Kilometer(695700.0),
     0.0,
     -1.0,

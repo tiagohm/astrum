@@ -24,12 +24,12 @@ import kotlin.math.*
  * @param n Mean motion
  */
 data class KeplerOrbit(
-    val q: Distance, // Pericenter Distance (AU)
-    override val e: Double, // Eccentricity
-    val i: Angle, // Inclination
-    val omega: Angle, // Longitude of ascending node
-    val w: Angle, // Argument of perihelion
-    val t0: JulianDay, // Time at perihelion (JDE)
+    val q: Distance,
+    override val e: Double,
+    val i: Angle,
+    val omega: Angle,
+    val w: Angle,
+    val t0: JulianDay,
     val n: Angle, // Mean motion (for parabolic orbits: W/dt in Heafner's presentation, ch5.5) [radians/day]
     val parentRotObliquity: Angle = Radians.ZERO, // Comets/Minor Planets only have parent==sun, no need for these? Oh yes: Double, VSOP/J2000 eq frames!
     val parentRotAscendingnode: Angle = Radians.ZERO,

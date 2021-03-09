@@ -11,7 +11,6 @@ import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Ganymede(parent: Jupiter) : Planet(
-    "Ganymede",
     Kilometer(2631.2),
     0.0,
     0.43,

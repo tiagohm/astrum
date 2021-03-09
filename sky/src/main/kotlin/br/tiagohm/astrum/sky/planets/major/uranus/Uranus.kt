@@ -13,7 +13,6 @@ import br.tiagohm.astrum.sky.planets.Ring
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Uranus(parent: Sun) : Planet(
-    "Uranus",
     Kilometer(25559.0),
     0.0229273446,
     0.66,

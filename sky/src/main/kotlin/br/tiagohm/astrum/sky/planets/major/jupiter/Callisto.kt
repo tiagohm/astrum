@@ -11,7 +11,6 @@ import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Callisto(parent: Jupiter) : Planet(
-    "Callisto",
     Kilometer(2410.3),
     0.0,
     0.17,

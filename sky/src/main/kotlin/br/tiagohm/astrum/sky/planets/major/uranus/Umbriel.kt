@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Umbriel(parent: Uranus) :
-    Planet(
-        "Umbriel",
-        Kilometer(584.7),
-        0.0,
-        0.21,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Umbriel(parent: Uranus) : Planet(
+    Kilometer(584.7),
+    0.0,
+    0.21,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = -4.14417624616125098213
 

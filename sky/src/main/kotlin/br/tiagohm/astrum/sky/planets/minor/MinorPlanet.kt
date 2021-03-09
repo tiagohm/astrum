@@ -27,7 +27,6 @@ import kotlin.math.*
  * @param n Mean motion
  */
 open class MinorPlanet(
-    id: String,
     parent: Sun,
     q: Distance,
     e: Double,
@@ -41,11 +40,10 @@ open class MinorPlanet(
     val slope: Double = -10.0,
     radius: Distance = Kilometer(1.0),
 ) : Planet(
-    id,
     radius,
     0.0,
     albedo,
-    KeplerOrbit(q, e, i, omega, w, t0, n, Radians.ZERO, Radians.ZERO, Radians.ZERO),
+    KeplerOrbit(q.au, e, i.radians, omega.radians, w.radians, t0, n.radians, Radians.ZERO, Radians.ZERO, Radians.ZERO),
     PlanetType.MINOR_PLANET,
     parent,
 ) {
@@ -85,6 +83,7 @@ open class MinorPlanet(
 
         private val PACKED_EPOCH_REGEX = Regex("^([IJK])(\\d\\d)([1-9A-C])([1-9A-V])\$")
 
+        // TODO: Mover isso para o módulo database
         fun parseMpcOneLine(parent: Sun, line: String): MinorPlanet {
             if (line.isEmpty() || line.length !in 152..202) {
                 throw IOException("Invalid line length: $line")
@@ -102,7 +101,7 @@ open class MinorPlanet(
             val eccentricity = line.substring(70 until 70 + 9).trim().toDouble()
             val meanDailyMotion = line.substring(80 until 80 + 11).trim().toDouble()
             val semiMajorAxis = line.substring(92 until 92 + 11).trim().toDouble()
-            val name = line.substring(166 until 166 + 28).trim()
+            // val name = line.substring(166 until 166 + 28).trim()
             val q = (1 - eccentricity) * semiMajorAxis
 
             // Radius and albedo
@@ -133,7 +132,6 @@ open class MinorPlanet(
             val epochJD = JulianDay(year, month, day, 0, 0, 0, 0, 0.0)
 
             return MinorPlanet(
-                name,
                 parent,
                 AU(q),
                 eccentricity,

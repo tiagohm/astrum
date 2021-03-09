@@ -12,7 +12,6 @@ import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Sun
 
 class Jupiter(parent: Sun) : Planet(
-    "Jupiter",
     Kilometer(71492.0),
     0.064874,
     0.51,

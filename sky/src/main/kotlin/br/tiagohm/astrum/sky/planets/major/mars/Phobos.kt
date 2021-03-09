@@ -8,7 +8,6 @@ import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Phobos(parent: Mars) : Planet(
-    "Phobos",
     Kilometer(11.08),
     1.0,
     0.07,

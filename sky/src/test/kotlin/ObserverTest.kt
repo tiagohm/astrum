@@ -11,8 +11,7 @@ import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.core.units.distance.LightYear
 import br.tiagohm.astrum.sky.core.units.distance.Meter
-import br.tiagohm.astrum.sky.nebula.Nebula
-import br.tiagohm.astrum.sky.nebula.NebulaType
+import br.tiagohm.astrum.sky.dso.DSO
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Satellite
 import br.tiagohm.astrum.sky.planets.Sun
@@ -29,6 +28,7 @@ import br.tiagohm.astrum.sky.planets.major.venus.Venus
 import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import br.tiagohm.astrum.sky.planets.minor.comets.Comet
 import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
+import br.tiagohm.astrum.sky.stars.Star
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -1319,7 +1319,6 @@ class ObserverTest {
         val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
 
         val leda = Satellite(
-            "Leda",
             jupiter,
             Kilometer(5.0),
             q,
@@ -1379,7 +1378,6 @@ class ObserverTest {
         val timeAtPericenter = epoch - (meanAnomaly / meanMotion).value
 
         val ceres = MinorPlanet(
-            "Ceres",
             sun,
             pericenterDistance,
             eccentricity,
@@ -1437,8 +1435,8 @@ class ObserverTest {
         val inclination = Degrees(128.9309)
         val timeAtPericenter = 2459034.175694444
 
+        // "C/2020 F3 (NEOWISE)"
         val neowise = Comet(
-            "C/2020 F3 (NEOWISE)",
             sun,
             pericenterDistance,
             eccentricity,
@@ -1789,7 +1787,6 @@ class ObserverTest {
         val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
 
         val janus = Satellite(
-            "Janus",
             saturn,
             Kilometer(89.2),
             q,
@@ -2030,7 +2027,6 @@ class ObserverTest {
         val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
 
         val ophelia = Satellite(
-            "Ophelia",
             uranus,
             Kilometer(15.0),
             q,
@@ -2074,23 +2070,13 @@ class ObserverTest {
 
     @Test
     fun nebula() {
-        val ngc4565 = Nebula(
-            id = "4238",
-            ngc = 4565, ic = 3543, c = 38, pgc = 42038, ugc = 7772,
-            mType = "SA(s)b?",
-            bMag = 13.609999656677246,
-            vMag = 12.430000305175781,
+        val ngc4565 = DSO(
+            mB = 13.609999656677246,
+            mV = 12.430000305175781,
             majorAxisSize = Degrees(0.26499998569488525),
             minorAxisSize = Degrees(0.030833333730697632),
-            orientation = Degrees(134.0),
             distance = LightYear(5.679008041430424E7),
-            distanceError = 261103.8179968011,
-            redshift = 0.004209999926388264,
-            redshiftError = 1.4000000373926014E-4,
-            surfaceBrightness = 24.729903347700766,
             posEquJ2000 = EquatorialCoord(Radians(3.300185203552246), Radians(0.4535655677318573)),
-            nebulaType = NebulaType.GALAXY,
-            h400 = true,
         )
 
         val sun = Sun()
@@ -2102,11 +2088,9 @@ class ObserverTest {
             JulianDay(2021, 8, 5, 15, 0, 0), // 2459432.250000
         )
 
-        assertEquals(134.0, ngc4565.orientation, DELTA_1, isDegrees = true)
         assertEquals(0.265, ngc4565.majorAxisSize, DELTA_3, isDegrees = true)
         assertEquals(0.03083, ngc4565.minorAxisSize, DELTA_3, isDegrees = true)
-        assertEquals(24.729, ngc4565.surfaceBrightness, DELTA_3)
-        assertEquals(1.18, ngc4565.bMag - ngc4565.vMag, DELTA_2)
+        assertEquals(1.18, ngc4565.mB - ngc4565.mV, DELTA_2)
 
         assertEquals(12.43, ngc4565.visualMagnitude(o), DELTA_2)
         assertEquals(12.63, ngc4565.visualMagnitudeWithExtinction(o), DELTA_2)
@@ -2122,6 +2106,58 @@ class ObserverTest {
         assertEquals(Constellation.COM, ngc4565.constellation(o))
         assertEquals(56790080.4143, ngc4565.distance(o).lightYear.value, DELTA_3)
         assertEquals(Triad(10.4104, 15.697, 20.983), ngc4565.rts(o), DELTA_3)
+    }
+
+    @Test
+    fun star() {
+        // http://simbad.u-strasbg.fr/simbad/sim-id?Ident=Barnard%27s%20star
+        val barnard = Star(
+            EquatorialCoord(Degrees(269.4520824975141), Degrees(4.69336426506333)),
+            547.4506,
+            -802.803, 10362.542,
+            -110.353, 11.08, 9.5, 6.741,
+        )
+
+        val sun = Sun()
+        val earth = Earth(sun)
+
+        val o = Observer(
+            earth,
+            PICO_DOS_DIAS_OBSERVATORY,
+            JulianDay(2021, 8, 5, 9, 0, 0), // 2459432.000000
+        )
+
+        assertEquals(9.50, barnard.visualMagnitude(o), DELTA_2)
+        assertEquals(9.50, barnard.visualMagnitudeWithExtinction(o), DELTA_2)
+        assertEquals(13.19, barnard.absoluteMagnitude(o), DELTA_2)
+        assertEquals(Constellation.OPH, barnard.constellation(o))
+        assertEquals(5.957, barnard.distance(o).lightYear.value, DELTA_3)
+
+        for (year in 2021..2035) {
+            when (year) {
+                // Coordinates are very close to real (Stellarium).
+                2021 -> assertEquals(269.7103, 4.7537, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2022 -> assertEquals(269.7231, 4.7558, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2023 -> assertEquals(269.7364, 4.7581, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2024 -> assertEquals(269.7499, 4.7608, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2025 -> assertEquals(269.7633, 4.7637, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2026 -> assertEquals(269.7767, 4.7668, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2027 -> assertEquals(269.7900, 4.7701, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2028 -> assertEquals(269.8029, 4.7737, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2029 -> assertEquals(269.8153, 4.7775, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2030 -> assertEquals(269.8272, 4.7812, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2031 -> assertEquals(269.8388, 4.7848, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2032 -> assertEquals(269.8499, 4.7883, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2033 -> assertEquals(269.8606, 4.7916, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2034 -> assertEquals(269.8713, 4.7945, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+                2035 -> assertEquals(269.8821, 4.7972, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
+            }
+        }
+
+        o.copy(jd = JulianDay(5353, 8, 5, 9, 0, 0)).also {
+            assertEquals(306.1128, 22.0816, barnard.equatorial(it), DELTA_4, true) // Not very close!
+            assertEquals(Constellation.HER, barnard.constellation(it))
+        }
     }
 
     companion object {

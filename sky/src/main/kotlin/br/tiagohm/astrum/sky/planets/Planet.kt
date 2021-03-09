@@ -23,8 +23,6 @@ import br.tiagohm.astrum.sky.planets.minor.pluto.Pluto
 import kotlin.math.*
 
 abstract class Planet internal constructor(
-    // English planet name
-    final override val id: String,
     // Gets the equator radius of the planet
     radius: Distance,
     val oblateness: Double,

@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Dione(parent: Saturn) :
-    Planet(
-        "Dione",
-        Kilometer(561.4),
-        0.0,
-        0.6,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Dione(parent: Saturn) : Planet(
+    Kilometer(561.4),
+    0.0,
+    0.6,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 2.73691555255273345199
 

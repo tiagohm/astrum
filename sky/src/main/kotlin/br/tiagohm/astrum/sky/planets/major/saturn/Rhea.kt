@@ -7,16 +7,14 @@ import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
-class Rhea(parent: Saturn) :
-    Planet(
-        "Rhea",
-        Kilometer(763.5),
-        0.0,
-        0.6,
-        null,
-        PlanetType.MOON,
-        parent
-    ) {
+class Rhea(parent: Saturn) : Planet(
+    Kilometer(763.5),
+    0.0,
+    0.6,
+    null,
+    PlanetType.MOON,
+    parent
+) {
 
     override val siderealDay = 4.51750262345808255369
 

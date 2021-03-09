@@ -11,7 +11,6 @@ import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Io(parent: Jupiter) : Planet(
-    "Io",
     Kilometer(1821.49),
     0.0,
     0.63,
