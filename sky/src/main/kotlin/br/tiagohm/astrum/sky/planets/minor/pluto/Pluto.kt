@@ -29,7 +29,7 @@ class Pluto(parent: Sun) : MinorPlanet(
     radius = Kilometer(1188.3),
 ) {
 
-    override val siderealDay = 6.38722299911257520456
+    override val siderealDay = 360 / 56.3625225
 
     override val siderealPeriod = 90797.0
 

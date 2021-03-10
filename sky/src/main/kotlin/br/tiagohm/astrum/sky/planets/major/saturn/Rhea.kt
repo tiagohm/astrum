@@ -16,7 +16,7 @@ class Rhea(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 4.51750262345808255369
+    override val siderealDay = 360 / 79.6900478
 
     override val siderealPeriod = siderealDay
 

@@ -16,7 +16,7 @@ class Deimos(parent: Mars) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 1.26244078854669253466
+    override val siderealDay = 360 / 285.16188899
 
     override val siderealPeriod = 1.263
 

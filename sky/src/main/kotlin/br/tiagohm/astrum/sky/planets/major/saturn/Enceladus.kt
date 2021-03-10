@@ -16,7 +16,7 @@ class Enceladus(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 1.37021808371228325713
+    override val siderealDay = 360 / 262.7318996
 
     override val siderealPeriod = siderealDay
 

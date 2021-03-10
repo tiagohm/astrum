@@ -22,7 +22,7 @@ class Moon(parent: Earth) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 27.32166171424233789516
+    override val siderealDay = 360 / 13.17635815
 
     override val siderealPeriod = siderealDay
 

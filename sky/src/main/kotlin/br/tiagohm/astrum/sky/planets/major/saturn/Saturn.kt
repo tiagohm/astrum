@@ -26,7 +26,7 @@ class Saturn(parent: Sun) : Planet(
     Ring(Kilometer(74510.0), Kilometer(140390.0)),
 ) {
 
-    override val siderealDay = 0.44400925923884945092
+    override val siderealDay = 360 / 810.7939024
 
     override val siderealPeriod = 10760.0
 

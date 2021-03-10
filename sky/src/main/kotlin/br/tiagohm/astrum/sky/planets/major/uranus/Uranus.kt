@@ -22,7 +22,7 @@ class Uranus(parent: Sun) : Planet(
     Ring(Kilometer(26840.0), Kilometer(97700.0)),
 ) {
 
-    override val siderealDay = -0.71833333334397530864
+    override val siderealDay = 360 / -501.1600928
 
     override val siderealPeriod = 30685.0
 

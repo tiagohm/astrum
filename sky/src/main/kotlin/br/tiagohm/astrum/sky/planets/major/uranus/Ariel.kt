@@ -16,7 +16,7 @@ class Ariel(parent: Uranus) : Planet(
     parent
 ) {
 
-    override val siderealDay = -2.5203788716692395966
+    override val siderealDay = 360 / -142.8356681
 
     override val siderealPeriod = siderealDay
 

@@ -16,7 +16,7 @@ class Oberon(parent: Uranus) : Planet(
     parent
 ) {
 
-    override val siderealDay = -13.46323198077665884857
+    override val siderealDay = 360 / -26.7394932
 
     override val siderealPeriod = siderealDay
 

@@ -16,7 +16,7 @@ class Umbriel(parent: Uranus) : Planet(
     parent
 ) {
 
-    override val siderealDay = -4.14417624616125098213
+    override val siderealDay = 360 / -86.8688923
 
     override val siderealPeriod = siderealDay
 

@@ -19,7 +19,7 @@ class Callisto(parent: Jupiter) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 16.68901797483727222359
+    override val siderealDay = 360 / 21.5710715
 
     override val siderealPeriod = siderealDay
 

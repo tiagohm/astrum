@@ -16,7 +16,7 @@ class Mimas(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 0.94242181017475497786
+    override val siderealDay = 360 / 381.9945550
 
     override val siderealPeriod = siderealDay
 

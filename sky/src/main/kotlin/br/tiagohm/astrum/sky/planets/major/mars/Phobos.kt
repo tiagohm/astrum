@@ -16,7 +16,7 @@ class Phobos(parent: Mars) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 0.31891010437043201153
+    override val siderealDay = 360 / 1128.84475928
 
     override val siderealPeriod = 0.319
 

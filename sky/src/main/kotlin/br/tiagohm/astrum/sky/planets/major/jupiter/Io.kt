@@ -19,7 +19,7 @@ class Io(parent: Jupiter) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 1.7691377997541211006
+    override val siderealDay = 360 / 203.4889538
 
     override val siderealPeriod = siderealDay
 

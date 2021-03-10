@@ -16,7 +16,7 @@ class Miranda(parent: Uranus) : Planet(
     parent
 ) {
 
-    override val siderealDay = -1.4134792329110396078
+    override val siderealDay = 360 / -254.6906892
 
     override val siderealPeriod = siderealDay
 

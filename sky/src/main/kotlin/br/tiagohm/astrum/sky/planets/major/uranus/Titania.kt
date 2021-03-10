@@ -16,7 +16,7 @@ class Titania(parent: Uranus) : Planet(
     parent
 ) {
 
-    override val siderealDay = -8.70586545787208005635
+    override val siderealDay = 360 / -41.3514316
 
     override val siderealPeriod = siderealDay
 

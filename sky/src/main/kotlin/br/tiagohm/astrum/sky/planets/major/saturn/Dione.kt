@@ -16,7 +16,7 @@ class Dione(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 2.73691555255273345199
+    override val siderealDay = 360 / 131.5349316
 
     override val siderealPeriod = siderealDay
 

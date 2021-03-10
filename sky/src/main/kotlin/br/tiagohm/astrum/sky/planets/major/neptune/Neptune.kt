@@ -22,7 +22,7 @@ class Neptune(parent: Sun) : Planet(
     Ring(Kilometer(40900.0), Kilometer(62932.0)),
 ) {
 
-    override val siderealDay = 0.671249999952453125
+    override val siderealDay = 360 / 536.3128492
 
     override val siderealPeriod = 60189.0
 

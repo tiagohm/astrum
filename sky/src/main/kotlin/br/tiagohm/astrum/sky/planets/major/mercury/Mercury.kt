@@ -20,7 +20,7 @@ class Mercury(parent: Sun) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 58.64614590235794649087
+    override val siderealDay = 360 / 6.1385108
 
     override val siderealPeriod = 87.97
 

@@ -16,7 +16,7 @@ class Titan(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 15.94544757648862889384
+    override val siderealDay = 360 / 22.5769768
 
     override val siderealPeriod = siderealDay
 

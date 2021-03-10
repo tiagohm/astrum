@@ -19,7 +19,7 @@ class Europa(parent: Jupiter) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 3.55118107917700017204
+    override val siderealDay = 360 / 101.3747235
 
     override val siderealPeriod = siderealDay
 

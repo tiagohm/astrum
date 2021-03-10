@@ -19,7 +19,7 @@ class Sun : Planet(
     PlanetType.STAR,
 ) {
 
-    override val siderealDay = 25.3799949240010151998
+    override val siderealDay = 360 / 14.1844000
 
     override val siderealPeriod = 0.0
 

@@ -16,7 +16,7 @@ class Iapetus(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 79.33084957257860431121
+    override val siderealDay = 360 / 4.5379572
 
     override val siderealPeriod = siderealDay
 

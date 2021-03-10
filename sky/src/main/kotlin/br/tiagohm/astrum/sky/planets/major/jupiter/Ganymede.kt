@@ -19,7 +19,7 @@ class Ganymede(parent: Jupiter) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 7.15455311954703188684
+    override val siderealDay = 360 / 50.3176081
 
     override val siderealPeriod = siderealDay
 

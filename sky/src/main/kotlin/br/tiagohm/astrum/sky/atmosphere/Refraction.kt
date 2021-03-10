@@ -42,8 +42,8 @@ data class Refraction(
         }
 
         val sinRef = sin(geomAlt * M_PI_180)
-
         val s = (if (abs(sinGeo) >= 1.0) 1.0 else sqrt((1.0 - sinRef * sinRef) / (1.0 - sinGeo * sinGeo)))
+
         return Triad(pos[0] * s, pos[1] * s, sinRef * length)
     }
 

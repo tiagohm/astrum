@@ -20,7 +20,7 @@ class Mars(parent: Sun) : Planet(
     parent,
 ) {
 
-    override val siderealDay = 1.02595675596028993319
+    override val siderealDay = 360 / 350.891982443297
 
     override val siderealPeriod = 686.971
 

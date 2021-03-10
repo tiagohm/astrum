@@ -16,7 +16,7 @@ class Tethys(parent: Saturn) : Planet(
     parent
 ) {
 
-    override val siderealDay = 1.88780256077113714123
+    override val siderealDay = 360 / 190.6979085
 
     override val siderealPeriod = siderealDay
 
