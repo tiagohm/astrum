@@ -85,8 +85,6 @@ open class MinorPlanet(
             return Kilometer(ceil(0.5 * (1329 / sqrt(albedo)) * 10.0.pow(-0.2 * absoluteMagnitude)))
         }
 
-        private val PACKED_EPOCH_REGEX = Regex("^([IJK])(\\d\\d)([1-9A-C])([1-9A-V])\$")
-
         // TODO: Mover isso para o módulo database
         fun parseMpcOneLine(parent: Sun, line: String): MinorPlanet {
             if (line.isEmpty() || line.length !in 152..202) {
@@ -112,27 +110,6 @@ open class MinorPlanet(
             // Assume albedo of 0.15 and calculate a radius based on the absolute magnitude
             // as described here: http://www.physics.sfasu.edu/astro/asteroids/sizemagnitude.html
             val albedo = 0.15 // Assumed
-            // Original formula is for diameter!
-
-            val epochM = PACKED_EPOCH_REGEX.matchEntire(epoch) ?: throw IOException("Invalid epoch format: $line")
-
-            fun unpackDayOrMonthNumber(digit: Char) = when (val d = digit.toInt()) {
-                in 0..9 -> d
-                in 65..86 -> 10 + (d - 65)
-                else -> 0
-            }
-
-            fun unpackYearNumber(digit: Char) = when (digit) {
-                'I' -> 1800
-                'J' -> 1900
-                else -> 2000
-            }
-
-            val year = epochM.groupValues[2].toInt() + unpackYearNumber(epochM.groupValues[1][0])
-            val month = unpackDayOrMonthNumber(epochM.groupValues[3][0])
-            val day = unpackDayOrMonthNumber(epochM.groupValues[4][0])
-            // Epoch is at .0 TT, i.e. midnight
-            val epochJD = JulianDay(year, month, day, 0, 0, 0, 0, 0.0)
 
             return MinorPlanet(
                 parent,
@@ -141,7 +118,7 @@ open class MinorPlanet(
                 Radians(inclination * M_PI_180),
                 Radians(longitudeOfTheAscendingNode * M_PI_180),
                 Radians(argumentOfPerihelion * M_PI_180),
-                epochJD,
+                JulianDay.fromMPCEpoch(epoch),
                 Radians(meanDailyMotion * M_PI_180),
                 albedo,
                 absoluteMagnitude,

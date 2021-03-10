@@ -4,6 +4,7 @@ import br.tiagohm.astrum.sky.JD_HOUR
 import br.tiagohm.astrum.sky.JD_MINUTE
 import br.tiagohm.astrum.sky.JD_SECOND
 import br.tiagohm.astrum.sky.planets.major.earth.Earth
+import java.io.IOException
 import java.time.ZonedDateTime
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
@@ -154,6 +155,31 @@ inline class JulianDay(val value: Double) {
         fun fromUnix(timestampInMs: Long) = JulianDay((timestampInMs / 86400000.0) + 2440587.5)
 
         fun now() = fromUnix(System.currentTimeMillis())
+
+        private val PACKED_EPOCH_REGEX = Regex("^([IJK])(\\d\\d)([1-9A-C])([1-9A-V])\$")
+
+        fun fromMPCEpoch(epoch: String): JulianDay {
+            val epochM = PACKED_EPOCH_REGEX.matchEntire(epoch) ?: throw IOException("Invalid epoch format: $epoch")
+
+            fun unpackDayOrMonthNumber(digit: Char) = when (val d = digit.toInt()) {
+                in 0..9 -> d
+                in 65..86 -> 10 + (d - 65)
+                else -> 0
+            }
+
+            fun unpackYearNumber(digit: Char) = when (digit) {
+                'I' -> 1800
+                'J' -> 1900
+                else -> 2000
+            }
+
+            val year = epochM.groupValues[2].toInt() + unpackYearNumber(epochM.groupValues[1][0])
+            val month = unpackDayOrMonthNumber(epochM.groupValues[3][0])
+            val day = unpackDayOrMonthNumber(epochM.groupValues[4][0])
+
+            // Epoch is at .0 TT, i.e. midnight
+            return JulianDay(year, month, day, 0, 0, 0, 0, 0.0)
+        }
 
         private fun computeJDFromDate(
             year: Int,
