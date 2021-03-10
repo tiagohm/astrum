@@ -56,4 +56,9 @@ class Sun : Planet(
         // URL: http://adsabs.harvard.edu/abs/2000JBAA..110..203H
         return 4.83 + 5.0 * (log10(dist) - 1.0) - 2.5 * (log10(shadowFactor))
     }
+
+    override fun info(o: Observer): Map<String, Any> {
+        // TODO: Solar Eclipse
+        return super.info(o).also {}
+    }
 }

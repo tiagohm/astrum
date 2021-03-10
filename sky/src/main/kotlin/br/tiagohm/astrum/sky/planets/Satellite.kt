@@ -16,7 +16,7 @@ import br.tiagohm.astrum.sky.core.units.distance.Distance
  * @param i Inclination
  * @param omega Longitude of ascending node
  * @param w Argument of perihelion
- * @param t0 Time at perihelion (JDE)
+ * @param t0 Time at pericenter (JDE)
  * @param n Mean motion
  */
 open class Satellite<T : Planet>(

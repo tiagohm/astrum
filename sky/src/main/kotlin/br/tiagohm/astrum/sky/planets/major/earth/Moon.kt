@@ -78,4 +78,15 @@ class Moon(parent: Earth) : Planet(
      * Computer lunar phase age in days.
      */
     fun age(o: Observer) = computeAge(o).radians.value * 29.530588853 / M_2_PI
+
+    override fun info(o: Observer): Map<String, Any> {
+        return HashMap<String, Any>().also {
+            it.putAll(super.info(o))
+
+            it["moonPhase"] = phase(o)
+            it["age"] = age(o)
+
+            // TODO: Lunar Eclipse
+        }
+    }
 }

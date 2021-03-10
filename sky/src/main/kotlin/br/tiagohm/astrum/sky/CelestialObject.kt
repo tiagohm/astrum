@@ -234,6 +234,47 @@ interface CelestialObject {
 
     fun constellation(o: Observer) = Constellation.find(o, computeEquinoxEquatorialPosition(o))!!
 
+    fun info(o: Observer): Map<String, Any> {
+        val equPosJ2000 = equatorialJ2000(o)
+        val equPos = equatorial(o)
+        val horPos = horizontal(o)
+        val horPosGeo = horizontal(o, apparent = false)
+        val galacticPos = galactic(o)
+        val supergalacticPos = supergalactic(o)
+        val eclPosJ2000 = eclipticJ2000(o)
+        val eclPos = ecliptic(o)
+        val (rise, transit, set) = rts(o)
+
+        return HashMap<String, Any>().also {
+            it["ra"] = equPos.ra.degrees.value
+            it["dec"] = equPos.dec.degrees.value
+            it["raJ2000"] = equPosJ2000.ra.degrees.value
+            it["decJ2000"] = equPosJ2000.dec.degrees.value
+            it["altitude"] = horPos.altitude.degrees.value
+            it["azimuth"] = horPos.azimuth.degrees.value
+            it["altitudeGeometric"] = horPosGeo.altitude.degrees.value
+            it["azimuthGeometric"] = horPosGeo.azimuth.degrees.value
+            it["longitudeGalactic"] = galacticPos.longitude.degrees.value
+            it["latitudeGalactic"] = galacticPos.latitude.degrees.value
+            it["longitudeSupergalactic"] = supergalacticPos.longitude.degrees.value
+            it["latitudeSupergalactic"] = supergalacticPos.latitude.degrees.value
+            it["lambdaEclipticJ2000"] = eclPosJ2000.lambda.degrees.value
+            it["betaEclipticJ2000"] = eclPosJ2000.beta.degrees.value
+            it["lambdaEcliptic"] = eclPos.lambda.degrees.value
+            it["betaEcliptic"] = eclPos.beta.degrees.value
+            it["vMag"] = visualMagnitude(o) // TODO: Pass Moon for eclipse
+            it["vMagExtinction"] = visualMagnitudeWithExtinction(o)
+            it["airmass"] = Extinction.airmass(cos(M_PI_2 - horPos.altitude.radians.value), true)
+            if (type != PlanetType.STAR) it["parallacticAngle"] = parallacticAngle(o).degrees.value
+            it["constellation"] = constellation(o)
+            it["size"] = angularSize(o).degrees.value * 2
+            it["isAboveHorizon"] = isAboveHorizon(o)
+            it["rise"] = rise
+            it["transit"] = transit
+            it["set"] = set
+        }
+    }
+
     companion object {
 
         fun computeRTSTime(o: Observer, co: CelestialObject, hz: Angle): Triad {

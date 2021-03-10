@@ -471,6 +471,24 @@ abstract class Planet internal constructor(
         return -26.73 - 2.5 * log10(F)
     }
 
+    override fun info(o: Observer): Map<String, Any> {
+        return HashMap<String, Any>().also {
+            it.putAll(super.info(o))
+
+            if (this !is Sun) {
+                it["distance"] = distance(o).au.value
+                val phase = illumination(o)
+                it["phase"] = phase
+                it["illumination"] = phase * 100.0
+                it["phaseAngle"] = phaseAngle(o).degrees.value
+                it["elongation"] = elongation(o).degrees.value
+                it["velocity"] = orbitalVelocity(o)
+                it["heliocentricVelocity"] = heliocentricVelocity(o)
+                it["albedo"] = albedo
+            }
+        }
+    }
+
     companion object {
 
         /**

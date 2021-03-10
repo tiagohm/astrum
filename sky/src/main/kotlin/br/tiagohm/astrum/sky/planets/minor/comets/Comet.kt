@@ -73,4 +73,15 @@ class Comet(
         val L = Lo * (1.0 - 10.0.pow(-4.0 * r)) * common * 1E+6
         return Kilometer(D) to Kilometer(L)
     }
+
+    override fun info(o: Observer): Map<String, Any> {
+        return HashMap<String, Any>().also {
+            it.putAll(super.info(o))
+
+            val tailAndComa = computeComaDiameterAndTailLength(o)
+
+            it["comaDiameter"] = tailAndComa.first.kilometer.value
+            it["tailLength"] = tailAndComa.second.kilometer.value
+        }
+    }
 }

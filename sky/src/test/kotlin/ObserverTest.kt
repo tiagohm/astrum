@@ -11,7 +11,7 @@ import br.tiagohm.astrum.sky.core.units.distance.AU
 import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.core.units.distance.LightYear
 import br.tiagohm.astrum.sky.core.units.distance.Meter
-import br.tiagohm.astrum.sky.dso.DSO
+import br.tiagohm.astrum.sky.dso.DeepSky
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Satellite
 import br.tiagohm.astrum.sky.planets.Sun
@@ -2069,8 +2069,8 @@ class ObserverTest {
     }
 
     @Test
-    fun nebula() {
-        val ngc4565 = DSO(
+    fun deepSky() {
+        val ngc4565 = DeepSky(
             mB = 13.609999656677246,
             mV = 12.430000305175781,
             majorAxisSize = Degrees(0.26499998569488525),
@@ -2135,7 +2135,7 @@ class ObserverTest {
 
         for (year in 2021..2035) {
             when (year) {
-                // Coordinates are very close to real (Stellarium).
+                // Coordinates are very close to real (from Stellarium).
                 2021 -> assertEquals(269.7103, 4.7537, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
                 2022 -> assertEquals(269.7231, 4.7558, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
                 2023 -> assertEquals(269.7364, 4.7581, barnard.equatorial(o.copy(jd = JulianDay(year, 8, 5, 9, 0, 0))), DELTA_4, true)
@@ -2155,7 +2155,7 @@ class ObserverTest {
         }
 
         o.copy(jd = JulianDay(5353, 8, 5, 9, 0, 0)).also {
-            assertEquals(306.1128, 22.0816, barnard.equatorial(it), DELTA_4, true) // Not very close!
+            assertEquals(306.1128, 22.0816, barnard.equatorial(it), DELTA_4, true) // Not very close!!!
             assertEquals(Constellation.HER, barnard.constellation(it))
         }
     }

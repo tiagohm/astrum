@@ -7,7 +7,7 @@ import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.units.angle.Angle
 import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.dso.DSO
+import br.tiagohm.astrum.sky.dso.DeepSky
 import kotlin.math.log10
 
 /**
@@ -30,7 +30,7 @@ open class Star(
     mB: Double = 99.0,
     mV: Double = 99.0,
     val mI: Double = 99.0,
-) : DSO(
+) : DeepSky(
     posEquJ2000,
     mB,
     mV,
@@ -67,6 +67,17 @@ open class Star(
 
     override fun computeEquinoxEquatorialPositionApparent(o: Observer): Triad {
         return o.j2000ToEquinoxEquatorial(computeEquinoxEquatorialPositionFromPV(o), true)
+    }
+
+    override fun info(o: Observer): Map<String, Any> {
+        return HashMap<String, Any>().also {
+            it.putAll(super.info(o))
+
+            it["parallax"] = parallax
+            it["absoluteMagnitude"] = absoluteMagnitude(o)
+            it["bMag"] = mB
+            if (mB < 50 && mV < 50) it["bV"] = mB - mV
+        }
     }
 
     override fun toString(): String {
