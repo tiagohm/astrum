@@ -256,7 +256,6 @@ interface CelestialObject {
             if (ha > 12.0 && ha <= 24.0) transit += 24.0
 
             transit += o.utcOffset + 12.0
-
             transit = transit.pmod(24.0)
 
             val cosH = (sin(hz) - sin(phi) * sin(dec)) / (cos(phi) * cos(dec))
