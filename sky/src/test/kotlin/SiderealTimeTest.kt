@@ -1,8 +1,8 @@
+import br.tiagohm.astrum.common.units.distance.AU
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.time.EspenakMeeus
 import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.SiderealTime
-import br.tiagohm.astrum.sky.core.units.distance.AU
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

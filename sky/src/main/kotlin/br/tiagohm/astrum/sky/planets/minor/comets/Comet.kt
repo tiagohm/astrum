@@ -1,11 +1,11 @@
 package br.tiagohm.astrum.sky.planets.minor.comets
 
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.distance.Distance
+import br.tiagohm.astrum.common.units.distance.Kilometer
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.distance.Distance
-import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
 import kotlin.math.log10

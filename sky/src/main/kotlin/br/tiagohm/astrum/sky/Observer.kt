@@ -1,5 +1,15 @@
 package br.tiagohm.astrum.sky
 
+import br.tiagohm.astrum.common.AU_KM
+import br.tiagohm.astrum.common.SECONDS_PER_DAY
+import br.tiagohm.astrum.common.SPEED_OF_LIGHT
+import br.tiagohm.astrum.common.pmod
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Degrees
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.AU
+import br.tiagohm.astrum.common.units.pressure.Pressure
+import br.tiagohm.astrum.common.units.temperature.Temperature
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.atmosphere.Refraction
 import br.tiagohm.astrum.sky.core.math.*
@@ -8,11 +18,6 @@ import br.tiagohm.astrum.sky.core.time.DateTime
 import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.MoonSecularAcceleration
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.pressure.Pressure
-import br.tiagohm.astrum.sky.core.units.temperature.Temperature
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.major.earth.Earth
@@ -129,14 +134,9 @@ data class Observer(
     fun computeCenterVsop87Position() = home.computeHeliocentricEclipticPosition(this)
 
     /**
-     * Computes the distance between observer and home planet center in AU
+     * Computes the distance between observer and home planet center.
      */
-    fun computeDistanceFromCenter() = computeTopographicOffsetFromCenter()[3]
-
-    /**
-     * Computes the distance between observer and home planet center in meters
-     */
-    fun computeDistanceFromCenterInMeters() = computeDistanceFromCenter() * AU_KM
+    fun computeDistanceFromCenter() = AU(computeTopographicOffsetFromCenter()[3])
 
     /**
      * Computes the geocentric rectangular coordinates of the observer in AU, plus geocentric latitude in radians.

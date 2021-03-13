@@ -1,6 +1,6 @@
-package br.tiagohm.astrum.sky.core.units.angle
+package br.tiagohm.astrum.common.units.angle
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.common.*
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
 inline class Radians(override val value: Double) : Angle {

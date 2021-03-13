@@ -1,4 +1,4 @@
-import br.tiagohm.astrum.sky.M_PI_180
+import br.tiagohm.astrum.common.M_PI_180
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.core.math.Triad
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,5 +1,5 @@
+import br.tiagohm.astrum.common.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.rotation.Rotation
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import org.junit.jupiter.api.Test
 
 class RotationTest {

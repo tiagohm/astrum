@@ -1,6 +1,6 @@
-package br.tiagohm.astrum.sky.core.units.angle
+package br.tiagohm.astrum.common.units.angle
 
-import br.tiagohm.astrum.sky.core.units.Unit
+import br.tiagohm.astrum.common.units.Unit
 
 interface Angle : Unit, Comparable<Angle> {
 

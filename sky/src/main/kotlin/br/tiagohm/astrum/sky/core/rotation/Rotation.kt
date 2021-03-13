@@ -1,9 +1,9 @@
 package br.tiagohm.astrum.sky.core.rotation
 
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
 import br.tiagohm.astrum.sky.MAT_J2000_TO_VSOP87
 import br.tiagohm.astrum.sky.core.Algorithms
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
 
 data class Rotation(
     val obliquity: Angle,

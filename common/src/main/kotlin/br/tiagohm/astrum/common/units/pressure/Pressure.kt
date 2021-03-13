@@ -1,6 +1,6 @@
-package br.tiagohm.astrum.sky.core.units.pressure
+package br.tiagohm.astrum.common.units.pressure
 
-import br.tiagohm.astrum.sky.core.units.Unit
+import br.tiagohm.astrum.common.units.Unit
 
 interface Pressure : Unit, Comparable<Pressure> {
 

@@ -1,16 +1,16 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.M_2_PI
+import br.tiagohm.astrum.common.M_2_PI
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Degrees
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.Kilometer
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Moon(parent: Earth) : Planet(

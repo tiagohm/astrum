@@ -1,9 +1,9 @@
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.distance.Distance
 import br.tiagohm.astrum.sky.core.coordinates.Coord
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.distance.Distance
 import org.junit.jupiter.api.Assertions.assertEquals
 
 fun assertEquals(expected: Mat4, actual: Mat4, delta: Double) {

@@ -1,31 +1,29 @@
-package br.tiagohm.astrum.sky.core.units.distance
-
-import br.tiagohm.astrum.sky.AU_KM
+package br.tiagohm.astrum.common.units.distance
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
-inline class AU(override val value: Double) : Distance {
+inline class Parsec(override val value: Double) : Distance {
 
     override val meter: Meter
-        get() = Meter(value * AU_KM * 1000.0)
+        get() = TODO("Not yet implemented")
 
     override val kilometer: Kilometer
-        get() = Kilometer(value * AU_KM)
+        get() = TODO("Not yet implemented")
 
     override val au: AU
-        get() = this
+        get() = TODO("Not yet implemented")
 
     override val lightYear: LightYear
-        get() = LightYear(value / 63241.07708442430066362006)
+        get() = TODO("Not yet implemented")
 
     override val parsec: Parsec
-        get() = TODO("Not yet implemented")
+        get() = this
 
     override fun compareTo(other: Distance) = value.compareTo(other.meter.value)
 
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
 
-        other as AU
+        other as Parsec
 
         if (value != other.value) return false
 
@@ -38,7 +36,7 @@ inline class AU(override val value: Double) : Distance {
 
     companion object {
 
-        val ZERO = AU(0.0)
-        val ONE = AU(1.0)
+        val ZERO = Parsec(0.0)
+        val ONE = Parsec(1.0)
     }
 }

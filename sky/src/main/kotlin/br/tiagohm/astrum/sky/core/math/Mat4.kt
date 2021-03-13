@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.core.math
 
-import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Angle
 
 @Suppress("NOTHING_TO_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "EXPERIMENTAL_FEATURE_WARNING")
 inline class Mat4(val data: DoubleArray) : Iterable<Double> {

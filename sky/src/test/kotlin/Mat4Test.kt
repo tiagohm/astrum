@@ -1,6 +1,6 @@
+import br.tiagohm.astrum.common.units.angle.Radians
 import br.tiagohm.astrum.sky.core.math.Mat4
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.angle.Radians
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

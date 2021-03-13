@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.core.units.pressure
+package br.tiagohm.astrum.common.units.pressure
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
 inline class Pascal(override val value: Double) : Pressure {

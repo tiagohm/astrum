@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.planets
 
-import br.tiagohm.astrum.sky.core.units.distance.Distance
+import br.tiagohm.astrum.common.units.distance.Distance
 
 data class Ring(
     val min: Distance,

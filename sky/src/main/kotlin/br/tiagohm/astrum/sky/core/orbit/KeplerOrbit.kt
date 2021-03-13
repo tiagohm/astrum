@@ -1,14 +1,15 @@
 package br.tiagohm.astrum.sky.core.orbit
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.common.*
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.AU
+import br.tiagohm.astrum.common.units.distance.Distance
+import br.tiagohm.astrum.sky.J2000_POLE
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.AU
-import br.tiagohm.astrum.sky.core.units.distance.Distance
 import java.lang.Math.cbrt
 import kotlin.math.*
 

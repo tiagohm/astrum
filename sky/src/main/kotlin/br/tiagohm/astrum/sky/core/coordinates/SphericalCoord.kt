@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.core.coordinates
 
-import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Angle
 
 /**
  * Represents a generic spherical coordinate system.

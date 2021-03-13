@@ -1,11 +1,11 @@
 package br.tiagohm.astrum.sky.core.precession
 
-import br.tiagohm.astrum.sky.JD_DAY
-import br.tiagohm.astrum.sky.M_2_PI
-import br.tiagohm.astrum.sky.M_ARCSEC_RAD
+import br.tiagohm.astrum.common.JD_DAY
+import br.tiagohm.astrum.common.M_2_PI
+import br.tiagohm.astrum.common.M_ARCSEC_RAD
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin

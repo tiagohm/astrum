@@ -1,9 +1,9 @@
 package br.tiagohm.astrum.sky.core.ephemeris
 
-import br.tiagohm.astrum.sky.EPSILON
-import br.tiagohm.astrum.sky.M_2_PI
+import br.tiagohm.astrum.common.EPSILON
+import br.tiagohm.astrum.common.M_2_PI
+import br.tiagohm.astrum.common.pmod
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.pmod
 import kotlin.math.*
 
 /**
