@@ -2,8 +2,6 @@ import br.tiagohm.astrum.indi.client.INDIClient
 import br.tiagohm.astrum.indi.client.MessageListener
 import br.tiagohm.astrum.indi.client.PropertyListener
 import br.tiagohm.astrum.indi.protocol.Message
-import br.tiagohm.astrum.indi.protocol.commands.GetProperties
-import br.tiagohm.astrum.indi.protocol.commands.NewSwitch
 import br.tiagohm.astrum.indi.protocol.properties.Property
 import br.tiagohm.astrum.indi.protocol.properties.SwitchProperty
 import org.junit.jupiter.api.BeforeAll
@@ -20,8 +18,6 @@ class ClientTest {
 
     @Test
     fun getProperties() {
-        client.sendCommand(GetProperties.ALL)
-
         client.registerMessageListener(object : MessageListener {
             override fun onMessage(message: Message) {
                 println(message.message)
@@ -30,19 +26,20 @@ class ClientTest {
 
         client.registerPropertyListener(object : PropertyListener {
             override fun onProperty(property: Property<*>) {
-                println(property.name)
+                println("${property.name}:${property.value}")
             }
         })
 
+        client.fetchProperties()
+
+        Thread.sleep(2000)
+
+        val p = client.propertyByDeviceAndName("Telescope Simulator", "CONNECTION:CONNECT")!! as SwitchProperty
+        client.send(!p)
+
         Thread.sleep(10000)
 
-        val p = client.findProperty("Telescope Simulator", "CONNECTION", "CONNECT")!! as SwitchProperty
-        client.sendCommand(NewSwitch(p, true))
-
-        Thread.sleep(10000)
-
-        System.err.println(client.vectors.size)
-        System.err.println(client.properties.values.sumBy { it.size })
+        System.err.println(client.properties().size)
 
         client.disconnect()
     }

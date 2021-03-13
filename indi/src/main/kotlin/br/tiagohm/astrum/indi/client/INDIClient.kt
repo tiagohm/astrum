@@ -1,9 +1,8 @@
 package br.tiagohm.astrum.indi.client
 
 import br.tiagohm.astrum.indi.protocol.*
-import br.tiagohm.astrum.indi.protocol.commands.Command
 import br.tiagohm.astrum.indi.protocol.properties.*
-import br.tiagohm.astrum.indi.protocol.vectors.*
+import org.redundent.kotlin.xml.xml
 import java.io.OutputStream
 import java.net.Socket
 import java.net.SocketException
@@ -12,7 +11,6 @@ import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamReader
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.concurrent.thread
 
 // http://www.clearskyinstitute.com/INDI/INDI.pdf
@@ -30,8 +28,7 @@ open class INDIClient(
     private val messageListeners = ArrayList<MessageListener>()
     private val propertyListeners = ArrayList<PropertyListener>()
 
-    val vectors = ArrayList<PropertyVector<*>>()
-    val properties = HashMap<String, MutableList<Property<*>>>()
+    private val properties = ArrayList<Property<*>>()
 
     override fun registerMessageListener(listener: MessageListener) {
         if (!messageListeners.contains(listener)) messageListeners.add(listener)
@@ -59,7 +56,7 @@ open class INDIClient(
                 val reader = xmlInputReader!!
 
                 val mProperties = ArrayList<MutableMap<String, String>>()
-                val mVector = HashMap<String, String?>(5)
+                val mVector = HashMap<String, String?>()
 
                 while (reader.hasNext()) {
                     reader.next()
@@ -75,19 +72,19 @@ open class INDIClient(
                                 val device = reader.getAttributeValue(null, "device")
                                 val name = reader.getAttributeValue(null, "name")
 
-                                properties[device]?.iterator()?.also {
+                                properties.iterator().also {
                                     while (it.hasNext()) {
                                         val e = it.next()
 
                                         // Delete by device and name.
                                         if (name.isNotEmpty()) {
-                                            if (e.vector.device == device && e.name == name) {
+                                            if (e.device == device && e.name.startsWith("$name:")) {
                                                 it.remove()
                                             }
                                         }
                                         // Delete by device.
                                         else if (device.isNotEmpty()) {
-                                            if (e.vector.device == device) {
+                                            if (e.device == device) {
                                                 it.remove()
                                             }
                                         }
@@ -97,178 +94,14 @@ open class INDIClient(
                                         }
                                     }
                                 }
-
-                                // Clear unreferenced vectors.
-
-                                if (properties.isEmpty()) {
-                                    vectors.clear()
-                                } else {
-                                    val referencedVectors = HashSet<PropertyVector<*>>(vectors.size)
-
-                                    properties[device]?.forEach { referencedVectors.add(it.vector) }
-
-                                    vectors.iterator().also {
-                                        while (it.hasNext()) {
-                                            val v = it.next()
-
-                                            if (v.device == device &&
-                                                !referencedVectors.contains(v)
-                                            ) {
-                                                it.remove()
-                                            }
-                                        }
-                                    }
-                                }
                             }
-                            // Define a property that holds one or more text elements.
-                            "defTextVector" -> {
-                                val device = reader.getAttributeValue(null, "device")
-                                val name = reader.getAttributeValue(null, "name")
-                                val title = reader.getAttributeValue(null, "label") ?: name
-                                val group = reader.getAttributeValue(null, "group")
-                                val state = reader.getAttributeValue(null, "state")!!.toUpperCase()
-                                val perm = reader.getAttributeValue(null, "perm")!!
-                                val timeout = reader.getAttributeValue(null, "timeout")?.toInt() ?: 0
-
-                                findPropertyVectorIndex(device, name).also { if (it >= 0) vectors.removeAt(it) }
-
-                                vectors.add(
-                                    TextVector(
-                                        device,
-                                        name,
-                                        title,
-                                        group,
-                                        State.valueOf(state),
-                                        PERMISSIONS[perm]!!,
-                                        timeout,
-                                    )
-                                )
-                            }
-                            // Define a property that holds one or more numeric values.
-                            "defNumberVector" -> {
-                                val device = reader.getAttributeValue(null, "device")
-                                val name = reader.getAttributeValue(null, "name")
-                                val label = reader.getAttributeValue(null, "label") ?: name
-                                val group = reader.getAttributeValue(null, "group") ?: ""
-                                val state = reader.getAttributeValue(null, "state")!!.toUpperCase()
-                                val perm = reader.getAttributeValue(null, "perm")!!
-                                val timeout = reader.getAttributeValue(null, "timeout")?.toInt() ?: 0
-
-                                findPropertyVectorIndex(device, name).also { if (it >= 0) vectors.removeAt(it) }
-
-                                vectors.add(
-                                    NumberVector(
-                                        device,
-                                        name,
-                                        label,
-                                        group,
-                                        State.valueOf(state),
-                                        PERMISSIONS[perm]!!,
-                                        timeout,
-                                    )
-                                )
-                            }
-                            // Define a collection of switches.
-                            "defSwitchVector" -> {
-                                val device = reader.getAttributeValue(null, "device")
-                                val name = reader.getAttributeValue(null, "name")
-                                val label = reader.getAttributeValue(null, "label") ?: name
-                                val group = reader.getAttributeValue(null, "group")
-                                val state = reader.getAttributeValue(null, "state")?.toUpperCase() ?: "IDLE"
-                                val perm = reader.getAttributeValue(null, "perm") ?: "rw"
-                                val rule = reader.getAttributeValue(null, "rule") ?: "AnyOfMany"
-                                val timeout = reader.getAttributeValue(null, "timeout") ?: "0"
-
-                                findPropertyVectorIndex(device, name).also { if (it >= 0) vectors.removeAt(it) }
-
-                                vectors.add(
-                                    SwitchVector(
-                                        device,
-                                        name,
-                                        label,
-                                        group,
-                                        State.valueOf(state),
-                                        PERMISSIONS[perm]!!,
-                                        RULES[rule]!!,
-                                        timeout.toInt(),
-                                    )
-                                )
-                            }
-                            // Define a collection of passive indicator lights.
-                            "defLightVector" -> {
-                                val device = reader.getAttributeValue(null, "device")!!
-                                val name = reader.getAttributeValue(null, "name")!!
-                                val label = reader.getAttributeValue(null, "label") ?: name
-                                val group = reader.getAttributeValue(null, "group") ?: ""
-                                val state = reader.getAttributeValue(null, "state")?.toUpperCase() ?: "IDLE"
-
-                                findPropertyVectorIndex(device, name).also { if (it >= 0) vectors.removeAt(it) }
-
-                                vectors.add(
-                                    LightVector(
-                                        device,
-                                        name,
-                                        label,
-                                        group,
-                                        State.valueOf(state),
-                                    )
-                                )
-                            }
-                            // Define a property that holds one or more Binary Large Objects, BLOBs.
-                            "defBLOBVector" -> {
-                                val device = reader.getAttributeValue(null, "device")!!
-                                val name = reader.getAttributeValue(null, "name")!!
-                                val label = reader.getAttributeValue(null, "label") ?: name
-                                val group = reader.getAttributeValue(null, "group") ?: ""
-                                val state = reader.getAttributeValue(null, "state")?.toUpperCase() ?: "IDLE"
-                                val perm = reader.getAttributeValue(null, "perm") ?: "rw"
-                                val timeout = reader.getAttributeValue(null, "timeout")?.toInt() ?: 0
-
-                                findPropertyVectorIndex(device, name).also { if (it >= 0) vectors.removeAt(it) }
-
-                                vectors.add(
-                                    BLOBVector(
-                                        device,
-                                        name,
-                                        label,
-                                        group,
-                                        State.valueOf(state),
-                                        PERMISSIONS[perm]!!,
-                                        timeout,
-                                    )
-                                )
-                            }
-                            // Define one member of a text/switch/light/BLOB vector.
-                            // defBLOB does not contain an initial value for the BLOB.
-                            "defText",
-                            "defSwitch",
-                            "defLight",
-                            "defBLOB" -> {
-                                val name = reader.getAttributeValue(null, "name")
-                                val label = reader.getAttributeValue(null, "label")
-                                mProperties.add(hashMapOf("name" to name, "label" to label))
-                            }
-                            // Define one member of a number vector.
-                            "defNumber" -> {
-                                val name = reader.getAttributeValue(null, "name")!!
-                                val label = reader.getAttributeValue(null, "label") ?: name
-                                val format = reader.getAttributeValue(null, "format")!!
-                                val min = reader.getAttributeValue(null, "min")
-                                val max = reader.getAttributeValue(null, "max")
-                                val step = reader.getAttributeValue(null, "step")
-
-                                mProperties.add(
-                                    hashMapOf(
-                                        "name" to name,
-                                        "label" to label,
-                                        "format" to format,
-                                        "min" to min,
-                                        "max" to max,
-                                        "step" to step,
-                                    )
-                                )
-                            }
+                            // Define a property that holds one or more elements or
                             // Send a new set of values for a vector, with optional new timeout, state and message.
+                            "defTextVector",
+                            "defNumberVector",
+                            "defSwitchVector",
+                            "defLightVector",
+                            "defBLOBVector",
                             "setTextVector",
                             "setNumberVector",
                             "setSwitchVector",
@@ -276,8 +109,21 @@ open class INDIClient(
                             "setBLOBVector" -> {
                                 mVector["device"] = reader.getAttributeValue(null, "device")!!
                                 mVector["name"] = reader.getAttributeValue(null, "name")!!
-                                mVector["state"] = reader.getAttributeValue(null, "state")?.toUpperCase()
-                                mVector["timeout"] = reader.getAttributeValue(null, "timeout")
+                            }
+                            // One member of a text/switch/light/BLOB vector.
+                            // defBLOB does not contain an initial value for the BLOB.
+                            "defText",
+                            "defNumber",
+                            "defSwitch",
+                            "defLight",
+                            "defBLOB",
+                            "oneText",
+                            "oneNumber",
+                            "oneSwitch",
+                            "oneLight",
+                            "oneBLOB" -> {
+                                val name = reader.getAttributeValue(null, "name")
+                                mProperties.add(hashMapOf("name" to name))
                             }
                             // A message associated with a device or entire system.
                             "message" -> {
@@ -291,92 +137,44 @@ open class INDIClient(
                     // End.
                     else if (reader.isEndElement) {
                         val tag = reader.localName
+                        val device = mVector["device"]!!
+                        val name = mVector["name"]!!
 
-                        if (tag.startsWith("def")) {
-                            val vector = vectors.last()
+                        if (tag.startsWith("def") ||
+                            tag.startsWith("set")
+                        ) {
+                            val properties = mProperties.mapNotNull { p ->
+                                val pName = "$name:${p["name"]}"
+                                val pValue = p["value"]
 
-                            // Only "defXXXVector".
-                            val p = when (tag) {
-                                "defTextVector" -> mProperties.map { TextProperty(vector as TextVector, it) }
-                                "defNumberVector" -> mProperties.map { NumberProperty(vector as NumberVector, it) }
-                                "defSwitchVector" -> mProperties.map { SwitchProperty(vector as SwitchVector, it) }
-                                "defLightVector" -> mProperties.map { LightProperty(vector as LightVector, it) }
-                                // TODO: BLOB
-                                else -> continue
-                            }
-
-                            // Add or set properties.
-                            p.forEach {
-                                val device = it.vector.device
-                                val index = findPropertyIndex(device, it.vector.name, it.name)
-
-                                if (index >= 0) this.properties[device]!![index] = it
-                                else if (this.properties.containsKey(device)) this.properties[device]!!.add(it)
-                                else this.properties[device] = arrayListOf(it)
-
-                                propertyListeners.forEach { l -> l.onProperty(it) }
-                            }
-
-                            mProperties.clear()
-                        } else if (tag.startsWith("set")) {
-                            val device = mVector["device"]!!
-                            val name = mVector["name"]!!
-
-                            val index = findPropertyVectorIndex(device, name)
-
-                            if (index == -1) {
-                                System.err.println("WARNING: Undefinied property $name from device $device")
-                                continue
-                            }
-
-                            // Update vector.
-                            val vector = vectors[index].let { v ->
-                                val state = mVector["state"]?.let { State.valueOf(it) } ?: v.state
-                                val timeout = mVector["timeout"]?.toInt() ?: v.timeout
-
-                                if (v.state != state || v.timeout != timeout)
-                                // TODO: BLOB
-                                    if (v is TextVector) v.copy(state = state, timeout = timeout)
-                                    else if (v is NumberVector) v.copy(state = state, timeout = timeout)
-                                    else if (v is SwitchVector) v.copy(state = state, timeout = timeout)
-                                    else (v as LightVector).copy(state = state)
-                                else v
-                            }
-
-                            vectors[index] = vector
-
-                            // Update properties.
-                            properties[device]?.also {
-                                // For each new property...
-                                mProperties.forEach { m ->
-                                    val mName = m["name"]!!
-                                    val mValue = m["value"]!!
-
-                                    // For each current property...
-                                    for (i in it.indices) {
-                                        val p = it[i]
-
-                                        // Find the property will be updated.
-                                        if (p.vector.name == name &&
-                                            p.name == mName
-                                        ) {
-                                            it[i] = when (p) {
-                                                is TextProperty -> p.copy(value = mValue, vector = vector as TextVector)
-                                                is NumberProperty -> p.copy(value = mValue.toDouble(), vector = vector as NumberVector)
-                                                is SwitchProperty -> p.copy(value = mValue == "On", vector = vector as SwitchVector)
-                                                is LightProperty -> p.copy(value = State.valueOf(mValue), vector = vector as LightVector)
-                                                // TODO: BLOB
-                                                else -> continue
-                                            }
-
-                                            propertyListeners.forEach { l -> l.onProperty(it[i]) }
-                                        }
-                                    }
+                                when (tag) {
+                                    "defTextVector", "setTextVector" -> TextProperty(device, pName, pValue ?: "")
+                                    "defNumberVector", "setNumberVector" -> NumberProperty(device, pName, pValue?.toDouble() ?: 0.0)
+                                    "defSwitchVector", "setSwitchVector" -> SwitchProperty(device, pName, pValue == "On")
+                                    "defLightVector", "setLightVector" -> LightProperty(device, pName, pValue?.toUpperCase()?.let { State.valueOf(it) } ?: State.IDLE)
+                                    // TODO: BLOB
+                                    else -> null
                                 }
                             }
 
-                            mVector.clear()
-                            mProperties.clear()
+                            // Add or set properties.
+                            if (properties.isNotEmpty()) {
+                                if (name == "DRIVER_INFO") {
+                                    // TODO
+                                } else {
+                                    properties.forEach {
+                                        val index = findPropertyIndex(device, it.name)
+
+                                        if (index >= 0) this.properties[index] = it
+                                        else this.properties.add(it)
+
+                                        propertyListeners.forEach { l -> l.onProperty(it) }
+                                    }
+                                }
+
+                                mVector.clear()
+                                mProperties.clear()
+                            }
                         }
                     }
                     // Value.
@@ -413,29 +211,59 @@ open class INDIClient(
     protected val outputStream: OutputStream
         get() = socket?.getOutputStream() ?: throw SocketException("Socket is closed")
 
-    protected fun write(data: ByteArray, range: ClosedRange<Int> = data.indices) {
+    protected fun write(
+        data: ByteArray,
+        range: ClosedRange<Int> = data.indices,
+    ) {
         outputStream.write(data, range.start, range.endInclusive - range.start + 1)
     }
 
-    protected fun write(data: String) = write(data.toByteArray(Charsets.ISO_8859_1))
+    override fun write(command: String) = write(command.toByteArray(Charsets.ISO_8859_1))
 
-    override fun sendCommand(command: Command) = write(command.toXml())
+    /**
+     * Ask [device] to define all Properties, or those for a specific [device] or specific
+     * Property [name], for which it is responsible.
+     */
+    override fun fetchProperties(
+        device: String,
+        name: String,
+    ) {
+        val command = xml("getProperties") {
+            attribute("version", "1.7")
+            if (device.isNotEmpty()) attribute("device", device)
+            if (name.isNotEmpty()) attribute("name", name.split(":")[0])
+        }.toString(false)
 
-    protected fun findPropertyVector(device: String, name: String): PropertyVector<*>? {
-        return vectors.find { it.device == device && it.name == name }
+        write(command)
     }
 
-    protected fun findPropertyVectorIndex(device: String, name: String): Int {
-        return vectors.indexOfFirst { it.device == device && it.name == name }
+    /**
+     * Command to control whether setBLOBs should be sent to this channel from a given [device].
+     * They can be turned off completely by setting NEVER (the default),
+     * allowed to be intermixed with other INDI commands by setting ALSO or made the
+     * only command by setting ONLY.
+     */
+    override fun enableBLOB(
+        device: String,
+        name: String,
+        state: EnableBLOBState,
+    ) {
+        val command = xml("enableBLOB") {
+            attribute("device", device)
+            if (name.isNotEmpty()) attribute("name", name.split(":")[0])
+            text(state.label)
+        }.toString(true)
+
+        write(command)
     }
 
-    fun findProperty(device: String, vectorName: String, propertyName: String): Property<*>? {
-        return properties[device]?.find { it.vector.name == vectorName && it.name == propertyName }
-    }
+    override fun properties(): List<Property<*>> = Collections.unmodifiableList(properties)
 
-    protected fun findPropertyIndex(device: String, vectorName: String, propertyName: String): Int {
-        return properties[device]?.indexOfFirst { it.vector.name == vectorName && it.name == propertyName } ?: -1
-    }
+    override fun propertiesByDevice(device: String) = properties.filter { it.device == device }
+
+    override fun propertyByDeviceAndName(device: String, name: String) = properties.find { it.device == device && it.name == name }
+
+    protected fun findPropertyIndex(device: String, name: String) = properties.indexOfFirst { it.device == device && it.name == name }
 
     companion object {
 
@@ -443,17 +271,5 @@ open class INDIClient(
             it.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false)
             it.setProperty(XMLInputFactory.IS_VALIDATING, false)
         }
-
-        private val PERMISSIONS = mapOf(
-            "ro" to Permission.READ,
-            "wo" to Permission.WRITE,
-            "rw" to Permission.READ_WRITE,
-        )
-
-        private val RULES = mapOf(
-            "OneOfMany" to SwitchRule.ONE_OF_MANY,
-            "AtMostOne" to SwitchRule.AT_MOST_ONE,
-            "AnyOfMany" to SwitchRule.ANY_OF_MANY,
-        )
     }
 }

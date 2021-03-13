@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.protocol.commands
+package br.tiagohm.astrum.indi.protocol
 
 enum class EnableBLOBState(val label: String) {
     NEVER("Never"),

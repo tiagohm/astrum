@@ -1,29 +1,14 @@
 package br.tiagohm.astrum.indi.protocol.properties
 
-import br.tiagohm.astrum.indi.protocol.vectors.PropertyVector
+import br.tiagohm.astrum.indi.client.INDIConnection
 
-/**
- * One member of a vector.
- */
 interface Property<T> {
 
-    /**
-     * The Vector that holds this property.
-     */
-    val vector: PropertyVector<T>
+    val device: String
 
-    /**
-     * A name for identification purposes.
-     */
     val name: String
 
-    /**
-     * A label for presentation purposes.
-     */
-    val label: String
-
-    /**
-     * Property value.
-     */
     val value: T
+
+    fun send(connection: INDIConnection): Boolean
 }
