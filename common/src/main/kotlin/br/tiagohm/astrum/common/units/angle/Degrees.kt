@@ -1,7 +1,7 @@
-package br.tiagohm.astrum.sky.core.units.angle
+package br.tiagohm.astrum.common.units.angle
 
-import br.tiagohm.astrum.sky.M_PI_180
-import br.tiagohm.astrum.sky.pmod
+import br.tiagohm.astrum.common.M_PI_180
+import br.tiagohm.astrum.common.pmod
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
 inline class Degrees(override val value: Double) : Angle {

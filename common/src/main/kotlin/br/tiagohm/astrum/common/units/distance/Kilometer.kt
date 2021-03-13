@@ -1,7 +1,7 @@
-package br.tiagohm.astrum.sky.core.units.distance
+package br.tiagohm.astrum.common.units.distance
 
-import br.tiagohm.astrum.sky.AU_KM
-import br.tiagohm.astrum.sky.LIGHT_YEAR
+import br.tiagohm.astrum.common.AU_KM
+import br.tiagohm.astrum.common.LIGHT_YEAR
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
 inline class Kilometer(override val value: Double) : Distance {

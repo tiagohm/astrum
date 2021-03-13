@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.sky.core.units
+package br.tiagohm.astrum.common.units
 
 interface Unit {
 

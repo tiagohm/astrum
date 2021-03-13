@@ -1,12 +1,12 @@
 package br.tiagohm.astrum.sky.atmosphere
 
-import br.tiagohm.astrum.sky.M_180_PI
-import br.tiagohm.astrum.sky.M_PI_180
+import br.tiagohm.astrum.common.M_180_PI
+import br.tiagohm.astrum.common.M_PI_180
+import br.tiagohm.astrum.common.units.pressure.Millibar
+import br.tiagohm.astrum.common.units.pressure.Pressure
+import br.tiagohm.astrum.common.units.temperature.Celsius
+import br.tiagohm.astrum.common.units.temperature.Temperature
 import br.tiagohm.astrum.sky.core.math.Triad
-import br.tiagohm.astrum.sky.core.units.pressure.Millibar
-import br.tiagohm.astrum.sky.core.units.pressure.Pressure
-import br.tiagohm.astrum.sky.core.units.temperature.Celsius
-import br.tiagohm.astrum.sky.core.units.temperature.Temperature
 import kotlin.math.*
 
 data class Refraction(

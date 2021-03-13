@@ -1,10 +1,14 @@
 package br.tiagohm.astrum.sky.planets.major.earth
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.common.AU_KM
+import br.tiagohm.astrum.common.M_180_PI
+import br.tiagohm.astrum.common.M_2_PI
+import br.tiagohm.astrum.common.M_PI
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
-import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Sun
 import kotlin.math.asin
 import kotlin.math.cos

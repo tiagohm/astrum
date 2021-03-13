@@ -1,15 +1,15 @@
 package br.tiagohm.astrum.sky.planets.major.saturn
 
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Degrees
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.Kilometer
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Planet
 import br.tiagohm.astrum.sky.planets.Ring

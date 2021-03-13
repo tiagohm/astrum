@@ -1,23 +1,23 @@
-package br.tiagohm.astrum.sky.core.units.pressure
+package br.tiagohm.astrum.common.units.pressure
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
-inline class Millibar(override val value: Double) : Pressure {
+inline class Atmosphere(override val value: Double) : Pressure {
 
     override val millibar: Millibar
-        get() = this
+        get() = Millibar(value * 1013.25)
 
     override val atmosphere: Atmosphere
-        get() = Atmosphere(value / 1013.25)
+        get() = this
 
     override val pascal: Pascal
-        get() = Pascal(value * 100)
+        get() = Pascal(value * 101325)
 
-    override fun compareTo(other: Pressure) = value.compareTo(other.millibar.value)
+    override fun compareTo(other: Pressure) = value.compareTo(other.atmosphere.value)
 
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
 
-        other as Millibar
+        other as Atmosphere
 
         if (value != other.value) return false
 
@@ -30,7 +30,7 @@ inline class Millibar(override val value: Double) : Pressure {
 
     companion object {
 
-        val ZERO = Millibar(0.0)
-        val ONE = Millibar(1.0)
+        val ZERO = Atmosphere(0.0)
+        val ONE = Atmosphere(1.0)
     }
 }

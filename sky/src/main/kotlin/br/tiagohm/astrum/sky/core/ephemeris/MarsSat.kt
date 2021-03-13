@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.core.ephemeris
 
-import br.tiagohm.astrum.sky.M_PI_180
+import br.tiagohm.astrum.common.M_PI_180
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.time.JulianDay
 import kotlin.math.cos

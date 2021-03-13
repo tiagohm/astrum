@@ -1,14 +1,15 @@
 package br.tiagohm.astrum.sky
 
+import br.tiagohm.astrum.common.*
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.AU
+import br.tiagohm.astrum.common.units.distance.Distance
 import br.tiagohm.astrum.sky.atmosphere.Extinction
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.*
 import br.tiagohm.astrum.sky.core.math.*
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.AU
-import br.tiagohm.astrum.sky.core.units.distance.Distance
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan2

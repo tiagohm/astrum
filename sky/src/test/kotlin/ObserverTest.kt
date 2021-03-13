@@ -1,16 +1,21 @@
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.common.AU_KM
+import br.tiagohm.astrum.common.M_PI
+import br.tiagohm.astrum.common.M_PI_180
+import br.tiagohm.astrum.common.units.angle.Degrees
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.AU
+import br.tiagohm.astrum.common.units.distance.Kilometer
+import br.tiagohm.astrum.common.units.distance.LightYear
+import br.tiagohm.astrum.common.units.distance.Meter
+import br.tiagohm.astrum.sky.Location
+import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.constellations.Constellation
 import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
 import br.tiagohm.astrum.sky.core.math.Duad
 import br.tiagohm.astrum.sky.core.math.Triad
+import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.core.time.TimeCorrectionType
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.AU
-import br.tiagohm.astrum.sky.core.units.distance.Kilometer
-import br.tiagohm.astrum.sky.core.units.distance.LightYear
-import br.tiagohm.astrum.sky.core.units.distance.Meter
 import br.tiagohm.astrum.sky.dso.DeepSky
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Satellite
@@ -1778,13 +1783,13 @@ class ObserverTest {
         // From Stellarium!
         val e = 0.01039350532665206
         val q = Kilometer(152044.1833237598760096396 * (1 - e))
-        // val n = KeplerOrbit.computeMeanMotion(e, q)
-        val n = 2.0 * M_PI / 0.7000394386551769 // period
-        val omega = 169.4950252408618
-        val longitudeOfPericenter = 481.1046065786531
-        val argOfPericenter = (longitudeOfPericenter - omega) * M_PI_180
-        val meanLongitude = 500.48456523833078
-        val MA = (meanLongitude - longitudeOfPericenter) * M_PI_180
+        val n = KeplerOrbit.Companion.computeMeanMotion(0.7000394386551769)
+        val omega = Degrees(169.4950252408618)
+        val longitudeOfPericenter = Degrees(481.1046065786531)
+        val argOfPericenter = KeplerOrbit.computeArgOfPericenter(longitudeOfPericenter, omega)
+        val meanLongitude = Degrees(500.48456523833078)
+        val MA = KeplerOrbit.computeMeanAnomaly(meanLongitude, longitudeOfPericenter)
+        val t0 = KeplerOrbit.computeTimeAtPericenter(JulianDay(2457939.5), MA, n)
 
         val janus = Satellite(
             saturn,
@@ -1792,11 +1797,11 @@ class ObserverTest {
             q,
             e,
             Degrees(0.4924530371249293),
-            Degrees(omega),
-            Radians(argOfPericenter),
-            JulianDay(2457939.5 - MA / n),
+            omega,
+            argOfPericenter,
+            t0,
             0.5,
-            Radians(n),
+            n,
             4.9,
         )
 

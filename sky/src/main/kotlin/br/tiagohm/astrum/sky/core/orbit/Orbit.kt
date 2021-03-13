@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.sky.core.orbit
 
+import br.tiagohm.astrum.common.units.distance.Distance
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.distance.Distance
 
 interface Orbit {
 

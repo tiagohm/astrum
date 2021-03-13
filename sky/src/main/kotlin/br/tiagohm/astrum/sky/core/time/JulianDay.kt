@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.sky.core.time
 
-import br.tiagohm.astrum.sky.JD_HOUR
-import br.tiagohm.astrum.sky.JD_MINUTE
-import br.tiagohm.astrum.sky.JD_SECOND
+import br.tiagohm.astrum.common.JD_HOUR
+import br.tiagohm.astrum.common.JD_MINUTE
+import br.tiagohm.astrum.common.JD_SECOND
 import br.tiagohm.astrum.sky.planets.major.earth.Earth
 import java.io.IOException
 import java.time.ZonedDateTime

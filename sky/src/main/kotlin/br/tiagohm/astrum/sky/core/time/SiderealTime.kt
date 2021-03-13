@@ -1,10 +1,10 @@
 package br.tiagohm.astrum.sky.core.time
 
-import br.tiagohm.astrum.sky.SECONDS_PER_DAY
+import br.tiagohm.astrum.common.SECONDS_PER_DAY
+import br.tiagohm.astrum.common.units.angle.Degrees
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.nutation.Nutation
 import br.tiagohm.astrum.sky.core.precession.Precession
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
 import kotlin.math.floor
 
 object SiderealTime {

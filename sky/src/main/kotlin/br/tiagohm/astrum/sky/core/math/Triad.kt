@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.core.math
 
-import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.common.units.angle.Radians
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan2

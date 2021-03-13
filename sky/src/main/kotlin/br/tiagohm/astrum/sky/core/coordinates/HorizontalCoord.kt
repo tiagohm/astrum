@@ -1,7 +1,7 @@
 package br.tiagohm.astrum.sky.core.coordinates
 
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
 
 /**
  * Represents the Horizontal Coordinate System.

@@ -1,10 +1,10 @@
 package br.tiagohm.astrum.sky.planets.major.saturn
 
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.Kilometer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.Planet
 
 class Iapetus(parent: Saturn) : Planet(

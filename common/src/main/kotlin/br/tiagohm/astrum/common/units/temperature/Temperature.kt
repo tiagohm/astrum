@@ -1,6 +1,6 @@
-package br.tiagohm.astrum.sky.core.units.temperature
+package br.tiagohm.astrum.common.units.temperature
 
-import br.tiagohm.astrum.sky.core.units.Unit
+import br.tiagohm.astrum.common.units.Unit
 
 interface Temperature : Unit, Comparable<Temperature> {
 

@@ -1,0 +1,39 @@
+plugins {
+    id "java"
+    id "maven"
+    id "org.jetbrains.kotlin.jvm"
+}
+
+group "com.github.tiagohm"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.1"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+kotlin {
+    sourceSets.all {
+        languageSettings.enableLanguageFeature("InlineClasses")
+    }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "11"
+        freeCompilerArgs = ["-Xinline-classes"]
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "11"
+}

@@ -1,6 +1,13 @@
 package br.tiagohm.astrum.sky.core
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.common.EPSILON
+import br.tiagohm.astrum.common.M_2_PI
+import br.tiagohm.astrum.common.M_PI
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.sky.MAT_J2000_TO_GALACTIC
+import br.tiagohm.astrum.sky.MAT_J2000_TO_J1875
+import br.tiagohm.astrum.sky.MAT_J2000_TO_SUPERGALACTIC
 import br.tiagohm.astrum.sky.core.coordinates.GeographicCoord
 import br.tiagohm.astrum.sky.core.coordinates.HorizontalCoord
 import br.tiagohm.astrum.sky.core.coordinates.SphericalCoord
@@ -8,8 +15,6 @@ import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
 import br.tiagohm.astrum.sky.core.math.tan
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.planets.Planet
 import java.lang.Math.cbrt
 import kotlin.math.*

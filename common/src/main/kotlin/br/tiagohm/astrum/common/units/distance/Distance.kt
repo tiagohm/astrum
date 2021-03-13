@@ -1,6 +1,6 @@
-package br.tiagohm.astrum.sky.core.units.distance
+package br.tiagohm.astrum.common.units.distance
 
-import br.tiagohm.astrum.sky.core.units.Unit
+import br.tiagohm.astrum.common.units.Unit
 
 interface Distance : Unit, Comparable<Distance> {
 

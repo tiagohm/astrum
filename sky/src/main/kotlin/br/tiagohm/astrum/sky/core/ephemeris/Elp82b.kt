@@ -1,6 +1,6 @@
 package br.tiagohm.astrum.sky.core.ephemeris
 
-import br.tiagohm.astrum.sky.M_PI
+import br.tiagohm.astrum.common.M_PI
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.time.JulianDay
 import br.tiagohm.astrum.sky.readByteArrayFromResources

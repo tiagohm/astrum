@@ -1,12 +1,12 @@
 package br.tiagohm.astrum.sky.planets
 
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.Distance
 import br.tiagohm.astrum.sky.J2000
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.orbit.KeplerOrbit
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.Distance
 
 /**
  *  Satellite orbiting the planet [T].

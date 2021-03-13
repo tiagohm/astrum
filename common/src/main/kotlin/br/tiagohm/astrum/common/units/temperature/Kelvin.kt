@@ -1,23 +1,23 @@
-package br.tiagohm.astrum.sky.core.units.temperature
+package br.tiagohm.astrum.common.units.temperature
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NOTHING_TO_INLINE")
-inline class Fahrenheit(override val value: Double) : Temperature {
+inline class Kelvin(override val value: Double) : Temperature {
 
     override val celsius: Celsius
-        get() = Celsius((value - 32.0) / 1.8)
+        get() = Celsius(value - 273.15)
 
     override val fahrenheit: Fahrenheit
-        get() = this
+        get() = Fahrenheit(value * 1.8 - 459.67)
 
     override val kelvin: Kelvin
-        get() = Kelvin((value + 459.67) / 1.8)
+        get() = this
 
-    override fun compareTo(other: Temperature) = value.compareTo(other.fahrenheit.value)
+    override fun compareTo(other: Temperature) = value.compareTo(other.kelvin.value)
 
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
 
-        other as Fahrenheit
+        other as Kelvin
 
         if (value != other.value) return false
 
@@ -30,6 +30,6 @@ inline class Fahrenheit(override val value: Double) : Temperature {
 
     companion object {
 
-        val ZERO = Fahrenheit(0.0)
+        val ZERO = Kelvin(0.0)
     }
 }

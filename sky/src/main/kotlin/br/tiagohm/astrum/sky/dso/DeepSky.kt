@@ -1,15 +1,15 @@
 package br.tiagohm.astrum.sky.dso
 
+import br.tiagohm.astrum.common.M_PI
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Degrees
+import br.tiagohm.astrum.common.units.distance.Distance
+import br.tiagohm.astrum.common.units.distance.LightYear
 import br.tiagohm.astrum.sky.CelestialObject
-import br.tiagohm.astrum.sky.M_PI
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Degrees
-import br.tiagohm.astrum.sky.core.units.distance.Distance
-import br.tiagohm.astrum.sky.core.units.distance.LightYear
 import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.math.min

@@ -2,7 +2,7 @@
 
 package br.tiagohm.astrum.sky.core.math
 
-import br.tiagohm.astrum.sky.core.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Angle
 
 inline fun cos(a: Angle) = kotlin.math.cos(a.radians.value)
 inline fun sin(a: Angle) = kotlin.math.sin(a.radians.value)

@@ -1,12 +1,17 @@
 package br.tiagohm.astrum.sky.stars
 
-import br.tiagohm.astrum.sky.*
+import br.tiagohm.astrum.common.AU_KM
+import br.tiagohm.astrum.common.M_ARCSEC_RAD
+import br.tiagohm.astrum.common.SECONDS_PER_DAY
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.sky.J2000
+import br.tiagohm.astrum.sky.Observer
+import br.tiagohm.astrum.sky.PlanetType
 import br.tiagohm.astrum.sky.core.coordinates.EquatorialCoord
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.math.cos
 import br.tiagohm.astrum.sky.core.math.sin
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
 import br.tiagohm.astrum.sky.dso.DeepSky
 import kotlin.math.log10
 

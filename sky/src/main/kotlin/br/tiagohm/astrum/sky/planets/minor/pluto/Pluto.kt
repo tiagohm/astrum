@@ -1,14 +1,14 @@
 package br.tiagohm.astrum.sky.planets.minor.pluto
 
-import br.tiagohm.astrum.sky.M_PI_180
+import br.tiagohm.astrum.common.M_PI_180
+import br.tiagohm.astrum.common.units.angle.Angle
+import br.tiagohm.astrum.common.units.angle.Radians
+import br.tiagohm.astrum.common.units.distance.AU
+import br.tiagohm.astrum.common.units.distance.Kilometer
 import br.tiagohm.astrum.sky.Observer
 import br.tiagohm.astrum.sky.core.Algorithms
 import br.tiagohm.astrum.sky.core.math.Triad
 import br.tiagohm.astrum.sky.core.time.JulianDay
-import br.tiagohm.astrum.sky.core.units.angle.Angle
-import br.tiagohm.astrum.sky.core.units.angle.Radians
-import br.tiagohm.astrum.sky.core.units.distance.AU
-import br.tiagohm.astrum.sky.core.units.distance.Kilometer
 import br.tiagohm.astrum.sky.planets.ApparentMagnitudeAlgorithm
 import br.tiagohm.astrum.sky.planets.Sun
 import br.tiagohm.astrum.sky.planets.minor.MinorPlanet
