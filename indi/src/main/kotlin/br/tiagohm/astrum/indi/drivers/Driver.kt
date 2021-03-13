@@ -6,10 +6,6 @@ interface Driver {
 
     val executable: String
 
-    val manufacturer: String
-
-    val version: String
-
     fun <T> property(name: String): T?
 
     fun on()

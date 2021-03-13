@@ -7,8 +7,6 @@ abstract class DefaultDriver(
     protected val connection: INDIConnection,
     override val name: String,
     override val executable: String,
-    override val manufacturer: String,
-    override val version: String,
 ) : Driver {
 
     @Suppress("UNCHECKED_CAST")
