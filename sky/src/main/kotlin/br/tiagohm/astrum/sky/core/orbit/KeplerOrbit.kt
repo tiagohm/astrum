@@ -126,17 +126,31 @@ data class KeplerOrbit(
         }
 
         /**
-         * Computes Mean Motion using Gaussian gravitational constant.
+         * Computes Mean Motion (n) using Gaussian gravitational constant.
          */
         fun computeMeanMotion(e: Double, q: Distance): Radians {
             val qp = q.au.value
 
             return if (e == 1.0) {
-                Radians(0.01720209895 * (1.5 / qp) * sqrt(0.5 / qp))
+                Radians(GAUSS_GRAV_K * (1.5 / qp) * sqrt(0.5 / qp))
             } else {
-                val a = qp / (1.0 - e)
-                Radians(0.01720209895 / (abs(a) * sqrt(abs(a))))
+                abs(qp / (1.0 - e)).let { Radians(GAUSS_GRAV_K / (it * sqrt(it))) }
             }
+        }
+
+        /**
+         * Computes Mean Motion (n) from [period] in earth days.
+         */
+        fun computeMeanMotion(period: Double) = Radians(M_2_PI / period)
+
+        fun computeLongitudeOfPericenter(argOfPericenter: Angle, omega: Angle) = argOfPericenter + omega
+
+        fun computeArgOfPericenter(longitudeOfPericenter: Angle, omega: Angle) = longitudeOfPericenter - omega
+
+        fun computeMeanAnomaly(meanLongitude: Angle, longOfPericenter: Angle) = meanLongitude - longOfPericenter
+
+        fun computeTimeAtPericenter(epoch: JulianDay, meanAnomaly: Angle, n: Angle): JulianDay {
+            return epoch - meanAnomaly.radians.value / n.radians.value
         }
 
         fun computeRotJ2000Longitude(obliquity: Angle, ascendingNode: Angle): Radians {
