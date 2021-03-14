@@ -3,15 +3,14 @@ package br.tiagohm.astrum.indi.client
 import br.tiagohm.astrum.indi.client.parser.SimpleXMLParser
 import br.tiagohm.astrum.indi.client.parser.XMLTag
 import br.tiagohm.astrum.indi.common.Shelf
-import br.tiagohm.astrum.indi.drivers.Driver
-import br.tiagohm.astrum.indi.drivers.telescope.Telescope
+import br.tiagohm.astrum.indi.drivers.*
+import br.tiagohm.astrum.indi.drivers.telescope.*
 import br.tiagohm.astrum.indi.protocol.*
 import org.redundent.kotlin.xml.xml
 import java.io.OutputStream
 import java.net.Socket
 import java.net.SocketException
 import java.util.*
-import javax.xml.stream.XMLInputFactory
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
@@ -28,9 +27,9 @@ open class Client(
     private var inputThread: Thread? = null
 
     private val messageListeners = ArrayList<MessageListener>(1)
-    private val propertyListeners = ArrayList<PropertyListener>(1)
+    private val elementListeners = ArrayList<ElementListener>(1)
 
-    private val properties = Shelf<Pair<Any, PropertyAttribute>>()
+    private val elements = Shelf<PropertyElement<*>>()
     private val drivers = HashMap<String, Driver>()
 
     open fun registerMessageListener(listener: MessageListener) {
@@ -41,12 +40,24 @@ open class Client(
         messageListeners.remove(listener)
     }
 
-    open fun registerPropertyListener(listener: PropertyListener) {
-        if (!propertyListeners.contains(listener)) propertyListeners.add(listener)
+    open fun registerPropertyListener(listener: ElementListener) {
+        if (!elementListeners.contains(listener)) elementListeners.add(listener)
     }
 
-    open fun unregisterPropertyListener(listener: PropertyListener) {
-        propertyListeners.remove(listener)
+    open fun unregisterPropertyListener(listener: ElementListener) {
+        elementListeners.remove(listener)
+    }
+
+    private fun registerDriver(device: String, driver: PropertyElement<String>) {
+        when (val exec = driver.value) {
+            "indi_simulator_telescope" -> Telescope(device, exec)
+            // TODO: Adicionar os outros drivers.
+            else -> null
+        }?.also {
+            drivers[device]?.detach()
+            it.attach(this)
+            drivers[device] = it
+        }
     }
 
     private fun processTag(tag: XMLTag) {
@@ -60,16 +71,16 @@ open class Client(
 
                 // Delete by device and name.
                 if (name.isNotEmpty()) {
-                    properties.clear(device, name)
+                    elements.clear(device, name)
                 }
                 // Delete by device.
                 else if (device.isNotEmpty()) {
-                    properties.clear(device)
+                    elements.clear(device)
                     drivers.remove(device)?.detach()
                 }
                 // Delete all.
                 else {
-                    properties.clear()
+                    elements.clear()
                     drivers.forEach { it.value.detach() }
                     drivers.clear()
                 }
@@ -88,64 +99,72 @@ open class Client(
             "setBLOBVector" -> {
                 val device = tag.attributes["device"]!!
                 val propName = tag.attributes["name"]!!
-                val permission = Permission.parse(tag.attributes["perm"] ?: "rw")
-                val properties = ArrayList<Array<Any>>(tag.children.size)
+                val isReadOnly = tag.attributes["perm"]?.let { it == "ro" }
+                val elements = ArrayList<Array<Any?>>(tag.children.size)
 
                 for (c in tag.children) {
                     val elementName = c.attributes["name"]!!
-                    val size = c.attributes["size"]?.toIntOrNull() ?: 0
+                    val size = c.attributes["size"]?.toIntOrNull()
+                    val min = c.attributes["min"]?.toDoubleOrNull()
+                    val max = c.attributes["max"]?.toDoubleOrNull()
+                    val step = c.attributes["step"]?.toDoubleOrNull()
                     val format = c.attributes["format"] ?: ""
                     val value = c.text
 
-                    val p: Array<Any> = when (c.name) {
-                        // One member of a text/switch/light/BLOB vector.
+                    val p: Array<Any?> = when (c.name) {
+                        // One member of a text/number/switch/light/BLOB vector.
                         // defBLOB does not contain an initial value for the BLOB.
-                        "defText", "oneText" -> arrayOf(elementName, value, size, format)
-                        "defNumber", "oneNumber" -> arrayOf(elementName, value.toDoubleOrNull() ?: 0.0, size, format)
-                        "defSwitch", "oneSwitch" -> arrayOf(elementName, value == "On", size, format)
-                        "defLight", "oneLight" -> arrayOf(elementName, if (value.isEmpty()) State.IDLE else State.valueOf(value.toUpperCase()), size, format)
-                        // TODO: BLOB
+                        "defText", "oneText" -> arrayOf(elementName, value, size, format, min, max, step)
+                        "defNumber", "oneNumber" -> arrayOf(elementName, value.toDoubleOrNull() ?: 0.0, size, format, min, max, step)
+                        "defSwitch", "oneSwitch" -> arrayOf(elementName, value == "On", size, format, min, max, step)
+                        "defLight", "oneLight" -> arrayOf(elementName, if (value.isEmpty()) State.IDLE else State.valueOf(value.toUpperCase()), size, format, min, max, step)
+                        "defBLOB" -> arrayOf(elementName, EMPTY_BYTE_ARRAY, size, format, min, max, step)
+                        // TODO: oneBLOB
                         else -> continue
                     }
 
-                    properties.add(p)
+                    elements.add(p)
                 }
 
                 // Add or set properties.
-                if (properties.isNotEmpty()) {
-                    if (propName == "DRIVER_INFO") {
-                        var driverName = ""
-                        var driverExec = ""
+                if (elements.isNotEmpty()) {
+                    var driverExec: PropertyElement<String>? = null
 
-                        properties.forEach {
-                            if (it[0] == "DRIVER_NAME") driverName = it[1] as String
-                            else if (it[0] == "DRIVER_EXEC") driverExec = it[1] as String
+                    for (element in elements) {
+                        val name = element[0] as String
+
+                        val ne = PROPERTIES[propName]?.invoke(name)
+
+                        if (ne == null) {
+                            println("UNKNOWN: $propName:$name")
+                            continue
                         }
 
-                        if (driverName.isNotEmpty() &&
-                            driverExec.isNotEmpty()
-                        ) {
-                            when (driverExec) {
-                                "indi_simulator_telescope" -> Telescope(driverName, driverExec)
-                                // TODO: Adicionar os outros drivers.
-                                else -> null
-                            }?.also {
-                                drivers[device]?.detach()
-                                it.attach(this)
-                                drivers[device] = it
+                        val oe = element(device, propName, name)
+
+                        val value = element[1] ?: oe?.value
+                        val size = element[2] as? Int ?: oe?.size ?: 0
+                        val format = element[3] as? String ?: oe?.format ?: ""
+                        val min = element[4] as? Double ?: oe?.min ?: 0.0
+                        val max = element[5] as? Double ?: oe?.max ?: 0.0
+                        val step = element[6] as? Double ?: oe?.step ?: 0.0
+
+                        val permission = isReadOnly ?: element(device, propName, name)?.isReadOnly ?: false
+
+                        val pe = when (ne.type) {
+                            ElementType.TEXT -> PropertyElement(ne as TextElement, value as String, permission, min, max, step, size, format).also {
+                                if (propName == "DRIVER_INFO" && ne.elementName == "DRIVER_EXEC") {
+                                    registerDriver(device, it)
+                                }
                             }
+                            ElementType.NUMBER -> PropertyElement(ne as NumberElement, value as Double, permission, min, max, step, size, format)
+                            ElementType.SWITCH -> PropertyElement(ne as SwitchElement, value as Boolean, permission, min, max, step, size, format)
+                            ElementType.LIGHT -> PropertyElement(ne as LightElement, value as State, permission, min, max, step, size, format)
+                            ElementType.BLOB -> PropertyElement(ne as BLOBElement, value as ByteArray, permission, min, max, step, size, format)
                         }
-                    }
 
-                    properties.forEach {
-                        val name = it[0] as String
-                        val value = it[1]
-                        val size = it[2] as Int
-                        val format = it[3] as String
-                        val attr = PropertyAttribute(permission, size, format)
-
-                        this.properties.set(device, propName, name, value to attr)
-                        propertyListeners.forEach { l -> l.onProperty(device, propName, name, attr, value) }
+                        this.elements.set(device, propName, name, pe)
+                        elementListeners.forEach { l -> l.onElement(device, pe) }
                     }
                 }
             }
@@ -193,9 +212,9 @@ open class Client(
 
         if (clear) {
             drivers().forEach { it.detach() }
-            propertyListeners.clear()
+            elementListeners.clear()
             messageListeners.clear()
-            properties.clear()
+            elements.clear()
         }
     }
 
@@ -246,16 +265,25 @@ open class Client(
         write(command)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> property(device: String, propName: String, elementName: String) = properties.get(device, propName, elementName)?.first as? T
+    /**
+     * Gets the specified element.
+     */
+    fun element(device: String, propName: String, elementName: String) = elements.get(device, propName, elementName)
 
-    fun attribute(device: String, propName: String, elementName: String) = properties.get(device, propName, elementName)?.second
+    /**
+     * Gets the device names.
+     */
+    fun devices(): Set<String> = elements.keys()
 
-    fun devices(): Set<String> = properties.keys()
+    /**
+     * Gets the available property names from the given [device].
+     */
+    fun propertyNames(device: String) = elements.keys(device)
 
-    fun propertyNames(device: String) = properties.keys(device)
-
-    fun elementNames(device: String, propName: String) = properties.keys(device, propName)
+    /**
+     * Gets the available elemens names from the given [device] and property name.
+     */
+    fun elementNames(device: String, propName: String) = elements.keys(device, propName)
 
     /**
      * Gets the available drivers.
@@ -269,9 +297,34 @@ open class Client(
 
     companion object {
 
-        private val PARSER = XMLInputFactory.newInstance().also {
-            it.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false)
-            it.setProperty(XMLInputFactory.IS_VALIDATING, false)
-        }
+        private val EMPTY_BYTE_ARRAY = byteArrayOf()
+
+        // TODO: Add more properties.
+        private val PROPERTIES = mapOf<String, (String) -> Element<*>>(
+            "CONNECTION" to Connection::parse,
+            "TIME_UTC" to Time::parse,
+            "DEVICE_BAUD_RATE" to BaudRate::parse,
+            "DEVICE_PORT" to DevicePort::parse,
+            "DRIVER_INFO" to DriverInfo::parse,
+            "TELESCOPE_ABORT_MOTION" to AbortMotion::parse,
+            "EQUATORIAL_EOD_COORD" to Coordinate::parse,
+            "HORIZONTAL_COORD" to Coordinate::parse,
+            "GEOGRAPHIC_COORD" to Coordinate::parse,
+            "TELESCOPE_MOTION_NS" to MotionDirection::parse,
+            "TELESCOPE_MOTION_WE" to MotionDirection::parse,
+            "MOUNT_TYPE" to MountType::parse,
+            "ON_COORD_SET" to OnCoordSet::parse,
+            "TELESCOPE_PARK" to Park::parse,
+            "TELESCOPE_PARK_OPTION" to ParkOption::parse,
+            "TELESCOPE_PARK_POSITION" to ParkPosition::parse,
+            "TELESCOPE_PIER_SIDE" to PierSide::parse,
+            "TELESCOPE_SLEW_RATE" to SlewRate::parse,
+            "TELESCOPE_TRACK_MODE" to TrackMode::parse,
+            "TELESCOPE_TRACK_STATE" to TrackState::parse,
+            "TELESCOPE_TRACK_STATE" to TrackState::parse,
+            "TELESCOPE_TIMED_GUIDE_NS" to GuideDirection::parse,
+            "TELESCOPE_TIMED_GUIDE_WE" to GuideDirection::parse,
+            "TELESCOPE_TRACK_RATE" to TrackRate::parse,
+        )
     }
 }

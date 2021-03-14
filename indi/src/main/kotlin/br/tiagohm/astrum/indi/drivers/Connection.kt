@@ -1,12 +1,17 @@
 package br.tiagohm.astrum.indi.drivers
 
-import br.tiagohm.astrum.indi.protocol.SwitchProperty
+import br.tiagohm.astrum.indi.protocol.SwitchElement
 
-enum class Connection : SwitchProperty {
+enum class Connection : SwitchElement {
     CONNECT,
     DISCONNECT;
 
     override val propName = "CONNECTION"
 
     override val elementName = name
+
+    companion object {
+
+        fun parse(name: String) = valueOf(name)
+    }
 }

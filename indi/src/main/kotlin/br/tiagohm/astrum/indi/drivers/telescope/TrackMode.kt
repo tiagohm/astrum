@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
-import br.tiagohm.astrum.indi.protocol.SwitchProperty
+import br.tiagohm.astrum.indi.protocol.SwitchElement
 
-enum class TrackMode : SwitchProperty {
+enum class TrackMode : SwitchElement {
     SIDEREAL,
     SOLAR,
     LUNAR,
@@ -11,4 +11,9 @@ enum class TrackMode : SwitchProperty {
     override val propName = "TELESCOPE_TRACK_MODE"
 
     override val elementName = "TRACK_$name"
+
+    companion object {
+
+        fun parse(name: String) = valueOf(name.substring(6))
+    }
 }

@@ -1,9 +1,9 @@
 package br.tiagohm.astrum.indi.protocol
 
-interface BLOBProperty : Property<ByteArray> {
+interface BLOBElement : Element<ByteArray> {
 
-    override val type: String
-        get() = "BLOB"
+    override val type: ElementType
+        get() = ElementType.BLOB
 
     override fun valueToText(value: ByteArray): String {
         TODO("Not yet implemented")

@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
-import br.tiagohm.astrum.indi.protocol.NumberProperty
+import br.tiagohm.astrum.indi.protocol.NumberElement
 
-enum class Coordinate(override val propName: String) : NumberProperty {
+enum class Coordinate(override val propName: String) : NumberElement {
     RA("EQUATORIAL_EOD_COORD"),
     DEC("EQUATORIAL_EOD_COORD"),
     AZ("HORIZONTAL_COORD"),
@@ -12,4 +12,9 @@ enum class Coordinate(override val propName: String) : NumberProperty {
     ELEV("GEOGRAPHIC_COORD");
 
     override val elementName = name
+
+    companion object {
+
+        fun parse(name: String) = valueOf(name)
+    }
 }

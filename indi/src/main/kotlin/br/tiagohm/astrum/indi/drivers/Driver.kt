@@ -1,7 +1,7 @@
 package br.tiagohm.astrum.indi.drivers
 
 import br.tiagohm.astrum.indi.client.Client
-import br.tiagohm.astrum.indi.client.PropertyListener
+import br.tiagohm.astrum.indi.client.ElementListener
 import br.tiagohm.astrum.indi.protocol.*
 import java.text.SimpleDateFormat
 import java.time.ZoneId
@@ -28,9 +28,9 @@ interface Driver {
     val isOn: Boolean
         get() = switch(Connection.CONNECT)
 
-    fun registerPropertyListener(listener: PropertyListener)
+    fun registerPropertyListener(listener: ElementListener)
 
-    fun unregisterPropertyListener(listener: PropertyListener)
+    fun unregisterPropertyListener(listener: ElementListener)
 
     /**
      * Attaches the driver to the [client].
@@ -43,14 +43,14 @@ interface Driver {
     fun detach(): Driver
 
     /**
-     * Sends the [property] and your [value] to the driver.
+     * Sends the [element] and your [value] to the driver.
      */
-    fun <T> send(p: Property<T>, value: T) = also { client?.send(name, p, value) }
+    fun <T> send(element: Element<T>, value: T) = also { client?.send(name, element, value) }
 
     /**
-     * Sends atomically the [properties] and yours [values] to the driver.
+     * Sends atomically the [elements] and yours [values] to the driver.
      */
-    fun <T> send(properties: Array<Property<T>>, values: Array<T>) = also { client?.send(name, AtomicProperty(*properties), values) }
+    fun <T> send(elements: Array<Element<T>>, values: Array<T>) = also { client?.send(name, Property(*elements), values) }
 
     /**
      * Connects the driver.
@@ -62,10 +62,11 @@ interface Driver {
      */
     fun off() = send(Connection.DISCONNECT, true)
 
+    @Throws(UnsupportedOperationException::class)
     fun dateTime(): ZonedDateTime {
         if (has(Time.UTC)) {
             val utc = ISO_8601.parse(text(Time.UTC)).toInstant()
-            val offset = ZoneId.of(text(Time.OFFSET, "Z"))
+            val offset = ZoneId.of(text(Time.OFFSET, "Z").replace(".", ":"))
             return ZonedDateTime.ofInstant(utc, offset)
         } else {
             throw UnsupportedOperationException("TIME_UTC is not supported")
@@ -89,36 +90,40 @@ interface Driver {
     }
 
     /**
-     * Gets the [property]'s value.
+     * Gets the [element]'s value.
      */
-    fun <T> property(property: Property<T>) = client?.property<T>(name, property.propName, property.elementName)
-
-    fun <T> has(property: Property<T>) = this.property(property) != null
-
-    /**
-     * Gets the [property]'s value as Switch.
-     */
-    fun switch(property: SwitchProperty) = this.property(property) == true
+    @Suppress("UNCHECKED_CAST")
+    fun <T> element(element: Element<T>) = client?.element(name, element.propName, element.elementName)?.value as? T
 
     /**
-     * Gets the [property]'s value as Number or [value] if not exists.
+     * Determines if [element] exists.
      */
-    fun number(property: NumberProperty, value: Double = 0.0) = this.property(property) ?: value
+    fun <T> has(element: Element<T>) = this.element(element) != null
 
     /**
-     * Gets the [property]'s value as Text or [value] if not exists.
+     * Gets the [element]'s value as Switch.
      */
-    fun text(property: TextProperty, value: String = "") = this.property(property) ?: value
+    fun switch(element: SwitchElement) = this.element(element) == true
 
     /**
-     * Gets the [property]'s value as Light or [value] if not exists.
+     * Gets the [element]'s value as Number or [value] if not exists.
      */
-    fun light(property: LightProperty, value: State = State.IDLE) = this.property(property) ?: value
+    fun number(element: NumberElement, value: Double = 0.0) = this.element(element) ?: value
 
     /**
-     * Gets the [property]'s value as BLOB.
+     * Gets the [element]'s value as Text or [value] if not exists.
      */
-    fun blob(property: BLOBProperty) = this.property(property)
+    fun text(element: TextElement, value: String = "") = this.element(element) ?: value
+
+    /**
+     * Gets the [element]'s value as Light or [value] if not exists.
+     */
+    fun light(element: LightElement, value: State = State.IDLE) = this.element(element) ?: value
+
+    /**
+     * Gets the [element]'s value as BLOB.
+     */
+    fun blob(element: BLOBElement) = this.element(element)
 
     companion object {
 

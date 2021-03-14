@@ -1,18 +1,19 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
 import br.tiagohm.astrum.indi.client.Client
-import br.tiagohm.astrum.indi.client.PropertyAttribute
-import br.tiagohm.astrum.indi.client.PropertyListener
+import br.tiagohm.astrum.indi.client.ElementListener
+import br.tiagohm.astrum.indi.client.PropertyElement
 import br.tiagohm.astrum.indi.drivers.Driver
-import java.util.*
-import kotlin.collections.ArrayList
+
+// Some references:
+// * https://ascom-standards.org/Help/Platform/html/T_ASCOM_DeviceInterface_ITelescopeV3.htm
 
 open class Telescope(
     override val name: String,
     override val executable: String,
 ) : Driver {
 
-    private val propertyListeners = ArrayList<PropertyListener>(1)
+    private val elementListeners = ArrayList<ElementListener>(1)
 
     override var client: Client? = null
         protected set
@@ -29,29 +30,29 @@ open class Telescope(
     open val isParked: Boolean
         get() = switch(Park.PARK)
 
-    private val propertyListener = object : PropertyListener {
-        override fun onProperty(device: String, propName: String, elementName: String, attr: PropertyAttribute, value: Any) {
+    private val elementListener = object : ElementListener {
+        override fun onElement(device: String, element: PropertyElement<*>) {
             if (device == name) {
-                propertyListeners.forEach { it.onProperty(device, propName, elementName, attr, value) }
+                elementListeners.forEach { it.onElement(device, element) }
             }
         }
     }
 
-    override fun registerPropertyListener(listener: PropertyListener) {
-        if (!propertyListeners.contains(listener)) propertyListeners.add(listener)
+    override fun registerPropertyListener(listener: ElementListener) {
+        if (!elementListeners.contains(listener)) elementListeners.add(listener)
     }
 
-    override fun unregisterPropertyListener(listener: PropertyListener) {
-        propertyListeners.remove(listener)
+    override fun unregisterPropertyListener(listener: ElementListener) {
+        elementListeners.remove(listener)
     }
 
     override fun attach(client: Client) = also {
         this.client = client
-        client.registerPropertyListener(propertyListener)
+        client.registerPropertyListener(elementListener)
     }
 
     override fun detach() = also {
-        client?.unregisterPropertyListener(propertyListener)
+        client?.unregisterPropertyListener(elementListener)
         client = null
     }
 
@@ -113,6 +114,11 @@ open class Telescope(
     }
 
     /**
+     * Moves the telescope towards [direction].
+     */
+    open fun move(direction: MotionDirection) = send(direction, true)
+
+    /**
      * Gets the telescope's mount type.
      */
     open fun mountType() = when {
@@ -161,7 +167,7 @@ open class Telescope(
     open fun pierSide(side: PierSide) = send(side, true)
 
     /**
-     * Parks the telescope to HOME position.
+     * Moves the telescope to its park position, stop all motion (or restrict to a small safe range).
      */
     open fun park() = send(Park.PARK, true)
 
@@ -202,12 +208,12 @@ open class Telescope(
     }
 
     /**
-     * Uses current coordinates as HOME park position.
+     * Sets the telescope's park position to be its current position.
      */
-    fun parkToCurrentCoordinate() = send(ParkOption.CURRENT, true)
+    fun parkToCurrentPosition() = send(ParkOption.CURRENT, true)
 
     /**
-     * Uses driver's default park position.
+     * Sets the telescope's park position to be the driver's default park position.
      */
-    fun parkToDefaultCoordinate() = send(ParkOption.DEFAULT, true)
+    fun parkToDefaultPosition() = send(ParkOption.DEFAULT, true)
 }

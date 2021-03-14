@@ -3,26 +3,22 @@ package br.tiagohm.astrum.indi.protocol
 import br.tiagohm.astrum.indi.client.Command
 import org.redundent.kotlin.xml.xml
 
-interface Property<T> : Command<T> {
+class Property<T>(vararg val elements: Element<T>) : Command<Array<T>> {
 
-    val propName: String
+    override fun toXML(device: String, value: Array<T>): String {
+        val propName = elements[0].propName
+        val type = elements[0].type
 
-    val elementName: String
+        return xml("new${type}Vector") {
+            attribute("device", device)
+            attribute("name", propName)
 
-    val type: String
-
-    override fun toXML(device: String, value: T) = xml("new${type}Vector") {
-        attribute("device", device)
-        attribute("name", propName)
-
-        "one$type" {
-            attribute("name", elementName)
-            text(valueToText(value))
-        }
-    }.toString(false)
-
-    /**
-     * Converts the [value] to XML text.
-     */
-    fun valueToText(value: T): String
+            for (i in value.indices) {
+                "one${type}" {
+                    attribute("name", elements[i].elementName)
+                    text(elements[i].valueToText(value[i]))
+                }
+            }
+        }.toString(false)
+    }
 }

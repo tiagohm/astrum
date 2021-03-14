@@ -1,8 +1,8 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
-import br.tiagohm.astrum.indi.protocol.SwitchProperty
+import br.tiagohm.astrum.indi.protocol.SwitchElement
 
-enum class MountType : SwitchProperty {
+enum class MountType : SwitchElement {
     ALTAZ,
     EQ_FORK,
     EQ_GEM;
@@ -10,4 +10,9 @@ enum class MountType : SwitchProperty {
     override val propName = "MOUNT_TYPE"
 
     override val elementName = name
+
+    companion object {
+
+        fun parse(name: String) = valueOf(name)
+    }
 }

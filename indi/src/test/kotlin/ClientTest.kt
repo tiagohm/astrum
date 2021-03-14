@@ -1,10 +1,8 @@
 import br.tiagohm.astrum.indi.client.Client
+import br.tiagohm.astrum.indi.client.ElementListener
 import br.tiagohm.astrum.indi.client.MessageListener
-import br.tiagohm.astrum.indi.client.PropertyAttribute
-import br.tiagohm.astrum.indi.client.PropertyListener
-import br.tiagohm.astrum.indi.drivers.telescope.Telescope
+import br.tiagohm.astrum.indi.client.PropertyElement
 import br.tiagohm.astrum.indi.protocol.Message
-import br.tiagohm.astrum.indi.protocol.Permission
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -25,17 +23,16 @@ class ClientTest {
             }
         })
 
-        client.registerPropertyListener(object : PropertyListener {
-            override fun onProperty(device: String, propName: String, elementName: String, attr: PropertyAttribute, value: Any) {
-                if (device == "Telescope Simulator") {
-                    System.err.println("device: $device prop: $propName elem: $elementName perm: ${attr.permission} value: $value")
-                }
+        client.registerPropertyListener(object : ElementListener {
+            override fun onElement(device: String, element: PropertyElement<*>) {
+                System.err.println(element)
             }
         })
 
-        Thread.sleep(1000)
+        Thread.sleep(4000)
 
         val telescope = client.telescopes().first()
+
         telescope.on()
 
         Thread.sleep(5000)
