@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.protocol.properties
+package br.tiagohm.astrum.indi.protocol
 
 enum class State(val text: String) {
     IDLE("Idle"),

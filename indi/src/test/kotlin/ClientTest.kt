@@ -1,9 +1,8 @@
-import br.tiagohm.astrum.indi.client.INDIClient
+import br.tiagohm.astrum.indi.client.Client
 import br.tiagohm.astrum.indi.client.MessageListener
 import br.tiagohm.astrum.indi.client.PropertyListener
+import br.tiagohm.astrum.indi.drivers.telescope.Telescope
 import br.tiagohm.astrum.indi.protocol.Message
-import br.tiagohm.astrum.indi.protocol.properties.Property
-import br.tiagohm.astrum.indi.protocol.properties.SwitchProperty
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -25,33 +24,44 @@ class ClientTest {
         })
 
         client.registerPropertyListener(object : PropertyListener {
-            override fun onProperty(property: Property<*>) {
-                println("${property.name}:${property.value}")
+            override fun onProperty(device: String, propName: String, elementName: String, value: Any) {
+                if (device == "Telescope Simulator") {
+                    // System.err.println("$propName:$memberName:$value")
+                }
             }
         })
 
-        client.fetchProperties()
+        Thread.sleep(1000)
 
-        Thread.sleep(2000)
+        val telescope = client.drivers().first() as Telescope
 
-        val p = client.propertyByDeviceAndName("Telescope Simulator", "CONNECTION:CONNECT")!! as SwitchProperty
-        client.send(!p)
+        System.err.println(telescope.coordinate())
+        System.err.println(telescope.isTracking)
+        System.err.println(telescope.isParked)
+        System.err.println(telescope.mountType())
+        System.err.println(telescope.parkPosition())
+        System.err.println(telescope.pierSide())
+        System.err.println(telescope.slewRates())
+        System.err.println(telescope.slewRate())
+        System.err.println(telescope.trackMode())
+
+        Thread.sleep(1000)
+
+        telescope.goTo(8.7677713, -16.7458)
 
         Thread.sleep(10000)
-
-        System.err.println(client.properties().size)
 
         client.disconnect()
     }
 
     companion object {
 
-        private lateinit var client: INDIClient
+        private lateinit var client: Client
 
         @BeforeAll
         @JvmStatic
         fun setupAll() {
-            client = INDIClient("192.168.0.121")
+            client = Client("192.168.0.121")
             client.connect()
         }
     }
