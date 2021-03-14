@@ -1,8 +1,10 @@
 import br.tiagohm.astrum.indi.client.Client
 import br.tiagohm.astrum.indi.client.MessageListener
+import br.tiagohm.astrum.indi.client.PropertyAttribute
 import br.tiagohm.astrum.indi.client.PropertyListener
 import br.tiagohm.astrum.indi.drivers.telescope.Telescope
 import br.tiagohm.astrum.indi.protocol.Message
+import br.tiagohm.astrum.indi.protocol.Permission
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -24,16 +26,19 @@ class ClientTest {
         })
 
         client.registerPropertyListener(object : PropertyListener {
-            override fun onProperty(device: String, propName: String, elementName: String, value: Any) {
+            override fun onProperty(device: String, propName: String, elementName: String, attr: PropertyAttribute, value: Any) {
                 if (device == "Telescope Simulator") {
-                    // System.err.println("$propName:$memberName:$value")
+                    System.err.println("device: $device prop: $propName elem: $elementName perm: ${attr.permission} value: $value")
                 }
             }
         })
 
         Thread.sleep(1000)
 
-        val telescope = client.drivers().first() as Telescope
+        val telescope = client.telescopes().first()
+        telescope.on()
+
+        Thread.sleep(5000)
 
         System.err.println(telescope.coordinate())
         System.err.println(telescope.isTracking)
@@ -44,13 +49,11 @@ class ClientTest {
         System.err.println(telescope.slewRates())
         System.err.println(telescope.slewRate())
         System.err.println(telescope.trackMode())
-
-        Thread.sleep(1000)
-
-        telescope.goTo(8.7677713, -16.7458)
+        System.err.println(telescope.dateTime())
 
         Thread.sleep(10000)
 
+        telescope.off()
         client.disconnect()
     }
 

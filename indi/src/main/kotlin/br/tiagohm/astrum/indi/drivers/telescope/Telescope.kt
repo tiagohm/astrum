@@ -1,12 +1,18 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
 import br.tiagohm.astrum.indi.client.Client
+import br.tiagohm.astrum.indi.client.PropertyAttribute
+import br.tiagohm.astrum.indi.client.PropertyListener
 import br.tiagohm.astrum.indi.drivers.Driver
+import java.util.*
+import kotlin.collections.ArrayList
 
 open class Telescope(
     override val name: String,
     override val executable: String,
 ) : Driver {
+
+    private val propertyListeners = ArrayList<PropertyListener>(1)
 
     override var client: Client? = null
         protected set
@@ -23,9 +29,31 @@ open class Telescope(
     open val isParked: Boolean
         get() = switch(Park.PARK)
 
-    override fun attach(client: Client) = also { this.client = client }
+    private val propertyListener = object : PropertyListener {
+        override fun onProperty(device: String, propName: String, elementName: String, attr: PropertyAttribute, value: Any) {
+            if (device == name) {
+                propertyListeners.forEach { it.onProperty(device, propName, elementName, attr, value) }
+            }
+        }
+    }
 
-    override fun detach() = also { client = null }
+    override fun registerPropertyListener(listener: PropertyListener) {
+        if (!propertyListeners.contains(listener)) propertyListeners.add(listener)
+    }
+
+    override fun unregisterPropertyListener(listener: PropertyListener) {
+        propertyListeners.remove(listener)
+    }
+
+    override fun attach(client: Client) = also {
+        this.client = client
+        client.registerPropertyListener(propertyListener)
+    }
+
+    override fun detach() = also {
+        client?.unregisterPropertyListener(propertyListener)
+        client = null
+    }
 
     /**
      * Sends the coordinates to telescope.

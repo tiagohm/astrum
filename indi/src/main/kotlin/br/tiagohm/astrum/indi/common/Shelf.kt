@@ -1,15 +1,14 @@
 package br.tiagohm.astrum.indi.common
 
-internal class Shelf {
+internal class Shelf<T> {
 
-    private val data = HashMap<String, HashMap<String, HashMap<String, Any>>>()
+    private val data = HashMap<String, HashMap<String, HashMap<String, T>>>()
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> get(first: String, second: String, third: String): T? {
-        return data[first]?.get(second)?.get(third) as? T
+    fun get(first: String, second: String, third: String): T? {
+        return data[first]?.get(second)?.get(third)
     }
 
-    fun set(first: String, second: String, third: String, value: Any) {
+    fun set(first: String, second: String, third: String, value: T) {
         if (data.containsKey(first)) {
             if (data[first]!!.containsKey(second)) {
                 data[first]!![second]!![third] = value

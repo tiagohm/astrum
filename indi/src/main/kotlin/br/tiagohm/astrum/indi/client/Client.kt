@@ -27,10 +27,10 @@ open class Client(
     private var socket: Socket? = null
     private var inputThread: Thread? = null
 
-    private val messageListeners = ArrayList<MessageListener>()
-    private val propertyListeners = ArrayList<PropertyListener>()
+    private val messageListeners = ArrayList<MessageListener>(1)
+    private val propertyListeners = ArrayList<PropertyListener>(1)
 
-    private val properties = Shelf()
+    private val properties = Shelf<Pair<Any, PropertyAttribute>>()
     private val drivers = HashMap<String, Driver>()
 
     open fun registerMessageListener(listener: MessageListener) {
@@ -88,19 +88,22 @@ open class Client(
             "setBLOBVector" -> {
                 val device = tag.attributes["device"]!!
                 val propName = tag.attributes["name"]!!
-                val properties = ArrayList<Pair<String, Any>>(tag.children.size)
+                val permission = Permission.parse(tag.attributes["perm"] ?: "rw")
+                val properties = ArrayList<Array<Any>>(tag.children.size)
 
                 for (c in tag.children) {
                     val elementName = c.attributes["name"]!!
+                    val size = c.attributes["size"]?.toIntOrNull() ?: 0
+                    val format = c.attributes["format"] ?: ""
                     val value = c.text
 
-                    val p = when (c.name) {
+                    val p: Array<Any> = when (c.name) {
                         // One member of a text/switch/light/BLOB vector.
                         // defBLOB does not contain an initial value for the BLOB.
-                        "defText", "oneText" -> elementName to (value)
-                        "defNumber", "oneNumber" -> elementName to (value.toDoubleOrNull() ?: 0.0)
-                        "defSwitch", "oneSwitch" -> elementName to (value == "On")
-                        "defLight", "oneLight" -> elementName to (if (value.isEmpty()) State.IDLE else State.valueOf(value.toUpperCase()))
+                        "defText", "oneText" -> arrayOf(elementName, value, size, format)
+                        "defNumber", "oneNumber" -> arrayOf(elementName, value.toDoubleOrNull() ?: 0.0, size, format)
+                        "defSwitch", "oneSwitch" -> arrayOf(elementName, value == "On", size, format)
+                        "defLight", "oneLight" -> arrayOf(elementName, if (value.isEmpty()) State.IDLE else State.valueOf(value.toUpperCase()), size, format)
                         // TODO: BLOB
                         else -> continue
                     }
@@ -115,8 +118,8 @@ open class Client(
                         var driverExec = ""
 
                         properties.forEach {
-                            if (it.first == "DRIVER_NAME") driverName = it.second as String
-                            else if (it.first == "DRIVER_EXEC") driverExec = it.second as String
+                            if (it[0] == "DRIVER_NAME") driverName = it[1] as String
+                            else if (it[0] == "DRIVER_EXEC") driverExec = it[1] as String
                         }
 
                         if (driverName.isNotEmpty() &&
@@ -135,8 +138,14 @@ open class Client(
                     }
 
                     properties.forEach {
-                        this.properties.set(device, propName, it.first, it.second)
-                        propertyListeners.forEach { l -> l.onProperty(device, propName, it.first, it.second) }
+                        val name = it[0] as String
+                        val value = it[1]
+                        val size = it[2] as Int
+                        val format = it[3] as String
+                        val attr = PropertyAttribute(permission, size, format)
+
+                        this.properties.set(device, propName, name, value to attr)
+                        propertyListeners.forEach { l -> l.onProperty(device, propName, name, attr, value) }
                     }
                 }
             }
@@ -183,6 +192,7 @@ open class Client(
         socket = null
 
         if (clear) {
+            drivers().forEach { it.detach() }
             propertyListeners.clear()
             messageListeners.clear()
             properties.clear()
@@ -237,7 +247,9 @@ open class Client(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> property(device: String, propName: String, elementName: String) = properties.get<T>(device, propName, elementName)
+    fun <T> property(device: String, propName: String, elementName: String) = properties.get(device, propName, elementName)?.first as? T
+
+    fun attribute(device: String, propName: String, elementName: String) = properties.get(device, propName, elementName)?.second
 
     fun devices(): Set<String> = properties.keys()
 
@@ -245,7 +257,15 @@ open class Client(
 
     fun elementNames(device: String, propName: String) = properties.keys(device, propName)
 
+    /**
+     * Gets the available drivers.
+     */
     fun drivers() = drivers.values.toList()
+
+    /**
+     * Gets the available telescope drivers.
+     */
+    fun telescopes() = drivers.values.filterIsInstance<Telescope>()
 
     companion object {
 
