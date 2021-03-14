@@ -5,3 +5,4 @@ plugins {
 include ":common"
 include ":sky"
 include ":indi"
+include ":cli"
