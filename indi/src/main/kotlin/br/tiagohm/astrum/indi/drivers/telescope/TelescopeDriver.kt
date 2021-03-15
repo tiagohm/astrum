@@ -1,72 +1,50 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
-import br.tiagohm.astrum.indi.client.Client
-import br.tiagohm.astrum.indi.client.ElementListener
-import br.tiagohm.astrum.indi.client.PropertyElement
-import br.tiagohm.astrum.indi.drivers.Driver
+import br.tiagohm.astrum.indi.drivers.BaseDriver
+import br.tiagohm.astrum.indi.protocol.State
 
 // Some references:
 // * https://ascom-standards.org/Help/Platform/html/T_ASCOM_DeviceInterface_ITelescopeV3.htm
 
-open class Telescope(
+// TODO: doPulse
+// TODO: AltAz mount has HORIZONTAL_COORD or EQUATORIAL_EOD_COORD?
+// TODO: Alignment feature!
+// TODO: Whats clearParking does?
+open class TelescopeDriver(
     override val name: String,
     override val executable: String,
-) : Driver {
-
-    private val elementListeners = ArrayList<ElementListener>(1)
-
-    override var client: Client? = null
-        protected set
+) : BaseDriver() {
 
     /**
-     * Determines if telescope is tracking.
+     * Determines if the telescope is tracking.
      */
     open val isTracking: Boolean
         get() = switch(TrackState.ON)
 
     /**
-     * Determines if telescope is parked.
+     * Determines if the telescope is parked.
      */
     open val isParked: Boolean
         get() = switch(Park.PARK)
 
-    private val elementListener = object : ElementListener {
-        override fun onElement(device: String, element: PropertyElement<*>) {
-            if (device == name) {
-                elementListeners.forEach { it.onElement(device, element) }
-            }
-        }
-    }
-
-    override fun registerPropertyListener(listener: ElementListener) {
-        if (!elementListeners.contains(listener)) elementListeners.add(listener)
-    }
-
-    override fun unregisterPropertyListener(listener: ElementListener) {
-        elementListeners.remove(listener)
-    }
-
-    override fun attach(client: Client) = also {
-        this.client = client
-        client.registerPropertyListener(elementListener)
-    }
-
-    override fun detach() = also {
-        client?.unregisterPropertyListener(elementListener)
-        client = null
-    }
+    /**
+     * Determines if the telescope is slewing.
+     */
+    open val isSlewing: Boolean
+        get() = (has(Coordinate.RA) && element(Coordinate.RA)!!.state == State.BUSY) ||
+                (has(Coordinate.AZ) && element(Coordinate.AZ)!!.state == State.BUSY)
 
     /**
      * Sends the coordinates to telescope.
      *
-     * @param raAz RA (JNow) in hours or azimuth in degrees
-     * @param decAlt DEC (JNow) in degrees or altitude in degrees above horizon
+     * @param ra RA (JNow) in hours or azimuth in degrees
+     * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun coordinate(raAz: Double, decAlt: Double) {
+    open fun coordinates(ra: Double, dec: Double) {
         if (mountType() == MountType.ALTAZ) {
-            send(arrayOf(Coordinate.AZ, Coordinate.ALT), arrayOf(raAz, decAlt))
+            send(arrayOf(Coordinate.AZ, Coordinate.ALT), arrayOf(ra, dec))
         } else {
-            send(arrayOf(Coordinate.RA, Coordinate.DEC), arrayOf(raAz, decAlt))
+            send(arrayOf(Coordinate.RA, Coordinate.DEC), arrayOf(ra, dec))
         }
     }
 
@@ -75,7 +53,7 @@ open class Telescope(
      *
      * @return The coordinates in RA/DEC (JNow) or Altitude/Azimuth in degrees.
      */
-    open fun coordinate() = when (mountType()) {
+    open fun coordinates() = when (mountType()) {
         MountType.ALTAZ -> number(Coordinate.AZ) to number(Coordinate.ALT)
         else -> number(Coordinate.RA) to number(Coordinate.DEC)
     }
@@ -83,40 +61,45 @@ open class Telescope(
     /**
      * Moves the telescope to the coordinates and keep tracking.
      *
-     * @param raAz RA (JNow) in hours or azimuth in degrees
-     * @param decAlt DEC (JNow) in degrees or altitude in degrees above horizon
+     * @param ra RA (JNow) in hours or azimuth in degrees
+     * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun goTo(raAz: Double, decAlt: Double) {
+    open fun goTo(ra: Double, dec: Double) {
         send(OnCoordSet.TRACK, true)
-        coordinate(raAz, decAlt)
+        coordinates(ra, dec)
     }
 
     /**
      * Slews the telescope to the coordinates and stop.
      *
-     * @param raAz RA (JNow) in hours or azimuth in degrees
-     * @param decAlt DEC (JNow) in degrees or altitude in degrees above horizon
+     * @param ra RA (JNow) in hours or azimuth in degrees
+     * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun slewTo(raAz: Double, decAlt: Double) {
+    open fun slewTo(ra: Double, dec: Double) {
         send(OnCoordSet.SLEW, true)
-        coordinate(raAz, decAlt)
+        coordinates(ra, dec)
     }
 
     /**
      * Syncs the coordinates to telescope.
      *
-     * @param raAz RA (JNow) in hours or azimuth in degrees
-     * @param decAlt DEC (JNow) in degrees or altitude in degrees above horizon
+     * @param ra RA (JNow) in hours or azimuth in degrees
+     * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun sync(raAz: Double, decAlt: Double) {
+    open fun sync(ra: Double, dec: Double) {
         send(OnCoordSet.SYNC, true)
-        coordinate(raAz, decAlt)
+        coordinates(ra, dec)
     }
 
     /**
      * Moves the telescope towards [direction].
      */
     open fun move(direction: MotionDirection) = send(direction, true)
+
+    /**
+     * Stops moving the telescope towards [direction].
+     */
+    open fun stop(direction: MotionDirection) = send(direction, false)
 
     /**
      * Gets the telescope's mount type.
@@ -143,6 +126,23 @@ open class Telescope(
     open fun trackMode(mode: TrackMode) = send(mode, true)
 
     /**
+     * Enables or disables the tracking.
+     */
+    open fun tracking(enabled: Boolean) = send(TrackState.ON, enabled)
+
+    /**
+     * Sends the custom track rate.
+     */
+    open fun trackRate(ra: Double, dec: Double) = send(arrayOf(TrackRate.RA, TrackRate.DE), arrayOf(ra, dec))
+
+    /**
+     * Gets the current track rate.
+     *
+     * @return The track rate of RA axis and DEC axis, respectively.
+     */
+    open fun trackRate() = number(TrackRate.RA) to number(TrackRate.DE)
+
+    /**
      * Gets the supported slew rates.
      *
      * @return The supported slew rates or empty if Slew Rate is not supported.
@@ -165,6 +165,18 @@ open class Telescope(
     open fun pierSide() = if (switch(PierSide.WEST)) PierSide.WEST else PierSide.EAST
 
     open fun pierSide(side: PierSide) = send(side, true)
+
+    /**
+     * Gets the rates at which the telescope may be moved about the specified [axis].
+     */
+    open fun axisRates(axis: MountAxis) = number(axis)
+
+    open fun canGuide() = has(GuideDirection.NORTH) &&
+            has(GuideDirection.SOUTH) &&
+            has(GuideDirection.WEST) &&
+            has(GuideDirection.EAST)
+
+    open fun canPark() = has(Park.PARK)
 
     /**
      * Moves the telescope to its park position, stop all motion (or restrict to a small safe range).
@@ -194,26 +206,26 @@ open class Telescope(
     /**
      * Sets the HOME park position (RA/DEC or AZ/ALT) in degrees.
      *
-     * @param raAz RA/AZ park coordinates in degrees.
-     * @param decAlt DEC/ALT park coordinates in degrees.
+     * @param ra RA/AZ park coordinates in degrees.
+     * @param dec DEC/ALT park coordinates in degrees.
      */
-    open fun parkPosition(raAz: Double, decAlt: Double) {
+    open fun parkPosition(ra: Double, dec: Double) {
         if (mountType() == MountType.ALTAZ) {
-            send(ParkPosition.AZ, raAz)
-            send(ParkPosition.ALT, decAlt)
+            send(ParkPosition.AZ, ra)
+            send(ParkPosition.ALT, dec)
         } else {
-            send(ParkPosition.HA, raAz)
-            send(ParkPosition.DEC, decAlt)
+            send(ParkPosition.HA, ra)
+            send(ParkPosition.DEC, dec)
         }
     }
 
     /**
      * Sets the telescope's park position to be its current position.
      */
-    fun parkToCurrentPosition() = send(ParkOption.CURRENT, true)
+    open fun parkToCurrentPosition() = send(ParkOption.CURRENT, true)
 
     /**
      * Sets the telescope's park position to be the driver's default park position.
      */
-    fun parkToDefaultPosition() = send(ParkOption.DEFAULT, true)
+    open fun parkToDefaultPosition() = send(ParkOption.DEFAULT, true)
 }

@@ -4,8 +4,11 @@ import br.tiagohm.astrum.indi.protocol.NumberElement
 import java.io.IOException
 
 enum class GuideDirection(override val propName: String) : NumberElement {
+    // RA pulse
     NORTH("TELESCOPE_TIMED_GUIDE_NS"),
     SOUTH("TELESCOPE_TIMED_GUIDE_NS"),
+
+    // DEC pulse
     WEST("TELESCOPE_TIMED_GUIDE_WE"),
     EAST("TELESCOPE_TIMED_GUIDE_WE");
 

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.math.abs
 
 interface Driver {
 
@@ -28,9 +29,9 @@ interface Driver {
     val isOn: Boolean
         get() = switch(Connection.CONNECT)
 
-    fun registerPropertyListener(listener: ElementListener)
+    fun registerElementListener(listener: ElementListener)
 
-    fun unregisterPropertyListener(listener: ElementListener)
+    fun unregisterElementListener(listener: ElementListener)
 
     /**
      * Attaches the driver to the [client].
@@ -66,8 +67,21 @@ interface Driver {
     fun dateTime(): ZonedDateTime {
         if (has(Time.UTC)) {
             val utc = ISO_8601.parse(text(Time.UTC)).toInstant()
-            val offset = ZoneId.of(text(Time.OFFSET, "Z").replace(".", ":"))
-            return ZonedDateTime.ofInstant(utc, offset)
+            // Fix invalid format error!
+            val offset = text(Time.OFFSET, "Z")
+                .replace(".", ":")
+                .split(":")
+                .let {
+                    val h = if (it[0] == "Z") 0 else it[0].toInt()
+                    val m = if (it.size == 2) it[1].toInt() else 0
+
+                    if (h == 0 && m == 0) "Z"
+                    else {
+                        val sign = if (h >= 0) "+" else "-"
+                        String.format("$sign%02d:%02d", abs(h), m)
+                    }
+                }
+            return ZonedDateTime.ofInstant(utc, ZoneId.of(offset))
         } else {
             throw UnsupportedOperationException("TIME_UTC is not supported")
         }
@@ -90,40 +104,46 @@ interface Driver {
     }
 
     /**
+     * Gets the [element].
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T> element(element: Element<T>) = client?.element(name, element.propName, element.elementName)
+
+    /**
      * Gets the [element]'s value.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T> element(element: Element<T>) = client?.element(name, element.propName, element.elementName)?.value as? T
+    fun <T> value(element: Element<T>) = element(element)?.value as? T
 
     /**
      * Determines if [element] exists.
      */
-    fun <T> has(element: Element<T>) = this.element(element) != null
+    fun <T> has(element: Element<T>) = element(element) != null
 
     /**
      * Gets the [element]'s value as Switch.
      */
-    fun switch(element: SwitchElement) = this.element(element) == true
+    fun switch(element: SwitchElement) = value(element) == true
 
     /**
      * Gets the [element]'s value as Number or [value] if not exists.
      */
-    fun number(element: NumberElement, value: Double = 0.0) = this.element(element) ?: value
+    fun number(element: NumberElement, value: Double = 0.0) = value(element) ?: value
 
     /**
      * Gets the [element]'s value as Text or [value] if not exists.
      */
-    fun text(element: TextElement, value: String = "") = this.element(element) ?: value
+    fun text(element: TextElement, value: String = "") = value(element) ?: value
 
     /**
      * Gets the [element]'s value as Light or [value] if not exists.
      */
-    fun light(element: LightElement, value: State = State.IDLE) = this.element(element) ?: value
+    fun light(element: LightElement, value: State = State.IDLE) = value(element) ?: value
 
     /**
      * Gets the [element]'s value as BLOB.
      */
-    fun blob(element: BLOBElement) = this.element(element)
+    fun blob(element: BLOBElement) = value(element)
 
     companion object {
 

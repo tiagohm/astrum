@@ -6,6 +6,8 @@ data class SlewRate(override val elementName: String) : SwitchElement {
 
     override val propName = "TELESCOPE_SLEW_RATE"
 
+    override fun toString() = elementName
+
     companion object {
 
         val NONE = SlewRate("NONE")

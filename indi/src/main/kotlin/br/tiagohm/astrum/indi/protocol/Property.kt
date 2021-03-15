@@ -7,7 +7,7 @@ class Property<T>(vararg val elements: Element<T>) : Command<Array<T>> {
 
     override fun toXML(device: String, value: Array<T>): String {
         val propName = elements[0].propName
-        val type = elements[0].type
+        val type = elements[0].type.text
 
         return xml("new${type}Vector") {
             attribute("device", device)

@@ -50,7 +50,7 @@ open class Client(
 
     private fun registerDriver(device: String, driver: PropertyElement<String>) {
         when (val exec = driver.value) {
-            "indi_simulator_telescope" -> Telescope(device, exec)
+            "indi_simulator_telescope" -> TelescopeDriver(device, exec)
             // TODO: Adicionar os outros drivers.
             else -> null
         }?.also {
@@ -69,20 +69,22 @@ open class Client(
                 val device = tag.attributes["device"]!!
                 val name = tag.attributes["name"]!!
 
-                // Delete by device and name.
-                if (name.isNotEmpty()) {
-                    elements.clear(device, name)
-                }
-                // Delete by device.
-                else if (device.isNotEmpty()) {
-                    elements.clear(device)
-                    drivers.remove(device)?.detach()
-                }
-                // Delete all.
-                else {
-                    elements.clear()
-                    drivers.forEach { it.value.detach() }
-                    drivers.clear()
+                synchronized(elements) {
+                    // Delete by device and name.
+                    if (name.isNotEmpty()) {
+                        elements.clear(device, name)
+                    }
+                    // Delete by device.
+                    else if (device.isNotEmpty()) {
+                        elements.clear(device)
+                        drivers.remove(device)?.detach()
+                    }
+                    // Delete all.
+                    else {
+                        elements.clear()
+                        drivers.forEach { it.value.detach() }
+                        drivers.clear()
+                    }
                 }
             }
             // Define a property that holds one or more elements or
@@ -100,6 +102,7 @@ open class Client(
                 val device = tag.attributes["device"]!!
                 val propName = tag.attributes["name"]!!
                 val isReadOnly = tag.attributes["perm"]?.let { it == "ro" }
+                val state = tag.attributes["state"]?.let { State.valueOf(it.toUpperCase()) }
                 val elements = ArrayList<Array<Any?>>(tag.children.size)
 
                 for (c in tag.children) {
@@ -108,7 +111,7 @@ open class Client(
                     val min = c.attributes["min"]?.toDoubleOrNull()
                     val max = c.attributes["max"]?.toDoubleOrNull()
                     val step = c.attributes["step"]?.toDoubleOrNull()
-                    val format = c.attributes["format"] ?: ""
+                    val format = c.attributes["format"]
                     val value = c.text
 
                     val p: Array<Any?> = when (c.name) {
@@ -123,23 +126,17 @@ open class Client(
                         else -> continue
                     }
 
-                    elements.add(p)
+                    synchronized(elements) {
+                        elements.add(p)
+                    }
                 }
 
                 // Add or set properties.
                 if (elements.isNotEmpty()) {
-                    var driverExec: PropertyElement<String>? = null
-
                     for (element in elements) {
                         val name = element[0] as String
 
-                        val ne = PROPERTIES[propName]?.invoke(name)
-
-                        if (ne == null) {
-                            println("UNKNOWN: $propName:$name")
-                            continue
-                        }
-
+                        val ne = PROPERTIES[propName]?.invoke(name) ?: continue
                         val oe = element(device, propName, name)
 
                         val value = element[1] ?: oe?.value
@@ -149,21 +146,25 @@ open class Client(
                         val max = element[5] as? Double ?: oe?.max ?: 0.0
                         val step = element[6] as? Double ?: oe?.step ?: 0.0
 
-                        val permission = isReadOnly ?: element(device, propName, name)?.isReadOnly ?: false
+                        val perm = isReadOnly ?: oe?.isReadOnly ?: false
+                        val s = state ?: oe?.state ?: State.IDLE
 
                         val pe = when (ne.type) {
-                            ElementType.TEXT -> PropertyElement(ne as TextElement, value as String, permission, min, max, step, size, format).also {
+                            ElementType.TEXT -> PropertyElement(ne as TextElement, value as String, perm, s, min, max, step, size, format).also {
                                 if (propName == "DRIVER_INFO" && ne.elementName == "DRIVER_EXEC") {
                                     registerDriver(device, it)
                                 }
                             }
-                            ElementType.NUMBER -> PropertyElement(ne as NumberElement, value as Double, permission, min, max, step, size, format)
-                            ElementType.SWITCH -> PropertyElement(ne as SwitchElement, value as Boolean, permission, min, max, step, size, format)
-                            ElementType.LIGHT -> PropertyElement(ne as LightElement, value as State, permission, min, max, step, size, format)
-                            ElementType.BLOB -> PropertyElement(ne as BLOBElement, value as ByteArray, permission, min, max, step, size, format)
+                            ElementType.NUMBER -> PropertyElement(ne as NumberElement, value as Double, perm, s, min, max, step, size, format)
+                            ElementType.SWITCH -> PropertyElement(ne as SwitchElement, value as Boolean, perm, s, min, max, step, size, format)
+                            ElementType.LIGHT -> PropertyElement(ne as LightElement, value as State, perm, s, min, max, step, size, format)
+                            ElementType.BLOB -> PropertyElement(ne as BLOBElement, value as ByteArray, perm, s, min, max, step, size, format)
                         }
 
-                        this.elements.set(device, propName, name, pe)
+                        synchronized(elements) {
+                            this.elements.set(device, propName, name, pe)
+                        }
+
                         elementListeners.forEach { l -> l.onElement(device, pe) }
                     }
                 }
@@ -197,9 +198,6 @@ open class Client(
                     }
                 }
             }
-
-            fetchProperties()
-            enableBLOB()
         }
     }
 
@@ -214,7 +212,11 @@ open class Client(
             drivers().forEach { it.detach() }
             elementListeners.clear()
             messageListeners.clear()
-            elements.clear()
+
+            synchronized(elements) {
+                elements.clear()
+                drivers.clear()
+            }
         }
     }
 
@@ -260,7 +262,7 @@ open class Client(
             attribute("device", device)
             if (name.isNotEmpty()) attribute("name", name)
             text(state.text)
-        }.toString(true)
+        }.toString(false)
 
         write(command)
     }
@@ -268,22 +270,22 @@ open class Client(
     /**
      * Gets the specified element.
      */
-    fun element(device: String, propName: String, elementName: String) = elements.get(device, propName, elementName)
+    fun element(device: String, propName: String, elementName: String) = synchronized(elements) { elements.get(device, propName, elementName) }
 
     /**
      * Gets the device names.
      */
-    fun devices(): Set<String> = elements.keys()
+    fun devices(): Set<String> = synchronized(elements) { elements.keys() }
 
     /**
      * Gets the available property names from the given [device].
      */
-    fun propertyNames(device: String) = elements.keys(device)
+    fun propertyNames(device: String) = synchronized(elements) { elements.keys(device) }
 
     /**
      * Gets the available elemens names from the given [device] and property name.
      */
-    fun elementNames(device: String, propName: String) = elements.keys(device, propName)
+    fun elementNames(device: String, propName: String) = synchronized(elements) { elements.keys(device, propName) }
 
     /**
      * Gets the available drivers.
@@ -293,7 +295,7 @@ open class Client(
     /**
      * Gets the available telescope drivers.
      */
-    fun telescopes() = drivers.values.filterIsInstance<Telescope>()
+    fun telescopes() = drivers.values.filterIsInstance<TelescopeDriver>()
 
     companion object {
 

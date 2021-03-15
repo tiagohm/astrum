@@ -1,5 +1,6 @@
 package br.tiagohm.astrum.indi.client.parser
 
+import java.io.File
 import java.io.IOException
 
 /**
@@ -22,6 +23,8 @@ class SimpleXMLParser {
     fun parse(i: Int) = if (i < 0) null else parse(i.toChar())
 
     fun parse(c: Char): XMLTag? {
+        // DEBUG_FILE.write(c.toInt())
+
         // Ignore
         if (c == '\r' || c == '\n' || c == '\t') {
             return null
@@ -238,5 +241,7 @@ class SimpleXMLParser {
         private const val TEXT = 10
         private const val TAG_SLASH_END = 11
         private const val TAG_NAME_END = 12
+
+        private val DEBUG_FILE by lazy { File("DEBUG.txt").outputStream() }
     }
 }

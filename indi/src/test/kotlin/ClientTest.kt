@@ -29,6 +29,9 @@ class ClientTest {
             }
         })
 
+        client.fetchProperties()
+        client.enableBLOB()
+
         Thread.sleep(4000)
 
         val telescope = client.telescopes().first()
@@ -37,7 +40,7 @@ class ClientTest {
 
         Thread.sleep(5000)
 
-        System.err.println(telescope.coordinate())
+        System.err.println(telescope.coordinates())
         System.err.println(telescope.isTracking)
         System.err.println(telescope.isParked)
         System.err.println(telescope.mountType())
