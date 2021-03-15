@@ -3,7 +3,7 @@ package br.tiagohm.astrum.indi.protocol
 import br.tiagohm.astrum.indi.client.Command
 import org.redundent.kotlin.xml.xml
 
-class Property<T>(vararg val elements: Element<T>) : Command<Array<T>> {
+class Property<E : Element<T>, T>(vararg val elements: E) : Command<Array<T>> {
 
     override fun toXML(device: String, value: Array<T>): String {
         val propName = elements[0].propName

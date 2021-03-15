@@ -28,6 +28,7 @@ open class Client(
 
     private val messageListeners = ArrayList<MessageListener>(1)
     private val elementListeners = ArrayList<ElementListener>(1)
+    private val driverListeners = ArrayList<DriverListener>(1)
 
     private val elements = Shelf<PropertyElement<*>>()
     private val drivers = HashMap<String, Driver>()
@@ -48,15 +49,34 @@ open class Client(
         elementListeners.remove(listener)
     }
 
+    open fun registerDriverListener(listener: DriverListener) {
+        if (!driverListeners.contains(listener)) driverListeners.add(listener)
+    }
+
+    open fun unregisterDriverListener(listener: DriverListener) {
+        driverListeners.remove(listener)
+    }
+
     private fun registerDriver(device: String, driver: PropertyElement<String>) {
         when (val exec = driver.value) {
-            "indi_simulator_telescope" -> TelescopeDriver(device, exec)
+            "indi_simulator_telescope" -> Telescope(device, exec)
             // TODO: Adicionar os outros drivers.
             else -> null
         }?.also {
-            drivers[device]?.detach()
+            if (drivers.contains(device)) {
+                synchronized(drivers) {
+                    drivers[device]!!.detach()
+                    drivers.remove(device)
+                }
+
+                driverListeners.forEach { listener -> listener.onDriverRemoved(drivers[device]!!) }
+            }
+
             it.attach(this)
-            drivers[device] = it
+
+            synchronized(drivers) { drivers[device] = it }
+
+            driverListeners.forEach { listener -> listener.onDriverAdded(it) }
         }
     }
 
@@ -69,19 +89,30 @@ open class Client(
                 val device = tag.attributes["device"]!!
                 val name = tag.attributes["name"]!!
 
-                synchronized(elements) {
-                    // Delete by device and name.
-                    if (name.isNotEmpty()) {
+                // Delete by device and name.
+                if (name.isNotEmpty()) {
+                    synchronized(elements) {
                         elements.clear(device, name)
                     }
-                    // Delete by device.
-                    else if (device.isNotEmpty()) {
+                }
+                // Delete by device.
+                else if (device.isNotEmpty()) {
+                    synchronized(elements) {
                         elements.clear(device)
-                        drivers.remove(device)?.detach()
                     }
-                    // Delete all.
-                    else {
+
+                    synchronized(drivers) { drivers.remove(device) }?.also {
+                        it.detach()
+                        driverListeners.forEach { listener -> listener.onDriverRemoved(it) }
+                    }
+                }
+                // Delete all.
+                else {
+                    synchronized(elements) {
                         elements.clear()
+                    }
+
+                    synchronized(drivers) {
                         drivers.forEach { it.value.detach() }
                         drivers.clear()
                     }
@@ -126,9 +157,7 @@ open class Client(
                         else -> continue
                     }
 
-                    synchronized(elements) {
-                        elements.add(p)
-                    }
+                    elements.add(p)
                 }
 
                 // Add or set properties.
@@ -161,11 +190,11 @@ open class Client(
                             ElementType.BLOB -> PropertyElement(ne as BLOBElement, value as ByteArray, perm, s, min, max, step, size, format)
                         }
 
-                        synchronized(elements) {
+                        synchronized(this.elements) {
                             this.elements.set(device, propName, name, pe)
                         }
 
-                        elementListeners.forEach { l -> l.onElement(device, pe) }
+                        elementListeners.forEach { listener -> listener.onElement(device, pe) }
                     }
                 }
             }
@@ -295,7 +324,7 @@ open class Client(
     /**
      * Gets the available telescope drivers.
      */
-    fun telescopes() = drivers.values.filterIsInstance<TelescopeDriver>()
+    fun telescopes() = drivers.values.filterIsInstance<Telescope>()
 
     companion object {
 

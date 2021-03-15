@@ -1,12 +1,16 @@
 package br.tiagohm.astrum.cli
 
+import br.tiagohm.astrum.cli.commands.TelescopeCommand
 import br.tiagohm.astrum.indi.client.Client
 import br.tiagohm.astrum.indi.client.MessageListener
 import br.tiagohm.astrum.indi.protocol.Message
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "astrum")
+@CommandLine.Command(
+    name = "astrum",
+    subcommands = [CommandLine.HelpCommand::class, TelescopeCommand::class],
+)
 class Astrum : Callable<Int>, MessageListener {
 
     var client: Client? = null
@@ -15,6 +19,7 @@ class Astrum : Callable<Int>, MessageListener {
     @CommandLine.Command(
         name = "connect",
         description = ["Connects to the server running on [host] using the port number [port]"],
+        subcommands = [CommandLine.HelpCommand::class],
     )
     fun connect(
         @CommandLine.Option(
@@ -38,16 +43,17 @@ class Astrum : Callable<Int>, MessageListener {
                 it.fetchProperties()
                 it.enableBLOB()
 
-                info("[INFO] Connected")
+                showInfo("[INFO] Connected")
             }
         } else {
-            warning("[WARNING] Already connected")
+            showWarning("[WARNING] Already connected")
         }
     }
 
     @CommandLine.Command(
         name = "disconnect",
         description = ["Disconnects from the server"],
+        subcommands = [CommandLine.HelpCommand::class],
     )
     fun disconnect() {
         if (client != null) {
@@ -55,15 +61,13 @@ class Astrum : Callable<Int>, MessageListener {
             client!!.disconnect()
             client = null
 
-            info("[INFO] Disconnected")
+            showInfo("[INFO] Disconnected")
         } else {
-            warning("[WARNING] Already disconnected")
+            showWarning("[WARNING] Already disconnected")
         }
     }
 
-    override fun onMessage(message: Message) {
-        info(message.message)
-    }
+    override fun onMessage(message: Message) = showInfo(message.message)
 
     override fun call() = 0
 }

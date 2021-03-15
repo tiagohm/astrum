@@ -1,14 +1,13 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
 import br.tiagohm.astrum.indi.protocol.NumberElement
-import java.io.IOException
 
 enum class GuideDirection(override val propName: String) : NumberElement {
-    // RA pulse
+    // DEC pulse
     NORTH("TELESCOPE_TIMED_GUIDE_NS"),
     SOUTH("TELESCOPE_TIMED_GUIDE_NS"),
 
-    // DEC pulse
+    // RA pulse
     WEST("TELESCOPE_TIMED_GUIDE_WE"),
     EAST("TELESCOPE_TIMED_GUIDE_WE");
 
@@ -21,7 +20,7 @@ enum class GuideDirection(override val propName: String) : NumberElement {
             'S' -> SOUTH
             'W' -> WEST
             'E' -> EAST
-            else -> throw IOException("Invalid value for GuideDirection: $name")
+            else -> error("Invalid value for GuideDirection: $name")
         }
     }
 }

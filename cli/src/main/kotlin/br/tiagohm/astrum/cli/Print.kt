@@ -2,15 +2,14 @@ package br.tiagohm.astrum.cli
 
 import picocli.CommandLine
 
-fun print(
-    text: String,
-    color: String = "green",
-) = println(CommandLine.Help.Ansi.ON.string("@|$color,bold $text|@"))
+private fun show(text: String, color: String) {
+    println(CommandLine.Help.Ansi.ON.string("@|$color,bold $text|@"))
+}
 
-fun error(text: String) = print(text, "red")
+fun showError(text: String) = show(text, "red")
 
-fun info(text: String) = print(text, "blue")
+fun showInfo(text: String) = show(text, "blue")
 
-fun success(text: String) = print(text, "green")
+fun showSuccess(text: String) = show(text, "green")
 
-fun warning(text: String) = print(text, "fg(202)")
+fun showWarning(text: String) = show(text, "fg(202)")

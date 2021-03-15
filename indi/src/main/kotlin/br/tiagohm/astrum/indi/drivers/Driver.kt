@@ -2,6 +2,7 @@ package br.tiagohm.astrum.indi.drivers
 
 import br.tiagohm.astrum.indi.client.Client
 import br.tiagohm.astrum.indi.client.ElementListener
+import br.tiagohm.astrum.indi.drivers.telescope.Coordinate
 import br.tiagohm.astrum.indi.protocol.*
 import java.text.SimpleDateFormat
 import java.time.ZoneId
@@ -51,7 +52,7 @@ interface Driver {
     /**
      * Sends atomically the [elements] and yours [values] to the driver.
      */
-    fun <T> send(elements: Array<Element<T>>, values: Array<T>) = also { client?.send(name, Property(*elements), values) }
+    fun <E : Element<T>, T> send(elements: Array<E>, values: Array<T>) = also { client?.send(name, Property(*elements), values) }
 
     /**
      * Connects the driver.
@@ -83,7 +84,7 @@ interface Driver {
                 }
             return ZonedDateTime.ofInstant(utc, ZoneId.of(offset))
         } else {
-            throw UnsupportedOperationException("TIME_UTC is not supported")
+            error("TIME_UTC is not supported")
         }
     }
 
@@ -102,6 +103,48 @@ interface Driver {
         val offset = dateTime.offset.totalSeconds / 3600.0
         dateTime(utc, offset)
     }
+
+    /**
+     * Sets the telescope's location.
+     *
+     * @param longitude Site latitude (-90 to +90), degrees +N
+     * @param latitude Site longitude (0 to 360), degrees +E
+     * @param elevation Site elevation, meters
+     */
+    fun location(
+        longitude: Double? = null,
+        latitude: Double? = null,
+        elevation: Double? = null,
+    ) {
+        val a = ArrayList<NumberElement>(3)
+        val b = ArrayList<Double>(3)
+
+        if (latitude != null) {
+            a.add(Coordinate.LAT)
+            b.add(latitude)
+        }
+
+        if (longitude != null) {
+            a.add(Coordinate.LONG)
+            b.add(longitude)
+        }
+
+        if (elevation != null) {
+            a.add(Coordinate.ELEV)
+            b.add(elevation)
+        }
+
+        if (a.isNotEmpty()) {
+            send(a.toTypedArray(), b.toTypedArray())
+        }
+    }
+
+    /**
+     * Gets the telescope's location.
+     *
+     * @return The telescope location (longitude, latitude and elevation).
+     */
+    fun location() = Triple(number(Coordinate.LONG), number(Coordinate.LAT), number(Coordinate.ELEV))
 
     /**
      * Gets the [element].

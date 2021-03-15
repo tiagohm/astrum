@@ -1,16 +1,15 @@
 package br.tiagohm.astrum.indi.drivers.telescope
 
 import br.tiagohm.astrum.indi.drivers.BaseDriver
-import br.tiagohm.astrum.indi.protocol.State
 
 // Some references:
 // * https://ascom-standards.org/Help/Platform/html/T_ASCOM_DeviceInterface_ITelescopeV3.htm
 
-// TODO: doPulse
+// TODO: isPulseGuiding, guideRates
 // TODO: AltAz mount has HORIZONTAL_COORD or EQUATORIAL_EOD_COORD?
 // TODO: Alignment feature!
-// TODO: Whats clearParking does?
-open class TelescopeDriver(
+// TODO: Satellite tracking LX200
+open class Telescope(
     override val name: String,
     override val executable: String,
 ) : BaseDriver() {
@@ -31,16 +30,22 @@ open class TelescopeDriver(
      * Determines if the telescope is slewing.
      */
     open val isSlewing: Boolean
-        get() = (has(Coordinate.RA) && element(Coordinate.RA)!!.state == State.BUSY) ||
-                (has(Coordinate.AZ) && element(Coordinate.AZ)!!.state == State.BUSY)
+        get() = (has(Coordinate.RA) && element(Coordinate.RA)!!.isBusy) ||
+                (has(Coordinate.AZ) && element(Coordinate.AZ)!!.isBusy)
 
     /**
-     * Sends the coordinates to telescope.
+     * Determines if the telescope is parking.
+     */
+    open val isParking: Boolean
+        get() = has(Park.PARK) && element(Park.PARK)!!.isBusy
+
+    /**
+     * Sends the position to telescope.
      *
      * @param ra RA (JNow) in hours or azimuth in degrees
      * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun coordinates(ra: Double, dec: Double) {
+    open fun position(ra: Double, dec: Double) {
         if (mountType() == MountType.ALTAZ) {
             send(arrayOf(Coordinate.AZ, Coordinate.ALT), arrayOf(ra, dec))
         } else {
@@ -49,11 +54,11 @@ open class TelescopeDriver(
     }
 
     /**
-     * Gets the current coordinates.
+     * Gets the current position from telescope.
      *
      * @return The coordinates in RA/DEC (JNow) or Altitude/Azimuth in degrees.
      */
-    open fun coordinates() = when (mountType()) {
+    open fun position() = when (mountType()) {
         MountType.ALTAZ -> number(Coordinate.AZ) to number(Coordinate.ALT)
         else -> number(Coordinate.RA) to number(Coordinate.DEC)
     }
@@ -64,9 +69,9 @@ open class TelescopeDriver(
      * @param ra RA (JNow) in hours or azimuth in degrees
      * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun goTo(ra: Double, dec: Double) {
+    open fun goto(ra: Double, dec: Double) {
         send(OnCoordSet.TRACK, true)
-        coordinates(ra, dec)
+        position(ra, dec)
     }
 
     /**
@@ -75,9 +80,9 @@ open class TelescopeDriver(
      * @param ra RA (JNow) in hours or azimuth in degrees
      * @param dec DEC (JNow) in degrees or altitude in degrees above horizon
      */
-    open fun slewTo(ra: Double, dec: Double) {
+    open fun slew(ra: Double, dec: Double) {
         send(OnCoordSet.SLEW, true)
-        coordinates(ra, dec)
+        position(ra, dec)
     }
 
     /**
@@ -88,7 +93,7 @@ open class TelescopeDriver(
      */
     open fun sync(ra: Double, dec: Double) {
         send(OnCoordSet.SYNC, true)
-        coordinates(ra, dec)
+        position(ra, dec)
     }
 
     /**
@@ -128,7 +133,7 @@ open class TelescopeDriver(
     /**
      * Enables or disables the tracking.
      */
-    open fun tracking(enabled: Boolean) = send(TrackState.ON, enabled)
+    open fun tracking(enabled: Boolean) = send(if (enabled) TrackState.ON else TrackState.OFF, true)
 
     /**
      * Sends the custom track rate.
@@ -171,12 +176,20 @@ open class TelescopeDriver(
      */
     open fun axisRates(axis: MountAxis) = number(axis)
 
+    open fun canTrackSatellite() = has(SatTracking.TRACK)
+
     open fun canGuide() = has(GuideDirection.NORTH) &&
             has(GuideDirection.SOUTH) &&
             has(GuideDirection.WEST) &&
             has(GuideDirection.EAST)
 
     open fun canPark() = has(Park.PARK)
+
+    open fun canSync() = has(OnCoordSet.SYNC)
+
+    open fun canGoto() = has(OnCoordSet.TRACK)
+
+    open fun canSlew() = has(OnCoordSet.SLEW)
 
     /**
      * Moves the telescope to its park position, stop all motion (or restrict to a small safe range).
@@ -228,4 +241,25 @@ open class TelescopeDriver(
      * Sets the telescope's park position to be the driver's default park position.
      */
     open fun parkToDefaultPosition() = send(ParkOption.DEFAULT, true)
+
+    open fun clearParking() = send(ParkOption.PURGE_DATA, true)
+
+    /**
+     * Pulses guiding for RA and DEC axes in milliseconds.
+     */
+    open fun pulse(
+        ra: GuideDirection,
+        raMs: Double,
+        dec: GuideDirection,
+        decMs: Double,
+    ) {
+        if ((ra == GuideDirection.WEST || ra == GuideDirection.EAST) &&
+            dec == GuideDirection.NORTH || dec == GuideDirection.SOUTH
+        ) {
+            send(ra, raMs)
+            send(dec, decMs)
+        } else {
+            error("Invalid guide direction: $ra/$dec")
+        }
+    }
 }

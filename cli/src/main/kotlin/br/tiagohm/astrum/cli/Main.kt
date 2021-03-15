@@ -1,6 +1,5 @@
 package br.tiagohm.astrum.cli
 
-import br.tiagohm.astrum.cli.commands.Telescope
 import org.jline.reader.EndOfFileException
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
@@ -13,45 +12,45 @@ import java.util.*
 import javax.swing.filechooser.FileSystemView
 import kotlin.system.exitProcess
 
-fun main() {
-    val homeDir = FileSystemView.getFileSystemView().defaultDirectory.path
+fun main(vararg args: String) {
+    // Operating System
     val os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH)
-
+    // System HOME directory
+    val homeDir = FileSystemView.getFileSystemView().defaultDirectory.path
+    // Application directory
     val appDir = when {
         os.contains("mac") || os.contains("darwin") -> Paths.get(homeDir, "Documents", "Astrum")
         os.contains("win") -> Paths.get(homeDir, "Documents", "Astrum")
         os.contains("nux") -> Paths.get(homeDir, ".config", "astrum")
         else -> throw IllegalArgumentException("Unsupported operating system")
     }.toFile().also { it.mkdir() }
-
+    // Terminal
     val terminal = TerminalBuilder.builder().build()
     val lineReader = LineReaderBuilder.builder()
         .terminal(terminal)
         .appName("Astrum")
         .variable(LineReader.HISTORY_FILE, Paths.get(appDir.path, ".history").toFile())
         .build()
-
+    // Commands
     val astrum = Astrum()
-    val telescope = Telescope(astrum)
-
+    // CLI
     val cli = CommandLine(astrum).apply {
-        addSubcommand(telescope)
         executionStrategy = RunAll()
         executionExceptionHandler = ExecutionExceptionHandler
-    }
 
+        execute(*args)
+    }
+    // Process user input
     while (true) {
         try {
+            // Read command line
             val line = lineReader.readLine()
 
             try {
-                val args = CommandLineParser.parse(line)
-
-                if (args.isNotEmpty()) {
-                    cli.execute(*args)
-                }
+                // Parse and execute the command line
+                CommandLineParser.parse(line).also { cli.execute(*it) }
             } catch (e: Exception) {
-                System.err.println(e.message)
+                e.message?.let { showError("[ERROR] $it") }
             }
         } catch (e: UserInterruptException) {
             exitProcess(0)

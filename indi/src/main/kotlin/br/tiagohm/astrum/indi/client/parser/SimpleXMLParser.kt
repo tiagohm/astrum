@@ -1,7 +1,6 @@
 package br.tiagohm.astrum.indi.client.parser
 
 import java.io.File
-import java.io.IOException
 
 /**
  * Simple XML Parser to parse INDI protocol.
@@ -43,7 +42,7 @@ class SimpleXMLParser {
                 state = TAG_NAME
                 tagName[level].append(c)
             } else {
-                throw IOException("Found invalid characted at TAG_START: $c")
+                error("Found invalid characted at TAG_START: $c")
             }
         }
         // Name
@@ -59,7 +58,7 @@ class SimpleXMLParser {
             } else if (c == '>') {
                 state = TAG_END
             } else {
-                throw IOException("Found invalid characted at TAG_NAME: $c")
+                error("Found invalid characted at TAG_NAME: $c")
             }
         }
         // Slash
@@ -69,7 +68,7 @@ class SimpleXMLParser {
             if (c == '>') {
                 state = TAG_END
             } else {
-                throw IOException("Found invalid characted at TAG_SLASH: $c")
+                error("Found invalid characted at TAG_SLASH: $c")
             }
         }
         // Whitespace
@@ -96,7 +95,7 @@ class SimpleXMLParser {
             } else if (c == ' ') {
                 // ignore
             } else {
-                throw IOException("Found invalid characted at ATTR_NAME: $c")
+                error("Found invalid characted at ATTR_NAME: $c")
             }
         }
         // Attr Equal
@@ -106,7 +105,7 @@ class SimpleXMLParser {
             } else if (c == ' ') {
                 // ignore
             } else {
-                throw IOException("Found invalid characted at ATTR_EQUAL: $c")
+                error("Found invalid characted at ATTR_EQUAL: $c")
             }
         }
         // Attr Start Quote
@@ -135,7 +134,7 @@ class SimpleXMLParser {
                 c.isWhitespace() -> WS
                 c == '/' -> TAG_SLASH
                 c == '>' -> TAG_END
-                else -> throw IOException("Found invalid characted at ATTR_END_QUOTE: $c")
+                else -> error("Found invalid characted at ATTR_END_QUOTE: $c")
             }
         }
         // Text
@@ -156,7 +155,7 @@ class SimpleXMLParser {
             } else if (c.isWhitespace()) {
                 // ignore
             } else {
-                throw IOException("Found invalid characted at TAG_SLASH_END: $c")
+                error("Found invalid characted at TAG_SLASH_END: $c")
             }
         }
         // Tag Name End
@@ -168,7 +167,7 @@ class SimpleXMLParser {
             } else if (c.isWhitespace()) {
                 // ignore
             } else {
-                throw IOException("Found invalid characted at TAG_NAME_END: $c")
+                error("Found invalid characted at TAG_NAME_END: $c")
             }
         }
 

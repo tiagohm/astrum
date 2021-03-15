@@ -15,4 +15,14 @@ data class PropertyElement<T>(
     // BLOB
     val size: Int = 0,
     val format: String = "",
-) : Element<T> by element
+) : Element<T> by element {
+
+    val isBusy: Boolean
+        get() = state == State.BUSY
+
+    val isIdle: Boolean
+        get() = state == State.IDLE
+
+    val isOK: Boolean
+        get() = state == State.OK
+}

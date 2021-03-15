@@ -40,7 +40,7 @@ class ClientTest {
 
         Thread.sleep(5000)
 
-        System.err.println(telescope.coordinates())
+        System.err.println(telescope.position())
         System.err.println(telescope.isTracking)
         System.err.println(telescope.isParked)
         System.err.println(telescope.mountType())
