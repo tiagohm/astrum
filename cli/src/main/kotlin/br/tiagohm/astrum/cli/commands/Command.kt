@@ -53,12 +53,12 @@ interface Command : Callable<Int> {
                 names = ["-e"],
                 description = ["Site elevation, meters"],
             )
-            elevation: String? = null,
+            elevation: Double? = null,
         ) {
             driver.location(
                 longitude?.sexagesimal(),
                 latitude?.sexagesimal(),
-                elevation?.sexagesimal(),
+                elevation,
             )
         }
     }

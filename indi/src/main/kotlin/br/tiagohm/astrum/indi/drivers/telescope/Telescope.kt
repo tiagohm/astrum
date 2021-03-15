@@ -143,7 +143,7 @@ open class Telescope(
     /**
      * Gets the current track rate.
      *
-     * @return The track rate of RA axis and DEC axis, respectively.
+     * @return The track rate of RA and DEC axes, respectively.
      */
     open fun trackRate() = number(TrackRate.RA) to number(TrackRate.DE)
 

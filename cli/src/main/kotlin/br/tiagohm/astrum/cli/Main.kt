@@ -50,7 +50,7 @@ fun main(vararg args: String) {
                 // Parse and execute the command line
                 CommandLineParser.parse(line).also { cli.execute(*it) }
             } catch (e: Exception) {
-                e.message?.let { showError("[ERROR] $it") }
+                e.message?.let { red("[ERROR] $it") }
             }
         } catch (e: UserInterruptException) {
             exitProcess(0)

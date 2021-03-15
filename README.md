@@ -20,7 +20,7 @@ Most of the algorithms were ported from [Stellarium](https://github.com/Stellari
 ### Example
 
 ```kotlin
-    val sun = Sun()
+val sun = Sun()
 val earth = Earth(sun)
 
 val location = Location("Observatório Pico dos Dias", Degrees(-22.534444).radians, Degrees(-45.5825), Meter(1864.0))
@@ -146,7 +146,7 @@ Commands:
 
 ---
 
-`telescope config location --lat=[<double|sexagesimal>] --lon=[<double|sexagesimal>] --e=[<double|sexagesimal>]`: Sets the Earth geodetic coordinate.
+`telescope config location --lat=[<double|sexagesimal>] --lon=[<double|sexagesimal>] --e=[<double>]`: Sets the Earth geodetic coordinate.
 
 * `--lat`: Site latitude (-90 to +90), degrees +N
 * `--lon`: Site longitude (0 to 360), degrees +E
@@ -179,9 +179,31 @@ Commands:
 
 `telescope info`: Shows the available telescopes' info.
 
+Output:
+
+```text
+[0] Telescope Simulator:indi_simulator_telescope
+CAN SYNC: true
+CAN GOTO: true
+CAN TRACK SATELLITE: false
+CAN GUIDE: true
+CAN PARK: true    
+SLEW RATES: 4x, [3x], 2x, 1x
+TRACK RATE: RA: 15.041067178670204 DEC: 0.0
+PARK POSITION: RA: -6.0 DEC: 0.0
+DATE TIME: 2021-03-15T12:20:27-03:00
+LOCATION: LON: -10.123456 LAT: -10.123456 ELEV: 853.0
+```
+
 ---
 
 `telescope list`: Lists the available telescopes.
+
+Output:
+
+```text
+[0] Telescope Simulator:indi_simulator_telescope
+```
 
 ---
 
@@ -215,6 +237,18 @@ Example: `pulse 1000.0N 2000.0W`
 ---
 
 `telescope status`: Shows the telescope's status.
+
+Output:
+
+```text
+SLEWING: false
+PARKING: false
+PARKED: false
+TRACKING: true
+TRACK MODE: SIDEREAL
+RA: 23.702896850451616
+DEC: -1.8780555555555338
+```
 
 ---
 

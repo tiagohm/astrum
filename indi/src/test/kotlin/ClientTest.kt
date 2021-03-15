@@ -23,7 +23,7 @@ class ClientTest {
             }
         })
 
-        client.registerPropertyListener(object : ElementListener {
+        client.registerElementListener(object : ElementListener {
             override fun onElement(device: String, element: PropertyElement<*>) {
                 System.err.println(element)
             }

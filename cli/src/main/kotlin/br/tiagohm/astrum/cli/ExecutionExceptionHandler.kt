@@ -9,7 +9,7 @@ internal object ExecutionExceptionHandler : CommandLine.IExecutionExceptionHandl
         commandLine: CommandLine,
         parseResult: CommandLine.ParseResult,
     ): Int {
-        e.message?.let { showError("[ERROR] $it") }
+        e.message?.let { red("[ERROR] $it") }
         return 0
     }
 }

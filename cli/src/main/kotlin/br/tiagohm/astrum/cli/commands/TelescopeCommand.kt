@@ -24,8 +24,10 @@ class TelescopeCommand : Command.Driverable<Telescope> {
     val client: Client?
         get() = astrum.client
 
+    private var index = 0
+
     override val driver: Telescope
-        get() = client?.telescopes()?.firstOrNull()
+        get() = client?.telescopes()?.takeIf { index >= 0 && index < it.size }?.get(index)
             ?: throw IOException("No driver available")
 
     // TELESCOPE
@@ -58,7 +60,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
     )
     fun park() {
         if (driver.canPark()) driver.park()
-        else error("[ERROR] Parking is not supported")
+        else error("Parking is not supported")
     }
 
     @CommandLine.Command(
@@ -68,7 +70,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
     )
     fun unpark() {
         if (driver.canPark()) driver.unpark()
-        else error("[ERROR] Parking is not supported")
+        else error("Parking is not supported")
     }
 
     @CommandLine.Command(
@@ -105,7 +107,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
         dec: String,
     ) {
         if (driver.canSlew()) driver.slew(ra.sexagesimal(), dec.sexagesimal())
-        else error("[ERROR] Slewing is not supported")
+        else error("Slewing is not supported")
     }
 
     @CommandLine.Command(
@@ -128,7 +130,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
         dec: String,
     ) {
         if (driver.canGoto()) driver.goto(ra.sexagesimal(), dec.sexagesimal())
-        else error("[ERROR] Goto is not supported")
+        else error("Goto is not supported")
     }
 
     @CommandLine.Command(
@@ -151,7 +153,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
         dec: String,
     ) {
         if (driver.canSync()) driver.sync(ra.sexagesimal(), dec.sexagesimal())
-        else error("[ERROR] Syncing is not supported")
+        else error("Syncing is not supported")
     }
 
     @CommandLine.Command(
@@ -179,9 +181,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             val raMs = ra.substring(0, ra.length - 1).let { it.toDoubleOrNull() ?: error("Invalid RA time: $it") }
             val decMs = dec.substring(0, dec.length - 1).let { it.toDoubleOrNull() ?: error("Invalid DEC time: $it") }
             driver.pulse(GuideDirection.valueOf(raWE), raMs, GuideDirection.valueOf(decNS), decMs)
-        } else {
-            error("[ERROR] Guide pulsing is not supported")
-        }
+        } else error("Guide pulsing is not supported")
     }
 
     @CommandLine.Command(
@@ -193,11 +193,12 @@ class TelescopeCommand : Command.Driverable<Telescope> {
         val telescopes = client?.telescopes() ?: emptyList()
 
         if (telescopes.isEmpty()) {
-            showInfo("[INFO] No available telescopes")
+            blue("[INFO] No available telescopes")
         } else {
             telescopes.forEachIndexed { i, t ->
-                val title = "[$i] ${t.name}:${t.executable}"
-                if (t.isOn) showSuccess(title) else showError(title)
+                val selected = if (index == i) "*" else " "
+                val title = " $selected [$i] ${t.name}:${t.executable}"
+                if (t.isOn) green(title) else red(title)
             }
         }
     }
@@ -217,9 +218,9 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             val coordinates = it.position()
 
             val title = "${it.name}:${it.executable}"
-            if (it.isOn) showSuccess(title) else showError(title)
+            if (it.isOn) green(title) else red(title)
 
-            showInfo(
+            blue(
                 """
                 SLEWING: $slewing
                 PARKING: $parking
@@ -235,7 +236,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
 
     @CommandLine.Command(
         name = "info",
-        description = ["Shows the telescopes' info"],
+        description = ["Shows the available telescopes' info"],
         subcommands = [CommandLine.HelpCommand::class],
     )
     fun info() {
@@ -245,7 +246,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
                     val t = it[i]
 
                     val title = "[$i] ${t.name}:${t.executable}"
-                    if (t.isOn) showSuccess(title) else showError(title)
+                    if (t.isOn) green(title) else red(title)
 
                     val sr = t.slewRate()
                     val rates = t.slewRates().joinToString { a -> if (a == sr) "[$a]" else "$a" }
@@ -259,7 +260,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
                     val dateTime = t.dateTime()
                     val (lon, lat, elev) = t.location()
 
-                    showInfo(
+                    blue(
                         """
                         CAN SYNC: $canSync
                         CAN GOTO: $canGoto
@@ -279,7 +280,27 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             }
         }
 
-        showInfo("[INFO] No available telescopes")
+        blue("[INFO] No available telescopes")
+    }
+
+    @CommandLine.Command(
+        name = "choose",
+        description = ["Chooses the current telescope"],
+        subcommands = [CommandLine.HelpCommand::class],
+    )
+    fun choose(
+        @CommandLine.Parameters(
+            index = "0",
+            arity = "1",
+            description = ["The telescope index from info command"],
+        )
+        index: Int
+    ) {
+        client?.telescopes()?.also {
+            if (it.isEmpty()) red("No available telescopes")
+            if (index >= 0 && index < it.size) this.index = index
+            else red("Index out of range")
+        } ?: red("No driver available")
     }
 
     // CONFIG
@@ -307,7 +328,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             @CommandLine.Parameters(
                 index = "0",
                 arity = "1",
-                description = ["The track mode: SIDEREAL, SOLAR, LUNAR or CUSTOM"],
+                description = ["The following track mode: SIDEREAL, SOLAR, LUNAR or CUSTOM"],
             )
             mode: String
         ) {
@@ -330,7 +351,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             if (driver.slewRates().any { it.elementName == rate }) {
                 driver.slewRate(SlewRate(rate))
             } else {
-                error("[ERROR] Invalid slew rate: $rate")
+                error("Invalid slew rate: $rate")
             }
         }
     }

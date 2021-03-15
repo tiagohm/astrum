@@ -43,10 +43,10 @@ class Astrum : Callable<Int>, MessageListener {
                 it.fetchProperties()
                 it.enableBLOB()
 
-                showInfo("[INFO] Connected")
+                blue("[INFO] Connected")
             }
         } else {
-            showWarning("[WARNING] Already connected")
+            orange("[WARNING] Already connected")
         }
     }
 
@@ -61,13 +61,13 @@ class Astrum : Callable<Int>, MessageListener {
             client!!.disconnect()
             client = null
 
-            showInfo("[INFO] Disconnected")
+            blue("[INFO] Disconnected")
         } else {
-            showWarning("[WARNING] Already disconnected")
+            orange("[WARNING] Already disconnected")
         }
     }
 
-    override fun onMessage(message: Message) = showInfo(message.message)
+    override fun onMessage(message: Message) = blue(message.message)
 
     override fun call() = 0
 }

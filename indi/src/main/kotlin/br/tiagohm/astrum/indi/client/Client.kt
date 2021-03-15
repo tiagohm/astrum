@@ -41,11 +41,11 @@ open class Client(
         messageListeners.remove(listener)
     }
 
-    open fun registerPropertyListener(listener: ElementListener) {
+    open fun registerElementListener(listener: ElementListener) {
         if (!elementListeners.contains(listener)) elementListeners.add(listener)
     }
 
-    open fun unregisterPropertyListener(listener: ElementListener) {
+    open fun unregisterElementListener(listener: ElementListener) {
         elementListeners.remove(listener)
     }
 
@@ -227,6 +227,10 @@ open class Client(
                     }
                 }
             }
+
+            // TODO: Emitir "ready" quando nao há mais elementos de definição
+            fetchProperties()
+            enableBLOB()
         }
     }
 
@@ -356,6 +360,7 @@ open class Client(
             "TELESCOPE_TIMED_GUIDE_NS" to GuideDirection::parse,
             "TELESCOPE_TIMED_GUIDE_WE" to GuideDirection::parse,
             "TELESCOPE_TRACK_RATE" to TrackRate::parse,
+            "SAT_TRACKING_STAT" to SatTracking::parse,
         )
     }
 }

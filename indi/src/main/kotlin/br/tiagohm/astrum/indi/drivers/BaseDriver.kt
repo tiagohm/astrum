@@ -29,11 +29,11 @@ abstract class BaseDriver : Driver {
 
     override fun attach(client: Client) = also {
         this.client = client
-        client.registerPropertyListener(elementListener)
+        client.registerElementListener(elementListener)
     }
 
     override fun detach() = also {
-        client?.unregisterPropertyListener(elementListener)
+        client?.unregisterElementListener(elementListener)
         client = null
     }
 }
