@@ -1,17 +1,21 @@
-package br.tiagohm.astrum.cli
+package br.tiagohm.astrum.cli.commands
 
-import br.tiagohm.astrum.cli.commands.TelescopeCommand
+import br.tiagohm.astrum.cli.blue
+import br.tiagohm.astrum.cli.green
+import br.tiagohm.astrum.cli.orange
+import br.tiagohm.astrum.cli.red
 import br.tiagohm.astrum.indi.client.Client
+import br.tiagohm.astrum.indi.client.DriverListener
 import br.tiagohm.astrum.indi.client.MessageListener
+import br.tiagohm.astrum.indi.drivers.Driver
 import br.tiagohm.astrum.indi.protocol.Message
 import picocli.CommandLine
-import java.util.concurrent.Callable
 
 @CommandLine.Command(
     name = "astrum",
     subcommands = [CommandLine.HelpCommand::class, TelescopeCommand::class],
 )
-class Astrum : Callable<Int>, MessageListener {
+class AstrumCommand : Command, MessageListener, DriverListener {
 
     var client: Client? = null
         private set
@@ -38,6 +42,7 @@ class Astrum : Callable<Int>, MessageListener {
         if (client == null) {
             client = Client(host, port).also {
                 it.registerMessageListener(this)
+                it.registerDriverListener(this)
 
                 it.connect()
                 it.fetchProperties()
@@ -58,6 +63,7 @@ class Astrum : Callable<Int>, MessageListener {
     fun disconnect() {
         if (client != null) {
             client!!.unregisterMessageListener(this)
+            client!!.unregisterDriverListener(this)
             client!!.disconnect()
             client = null
 
@@ -67,7 +73,23 @@ class Astrum : Callable<Int>, MessageListener {
         }
     }
 
-    override fun onMessage(message: Message) = blue(message.message)
+    override fun onMessage(message: Message) {
+        val m = message.message
 
-    override fun call() = 0
+        if (message.fatal || m.startsWith("[ERROR]")) red(m)
+        else if (m.startsWith("[WARNING]")) orange(m)
+        else blue(m)
+
+        if (message.fatal) {
+            client = null
+        }
+    }
+
+    override fun onDriverAdded(driver: Driver) {
+        green("[OK] Driver ${driver.name} found")
+    }
+
+    override fun onDriverRemoved(driver: Driver) {
+        orange("[WARNING] Driver ${driver.name} was removed")
+    }
 }

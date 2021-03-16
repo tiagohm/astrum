@@ -93,7 +93,6 @@ abstract class Planet internal constructor(
     open val meanOppositionMagnitude: Double
         get() {
             // Source: Explanatory Supplement 2013, Table 10.6 and formula (10.5) with semimajorAxis a from Table 8.7
-            // TODO: Testar com luas e asteroides
             if (absoluteMagnitude <= -99.0) return 100.0
 
             val a = parent?.orbit?.semiMajorAxis?.au?.value

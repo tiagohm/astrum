@@ -1,6 +1,9 @@
 package br.tiagohm.astrum.cli.commands
 
-import br.tiagohm.astrum.cli.*
+import br.tiagohm.astrum.cli.blue
+import br.tiagohm.astrum.cli.green
+import br.tiagohm.astrum.cli.red
+import br.tiagohm.astrum.cli.sexagesimal
 import br.tiagohm.astrum.indi.client.Client
 import br.tiagohm.astrum.indi.drivers.telescope.GuideDirection
 import br.tiagohm.astrum.indi.drivers.telescope.SlewRate
@@ -9,16 +12,15 @@ import br.tiagohm.astrum.indi.drivers.telescope.TrackMode
 import picocli.CommandLine
 import java.io.IOException
 
-// TODO: Multiple connected telescopes!
 @CommandLine.Command(
     name = "telescope",
     description = ["Manages the telescopes and mounts"],
-    subcommands = [CommandLine.HelpCommand::class, TelescopeCommand.Config::class],
+    subcommands = [CommandLine.HelpCommand::class],
 )
-class TelescopeCommand : Command.Driverable<Telescope> {
+class TelescopeCommand : Command.General<Telescope> {
 
     @CommandLine.ParentCommand
-    lateinit var astrum: Astrum
+    lateinit var astrum: AstrumCommand
         private set
 
     val client: Client?
@@ -215,6 +217,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             val parked = it.isParked
             val tracking = it.isTracking
             val trackMode = it.trackMode()
+            val slewRate = it.slewRate()
             val coordinates = it.position()
 
             val title = "${it.name}:${it.executable}"
@@ -227,6 +230,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
                 PARKED: $parked
                 TRACKING: $tracking
                 TRACK MODE: $trackMode
+                SLEW RATE: $slewRate
                 RA: ${coordinates.first}
                 DEC: ${coordinates.second}
                 """.trimIndent()
@@ -236,48 +240,45 @@ class TelescopeCommand : Command.Driverable<Telescope> {
 
     @CommandLine.Command(
         name = "info",
-        description = ["Shows the available telescopes' info"],
+        description = ["Shows the current telescope info"],
         subcommands = [CommandLine.HelpCommand::class],
     )
     fun info() {
-        client?.telescopes()?.let {
-            if (it.isNotEmpty()) {
-                for (i in it.indices) {
-                    val t = it[i]
+        driver.also {
+            val title = "${it.name}:${it.executable}"
 
-                    val title = "[$i] ${t.name}:${t.executable}"
-                    if (t.isOn) green(title) else red(title)
-
-                    val sr = t.slewRate()
-                    val rates = t.slewRates().joinToString { a -> if (a == sr) "[$a]" else "$a" }
-                    val (raRate, decRate) = t.trackRate()
-                    val canSync = t.canSync()
-                    val canGoto = t.canGoto()
-                    val canTrackSatellite = t.canTrackSatellite()
-                    val canGuide = t.canGuide()
-                    val canPark = t.canPark()
-                    val (raPark, decPark) = t.parkPosition()
-                    val dateTime = t.dateTime()
-                    val (lon, lat, elev) = t.location()
-
-                    blue(
-                        """
-                        CAN SYNC: $canSync
-                        CAN GOTO: $canGoto
-                        CAN TRACK SATELLITE: $canTrackSatellite
-                        CAN GUIDE: $canGuide
-                        CAN PARK: $canPark    
-                        SLEW RATES: $rates
-                        TRACK RATE: RA: $raRate DEC: $decRate
-                        PARK POSITION: RA: $raPark DEC: $decPark
-                        DATE TIME: $dateTime
-                        LOCATION: LON: $lon LAT: $lat ELEV: $elev
-                        """.trimIndent()
-                    )
-                }
-
+            if (it.isOn) green(title) else {
+                red(title)
                 return
             }
+
+            val slewRates = it.slewRates().joinToString()
+            val trackModes = it.trackModes().joinToString()
+            val (raRate, decRate) = it.trackRate()
+            val canSync = it.canSync()
+            val canGoto = it.canGoto()
+            val canTrackSatellite = it.canTrackSatellite()
+            val canGuide = it.canGuide()
+            val canPark = it.canPark()
+            val (raPark, decPark) = it.parkPosition()
+            val dateTime = it.dateTime()
+            val (lon, lat, elev) = it.location()
+
+            blue(
+                """
+                CAN SYNC: $canSync
+                CAN GOTO: $canGoto
+                CAN TRACK SATELLITE: $canTrackSatellite
+                CAN GUIDE: $canGuide
+                CAN PARK: $canPark    
+                TRACK MODES: $trackModes
+                SLEW RATES: $slewRates
+                TRACK RATE: RA: $raRate DEC: $decRate
+                PARK POSITION: RA: $raPark DEC: $decPark
+                DATE TIME: $dateTime
+                LOCATION: LON: $lon LAT: $lat ELEV: $elev
+                """.trimIndent()
+            )
         }
 
         blue("[INFO] No available telescopes")
@@ -297,62 +298,51 @@ class TelescopeCommand : Command.Driverable<Telescope> {
         index: Int
     ) {
         client?.telescopes()?.also {
-            if (it.isEmpty()) red("No available telescopes")
-            if (index >= 0 && index < it.size) this.index = index
-            else red("Index out of range")
-        } ?: red("No driver available")
+            if (it.isEmpty()) error("No available telescopes")
+            if (index >= 0 && index < it.size) {
+                this.index = index
+                blue("[INFO] Choosed ${driver.name}")
+            } else error("Index out of range")
+        } ?: error("No driver available")
     }
 
-    // CONFIG
-
     @CommandLine.Command(
-        name = "config",
-        description = ["Configs the telescope"],
+        name = "trackmode",
+        description = ["Sets the track mode"],
         subcommands = [CommandLine.HelpCommand::class],
     )
-    class Config : Command.Configurable<Telescope> {
-
-        @CommandLine.ParentCommand
-        lateinit var telescope: TelescopeCommand
-            private set
-
-        override val driver: Telescope
-            get() = telescope.driver
-
-        @CommandLine.Command(
-            name = "trackmode",
-            description = ["Sets the track mode"],
-            subcommands = [CommandLine.HelpCommand::class],
+    fun trackmode(
+        @CommandLine.Parameters(
+            index = "0",
+            arity = "1",
+            description = ["Sets the track mode. Use info command to see the available track modes"],
         )
-        fun trackmode(
-            @CommandLine.Parameters(
-                index = "0",
-                arity = "1",
-                description = ["The following track mode: SIDEREAL, SOLAR, LUNAR or CUSTOM"],
-            )
-            mode: String
-        ) {
-            driver.trackMode(TrackMode.valueOf(mode))
+        mode: String
+    ) {
+        if (driver.trackModes().any { it.elementName == mode }) {
+            driver.trackMode(TrackMode(mode))
+        } else {
+            error("Invalid track mode: $mode")
         }
+    }
 
-        @CommandLine.Command(
-            name = "slewrate",
-            description = ["Sets the slew rate. Use info command to see the available slew rates"],
-            subcommands = [CommandLine.HelpCommand::class],
+    @CommandLine.Command(
+        name = "slewrate",
+        description = ["Sets the slew rate. Use info command to see the available slew rates"],
+        subcommands = [CommandLine.HelpCommand::class],
+    )
+    fun slewrate(
+        @CommandLine.Parameters(
+            index = "0",
+            arity = "1",
+            description = ["The slew rate"],
         )
-        fun slewrate(
-            @CommandLine.Parameters(
-                index = "0",
-                arity = "1",
-                description = ["The slew rate"],
-            )
-            rate: String
-        ) {
-            if (driver.slewRates().any { it.elementName == rate }) {
-                driver.slewRate(SlewRate(rate))
-            } else {
-                error("Invalid slew rate: $rate")
-            }
+        rate: String
+    ) {
+        if (driver.slewRates().any { it.elementName == rate }) {
+            driver.slewRate(SlewRate(rate))
+        } else {
+            error("Invalid slew rate: $rate")
         }
     }
 }

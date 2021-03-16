@@ -1,5 +1,6 @@
 package br.tiagohm.astrum.cli
 
+import br.tiagohm.astrum.cli.commands.AstrumCommand
 import org.jline.reader.EndOfFileException
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
@@ -32,7 +33,7 @@ fun main(vararg args: String) {
         .variable(LineReader.HISTORY_FILE, Paths.get(appDir.path, ".history").toFile())
         .build()
     // Commands
-    val astrum = Astrum()
+    val astrum = AstrumCommand()
     // CLI
     val cli = CommandLine(astrum).apply {
         executionStrategy = RunAll()

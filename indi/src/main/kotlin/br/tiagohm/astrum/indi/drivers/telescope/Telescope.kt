@@ -5,10 +5,21 @@ import br.tiagohm.astrum.indi.drivers.BaseDriver
 // Some references:
 // * https://ascom-standards.org/Help/Platform/html/T_ASCOM_DeviceInterface_ITelescopeV3.htm
 
+// TODO: Mount Info
+
 // TODO: isPulseGuiding, guideRates
 // TODO: AltAz mount has HORIZONTAL_COORD or EQUATORIAL_EOD_COORD?
 // TODO: Alignment feature!
 // TODO: Satellite tracking LX200
+
+// https://github.com/indilib/indi/blob/master/drivers/telescope/ioptronv3.cpp
+// TODO: GPS STATUS, Time Source
+// TODO: HEMISPHERE
+// TODO: FindHome/GoToHome?
+// TODO: PEC
+// TODO: Daylight (enviar junto com datetime?)
+// TODO: Counter Weight State
+
 open class Telescope(
     override val name: String,
     override val executable: String,
@@ -38,6 +49,12 @@ open class Telescope(
      */
     open val isParking: Boolean
         get() = has(Park.PARK) && element(Park.PARK)!!.isBusy
+
+    /**
+     * Determines if the telescope uses J2000 coordinates.
+     */
+    open val hasJ2000: Boolean
+        get() = has(CoordinateJ2000.RA)
 
     /**
      * Sends the position to telescope.
@@ -116,14 +133,16 @@ open class Telescope(
     }
 
     /**
-     * Gets the current track mode.
+     * Gets the supported track modes.
+     *
+     * @return The supported track modes or empty if tracking is not available.
      */
-    open fun trackMode() = when {
-        switch(TrackMode.SIDEREAL) -> TrackMode.SIDEREAL
-        switch(TrackMode.LUNAR) -> TrackMode.LUNAR
-        switch(TrackMode.SOLAR) -> TrackMode.SOLAR
-        else -> TrackMode.CUSTOM
-    }
+    open fun trackModes() = client?.elementNames(name, "TELESCOPE_TRACK_MODE")?.map { TrackMode(it) } ?: emptyList()
+
+    /**
+     * Gets the current track mode or [TrackMode.NONE] if tracking is not available.
+     */
+    open fun trackMode() = trackModes().firstOrNull { switch(it) } ?: TrackMode.NONE
 
     /**
      * Sets the current telescope's track [mode].
@@ -150,14 +169,14 @@ open class Telescope(
     /**
      * Gets the supported slew rates.
      *
-     * @return The supported slew rates or empty if Slew Rate is not supported.
+     * @return The supported slew rates or empty if slewing is not available.
      */
     open fun slewRates() = client?.elementNames(name, "TELESCOPE_SLEW_RATE")?.map { SlewRate(it) } ?: emptyList()
 
     /**
      * Gets the current slew rate.
      *
-     * @return Thr current slew rate or [SlewRate.NONE] if Slew Rate is not supported.
+     * @return Thr current slew rate or [SlewRate.NONE] if slewing is not available.
      */
     open fun slewRate() = slewRates().firstOrNull { switch(it) } ?: SlewRate.NONE
 

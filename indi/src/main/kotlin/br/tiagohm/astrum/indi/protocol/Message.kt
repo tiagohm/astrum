@@ -6,4 +6,5 @@ package br.tiagohm.astrum.indi.protocol
 data class Message(
     val device: String,
     val message: String,
+    val fatal: Boolean = false,
 )

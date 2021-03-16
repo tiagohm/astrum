@@ -15,7 +15,7 @@ interface Command : Callable<Int> {
         val driver: D
     }
 
-    interface Configurable<D : Driver> : Driverable<D> {
+    interface General<D : Driver> : Driverable<D> {
 
         @CommandLine.Command(
             name = "datetime",

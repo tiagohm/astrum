@@ -10,6 +10,7 @@ import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.abs
 
+// TODO: Serial/Ethernet (junto com connect --tcp --addrees --port --baudrate)
 interface Driver {
 
     val client: Client?

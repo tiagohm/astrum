@@ -706,8 +706,6 @@ class ObserverTest {
         assertEquals(9.230, Saturn(sun).orbitalVelocity(o), DELTA_3)
         assertEquals(6.602, Uranus(sun).orbitalVelocity(o), DELTA_3)
         assertEquals(5.475, Neptune(sun).orbitalVelocity(o), DELTA_3)
-
-        // TODO: Testar velocidade heliocentrica com as luas de júpiter
     }
 
     @Test

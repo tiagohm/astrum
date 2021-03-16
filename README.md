@@ -140,13 +140,13 @@ Commands:
 
 ---
 
-`telescope config datetime <arg0>`: Sets the UTC Date & Offset. Use NOW for get the current date.
+`datetime <arg0>`: Sets the UTC Date & Offset. Use NOW for get the current date.
 
 * `arg0`(string): The UTC Date & Offset in ISO 8601 format
 
 ---
 
-`telescope config location --lat=[<double|sexagesimal>] --lon=[<double|sexagesimal>] --e=[<double>]`: Sets the Earth geodetic coordinate.
+`location --lat=[<double|sexagesimal>] --lon=[<double|sexagesimal>] --e=[<double>]`: Sets the Earth geodetic coordinate.
 
 * `--lat`: Site latitude (-90 to +90), degrees +N
 * `--lon`: Site longitude (0 to 360), degrees +E
@@ -154,30 +154,30 @@ Commands:
 
 ---
 
-`telescope config slewrate <arg0>`: Sets the slew rate. Use `telescope info` command to see the available slew rates.
+`slewrate <arg0>`: Sets the slew rate. Use `telescope info` command to see the available slew rates.
 
 * `arg0`(string): The slew rate.
 
 ---
 
-`telescope config trackmode <arg0>`: Sets the track mode.
+`trackmode <arg0>`: Sets the track mode.
 
 * `arg0`:(string): The following track mode: SIDEREAL, SOLAR, LUNAR or CUSTOM
 
 ---
 
-`telescope abort`:   Aborts the telescope.
+`abort`:   Aborts the telescope.
 
 ---
 
-`telescope goto --dec=<double|sexagesimal> --ra=<double|sexagesimal>`: Moves the telescope to the coordinates and keep tracking.
+`goto --dec=<double|sexagesimal> --ra=<double|sexagesimal>`: Moves the telescope to the coordinates and keep tracking.
 
 * `--dec`: DEC or altitude in degrees
 * `--ra`: RA in hours or azimuth in degrees
 
 ---
 
-`telescope info`: Shows the available telescopes' info.
+`info`: Shows the available telescopes' info.
 
 Output:
 
@@ -187,8 +187,9 @@ CAN SYNC: true
 CAN GOTO: true
 CAN TRACK SATELLITE: false
 CAN GUIDE: true
-CAN PARK: true    
-SLEW RATES: 4x, [3x], 2x, 1x
+CAN PARK: true
+TRACK MODES: SIDEREAL, SOLAR, LUNAR, CUSTOM
+SLEW RATES: 4x, 3x, 2x, 1x
 TRACK RATE: RA: 15.041067178670204 DEC: 0.0
 PARK POSITION: RA: -6.0 DEC: 0.0
 DATE TIME: 2021-03-15T12:20:27-03:00
@@ -197,7 +198,7 @@ LOCATION: LON: -10.123456 LAT: -10.123456 ELEV: 853.0
 
 ---
 
-`telescope list`: Lists the available telescopes.
+`list`: Lists the available telescopes.
 
 Output:
 
@@ -207,19 +208,19 @@ Output:
 
 ---
 
-`telescope off`: Disconnects the telescope.
+`off`: Disconnects the telescope.
 
 ---
 
-`telescope on`: Connects the telescope.
+`on`: Connects the telescope.
 
 ---
 
-`telescope park`: Moves the telescope to its park position.
+`park`: Moves the telescope to its park position.
 
 ---
 
-`telescope pulse --dec=<double> --ra=<double>`: Pulses guiding for RA and DEC axes.
+`pulse --dec=<double> --ra=<double>`: Pulses guiding for RA and DEC axes.
 
 * `--dec`: DEC guiding pulse in milliseconds following by direction (N or S)
 * `--ra`: RA guiding pulse in milliseconds following by direction (E or W)
@@ -228,15 +229,15 @@ Example: `pulse 1000.0N 2000.0W`
 
 ---
 
-`telescope slew --dec=<double|sexagesimal> --ra=<double|sexagesimal>`: Slews the telescope to the coordinates and stop.
+`slew --dec=<double|sexagesimal> --ra=<double|sexagesimal>`: Slews the telescope to the coordinates and stop.
 
 ---
 
-`telescope start`: Stars the tracking.
+`start`: Stars the tracking.
 
 ---
 
-`telescope status`: Shows the telescope's status.
+`status`: Shows the telescope's status.
 
 Output:
 
@@ -246,18 +247,19 @@ PARKING: false
 PARKED: false
 TRACKING: true
 TRACK MODE: SIDEREAL
+SLEW RATE: 3x
 RA: 23.702896850451616
 DEC: -1.8780555555555338
 ```
 
 ---
 
-`telescope stop`: Stops the tracking.
+`stop`: Stops the tracking.
 
 ---
 
-`telescope sync --dec=<double|sexagesimal> --ra=<double|sexagesimal>`: Syncs the coordinates to the telescope.
+`sync --dec=<double|sexagesimal> --ra=<double|sexagesimal>`: Syncs the coordinates to the telescope.
 
 ---
 
-`telescope unpark`: Unparks the telescope.
+`unpark`: Unparks the telescope.
