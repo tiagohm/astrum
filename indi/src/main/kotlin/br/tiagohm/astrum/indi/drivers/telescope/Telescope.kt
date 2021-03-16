@@ -223,7 +223,7 @@ open class Telescope(
     /**
      * Stops the telescope rapidly, but gracefully.
      */
-    open fun abort() = send(AbortMotion.ABORT, true)
+    open fun abort() = send(TelescopeAbortMotion.ABORT, true)
 
     /**
      * Gets the current park position.

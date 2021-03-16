@@ -58,44 +58,8 @@ open class Client(
     }
 
     private fun registerDriver(device: String, driver: PropertyElement<String>) {
-        when (val exec = driver.value) {
-            "indi_simulator_telescope",
-            "indi_lx200basic",
-            "indi_lx200gps",
-            "indi_lx200autostar",
-            "indi_lx200classic",
-            "indi_lx200_OnStep",
-            "indi_lx200_TeenAstro",
-            "indi_lx200_16",
-            "indi_eq500x_telescope",
-            "indi_lx200ap_experimental",
-            "indi_lx200ap_gtocp2",
-            "indi_lx200ap",
-            "indi_celestron_gps",
-            "indi_lx200fs2",
-            "indi_paramount_telescope",
-            "indi_rainbow_telescope",
-            "indi_crux_mount",
-            "indi_synscan_telescope",
-            "indi_lx200gemini",
-            "indi_temma_telescope",
-            "indi_synscanlegacy_telescope",
-            "indi_lx200ss2000pc",
-            "indi_ieqlegacy_telescope",
-            "indi_ieq_telescope",
-            "indi_ioptronv3_telescope",
-            "indi_lx200zeq25",
-            "indi_lx200gotonova",
-            "indi_ioptronHC8406",
-            "indi_lx200pulsar2",
-            "indi_skycommander_telescope",
-            "indi_lx200_10micron",
-            "indi_skywatcherAltAzMount",
-            "indi_skywatcherAltAzSimple",
-            "indi_script_telescope",
-            "indi_dsc_telescope",
-            "indi_pmc8_telescope" -> Telescope(device, exec)
-            // TODO: Adicionar os outros drivers.
+        when {
+            Device.groupHasDriver(Device.CCD, driver.value) -> Telescope(device, driver.value)
             else -> null
         }?.also {
             it.attach(this)
@@ -371,7 +335,7 @@ open class Client(
             "DEVICE_PORT" to DevicePort::parse,
             "DRIVER_INFO" to DriverInfo::parse,
             "DEBUG" to Debug::parse,
-            "TELESCOPE_ABORT_MOTION" to AbortMotion::parse,
+            "TELESCOPE_ABORT_MOTION" to TelescopeAbortMotion::parse,
             "EQUATORIAL_EOD_COORD" to Coordinate::parse,
             "EQUATORIAL_COORD" to CoordinateJ2000::parse,
             "HORIZONTAL_COORD" to Coordinate::parse,
