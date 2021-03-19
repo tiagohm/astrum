@@ -3,7 +3,7 @@ package br.tiagohm.astrum.indi.drivers.telescope
 import br.tiagohm.astrum.indi.ISO_8601
 import br.tiagohm.astrum.indi.drivers.Driver
 import br.tiagohm.astrum.indi.drivers.Time
-import br.tiagohm.astrum.indi.drivers.telescope.properties.*
+import br.tiagohm.astrum.indi.drivers.guider.Guider
 import br.tiagohm.astrum.indi.parseISO8601
 import java.time.ZonedDateTime
 import java.util.*
@@ -53,7 +53,7 @@ interface Telescope : Driver {
         register(TrackRate::class)
         // TODO: Track Satellite
         register(Park::class)
-        register(AbortMotion::class)
+        register(TelescopeAbortMotion::class)
         register(MotionDirection::class)
         // TODO: Telescope Info
 
@@ -136,7 +136,7 @@ interface Telescope : Driver {
 
     fun unpark() = send(Park.UNPARK, true)
 
-    fun abort() = send(AbortMotion.ABORT, true)
+    fun abortMotion() = send(TelescopeAbortMotion.ABORT, true)
 
     fun parkPosition() = when (mountType()) {
         MountType.ALTAZ -> number(ParkPosition.AZ) to number(ParkPosition.ALT)
@@ -187,5 +187,38 @@ interface Telescope : Driver {
         val utc = Date.from(dateTime.toInstant())
         val offset = dateTime.offset.totalSeconds / 3600.0
         time(utc, offset)
+    }
+
+    override fun status(): Map<String, Any> {
+        val status = LinkedHashMap<String, Any>()
+        status["SLEWING"] = isSlewing
+        status["PARKING"] = isParking
+        status["PARKED"] = isParked
+        status["TRACKING"] = isTracking
+        status["TRACK MODE"] = trackMode()
+        status["SLEW RATE"] = slewRate()
+        val coordinates = position()
+        status["RA"] = coordinates.first
+        status["DEC"] = coordinates.second
+        return status
+    }
+
+    override fun info(): Map<String, Any> {
+        val info = LinkedHashMap<String, Any>()
+        info["CAN SYNC"] = canSync()
+        info["CAN GOTO"] = canSync()
+        info["CAN TRACK SATELLITE"] = canTrackSatellite()
+        info["CAN GUIDE"] = this is Guider && canGuide()
+        info["CAN PARK"] = canPark()
+        info["SLEW RATES"] = slewRates().joinToString()
+        info["TRACK MODES"] = trackModes().joinToString()
+        val (raRate, decRate) = trackRate()
+        info["TRACK RATE"] = "RA: $raRate DEC: $decRate"
+        val (raPark, decPark) = parkPosition()
+        info["PARK POSITION"] = "RA: $raPark DEC: $decPark"
+        info["DATE TIME"] = if (hasTime()) time() else "NOT SUPPORTED"
+        info["LOCATION"] = if (hasLocation()) location().let { loc -> "LON: ${loc.first} LAT: ${loc.second} ELEV: ${loc.third}" }
+        else "NOT SUPPORTED"
+        return info
     }
 }

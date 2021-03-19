@@ -1,8 +1,8 @@
-package br.tiagohm.astrum.indi.drivers.telescope.properties
+package br.tiagohm.astrum.indi.drivers.telescope
 
 import br.tiagohm.astrum.indi.protocol.SwitchElement
 
-enum class AbortMotion : SwitchElement {
+enum class TelescopeAbortMotion : SwitchElement {
     ABORT;
 
     override val propName = "TELESCOPE_ABORT_MOTION"

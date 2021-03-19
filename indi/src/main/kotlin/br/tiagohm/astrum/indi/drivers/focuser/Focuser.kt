@@ -4,25 +4,35 @@ import br.tiagohm.astrum.indi.drivers.Driver
 
 interface Focuser : Driver {
 
-    val isIn: Boolean
+    val isFocusIn: Boolean
         get() = switch(FocusDirection.INWARD)
 
-    val isOut: Boolean
+    val isFocusOut: Boolean
         get() = switch(FocusDirection.OUTWARD)
+
+    override fun initialize() {
+        register(FocusDirection::class)
+        register(FocusAbortMotion::class)
+        register(FocusTimer::class)
+        register(FocusPosition::class)
+        register(FocusBackslashStep::class)
+        register(FocusBackslashToggle::class)
+        register(FocusTemperature::class)
+    }
 
     fun focusIn() = send(FocusDirection.INWARD, true)
 
     fun focusOut() = send(FocusDirection.OUTWARD, true)
 
-    fun abort() = send(FocusAbortMotion.ABORT, true)
+    fun abortFocusing() = send(FocusAbortMotion.ABORT, true)
 
-    fun move(ms: Double) = send(FocusTimer.VALUE, ms)
+    fun moveFocusByTime(ms: Double) = send(FocusTimer.VALUE, ms)
 
-    fun moveAbsolute(n: Double) = send(FocusPosition.ABSOLUTE, n)
+    fun moveAbsoluteFocus(n: Double) = send(FocusPosition.ABSOLUTE, n)
 
     fun canMoveAbsolute() = has(FocusPosition.ABSOLUTE)
 
-    fun moveRelative(n: Double) = send(FocusPosition.RELATIVE, n)
+    fun moveRelativeFocus(n: Double) = send(FocusPosition.RELATIVE, n)
 
     fun canMoveRelative() = has(FocusPosition.RELATIVE)
 
@@ -37,6 +47,8 @@ interface Focuser : Driver {
     }
 
     fun backslash() = number(FocusBackslashStep.VALUE)
+
+    fun temperature() = number(FocusTemperature.TEMPERATURE)
 
     fun hasDeviation() = name == "Nikon DSLR Z6"
 }

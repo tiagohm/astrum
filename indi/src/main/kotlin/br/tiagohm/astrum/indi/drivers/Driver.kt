@@ -42,6 +42,10 @@ interface Driver {
 
     fun off() = send(Connection.DISCONNECT, true)
 
+    fun info() = emptyMap<String, Any>()
+
+    fun status() = emptyMap<String, Any>()
+
     fun <T> element(element: Element<T>) = client.element(name, element.propName, element.elementName)
 
     fun <T> value(element: Element<T>) = element(element)?.value as? T

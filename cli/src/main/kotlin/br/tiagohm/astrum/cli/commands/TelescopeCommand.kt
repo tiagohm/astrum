@@ -74,7 +74,7 @@ class TelescopeCommand : Command.Driverable<Telescope> {
             paramLabel = "<index>",
         )
         index: Int,
-    ) = driver(index).abort()
+    ) = driver(index).abortMotion()
 
     @CommandLine.Command(
         name = "park",
@@ -315,29 +315,12 @@ class TelescopeCommand : Command.Driverable<Telescope> {
         index: Int,
     ) {
         driver(index).also {
-            val slewing = it.isSlewing
-            val parking = it.isParking
-            val parked = it.isParked
-            val tracking = it.isTracking
-            val trackMode = it.trackMode()
-            val slewRate = it.slewRate()
-            val coordinates = it.position()
-
             val title = "${it.name}:${it.executable}"
             if (it.isOn) green(title) else red(title)
 
-            blue(
-                """
-                SLEWING: $slewing
-                PARKING: $parking
-                PARKED: $parked
-                TRACKING: $tracking
-                TRACK MODE: $trackMode
-                SLEW RATE: $slewRate
-                RA: ${coordinates.first}
-                DEC: ${coordinates.second}
-                """.trimIndent()
-            )
+            for (e in it.status()) {
+                blue("${e.key}: ${e.value}")
+            }
         }
     }
 
@@ -363,34 +346,9 @@ class TelescopeCommand : Command.Driverable<Telescope> {
                 return
             }
 
-            val slewRates = it.slewRates().joinToString()
-            val trackModes = it.trackModes().joinToString()
-            val (raRate, decRate) = it.trackRate()
-            val canSync = it.canSync()
-            val canGoto = it.canGoto()
-            val canTrackSatellite = it.canTrackSatellite()
-            val canGuide = it is Guider && it.canGuide()
-            val canPark = it.canPark()
-            val (raPark, decPark) = it.parkPosition()
-            val time = if (it.hasTime()) it.time() else "NOT SUPPORTED"
-            val location = if (it.hasLocation()) it.location().let { loc -> "LON: ${loc.first} LAT: ${loc.second} ELEV: ${loc.third}" }
-            else "NOT SUPPORTED"
-
-            blue(
-                """
-                CAN SYNC: $canSync
-                CAN GOTO: $canGoto
-                CAN TRACK SATELLITE: $canTrackSatellite
-                CAN GUIDE: $canGuide
-                CAN PARK: $canPark    
-                TRACK MODES: $trackModes
-                SLEW RATES: $slewRates
-                TRACK RATE: RA: $raRate DEC: $decRate
-                PARK POSITION: RA: $raPark DEC: $decPark
-                DATE TIME: $time
-                LOCATION: $location
-                """.trimIndent()
-            )
+            for (e in it.info()) {
+                blue("${e.key}: ${e.value}")
+            }
         }
     }
 

@@ -3,10 +3,8 @@ package br.tiagohm.astrum.indi.drivers.telescope
 import br.tiagohm.astrum.indi.client.Client
 import br.tiagohm.astrum.indi.drivers.BaseDriver
 import br.tiagohm.astrum.indi.drivers.guider.Guider
-import br.tiagohm.astrum.indi.drivers.telescope.properties.SlewRate
-import br.tiagohm.astrum.indi.drivers.telescope.properties.TrackMode
 
-class Simulator(client: Client, name: String, executable: String) :
+class TelescopeSimulator(client: Client, name: String, executable: String) :
     BaseDriver(client, name, executable),
     Telescope,
     Guider {
