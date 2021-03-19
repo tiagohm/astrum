@@ -1,6 +1,7 @@
 package br.tiagohm.astrum.indi.client
 
 import br.tiagohm.astrum.indi.protocol.Element
+import br.tiagohm.astrum.indi.protocol.ElementType
 import br.tiagohm.astrum.indi.protocol.State
 
 data class PropertyElement<T>(
@@ -15,7 +16,7 @@ data class PropertyElement<T>(
     // BLOB
     val size: Int = 0,
     val format: String = "",
-) : Element<T> by element {
+) {
 
     val isBusy: Boolean
         get() = state == State.BUSY
@@ -25,4 +26,7 @@ data class PropertyElement<T>(
 
     val isOK: Boolean
         get() = state == State.OK
+
+    val type: ElementType
+        get() = element.type
 }

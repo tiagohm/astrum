@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.drivers.telescope
+package br.tiagohm.astrum.indi.drivers.telescope.properties
 
 import br.tiagohm.astrum.indi.protocol.SwitchElement
 
@@ -11,7 +11,5 @@ data class SlewRate(override val elementName: String) : SwitchElement {
     companion object {
 
         val NONE = SlewRate("NONE")
-
-        fun parse(name: String) = SlewRate(name)
     }
 }

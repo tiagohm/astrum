@@ -1,9 +1,10 @@
 package br.tiagohm.astrum.indi.client
 
+import br.tiagohm.astrum.indi.EMPTY_BYTE_ARRAY
 import br.tiagohm.astrum.indi.client.parser.SimpleXMLParser
 import br.tiagohm.astrum.indi.client.parser.XMLTag
-import br.tiagohm.astrum.indi.common.Shelf
 import br.tiagohm.astrum.indi.drivers.*
+import br.tiagohm.astrum.indi.drivers.focuser.Focuser
 import br.tiagohm.astrum.indi.drivers.telescope.*
 import br.tiagohm.astrum.indi.protocol.*
 import org.redundent.kotlin.xml.xml
@@ -14,10 +15,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
+import kotlin.reflect.KClass
 
 // http://www.clearskyinstitute.com/INDI/INDI.pdf
 // https://www.w3schools.com/xml/xml_dtd_intro.asp
 
+@Suppress("UNCHECKED_CAST")
 open class Client(
     val host: String = "127.0.0.1",
     val port: Int = 7624,
@@ -32,52 +35,68 @@ open class Client(
 
     private val elements = Shelf<PropertyElement<*>>()
     private val drivers = HashMap<String, Driver>()
+    private val registeredElements = Shelf<Element<*>>()
 
-    open fun registerMessageListener(listener: MessageListener) {
+    init {
+        register(DriverInfo::class)
+    }
+
+    fun registerMessageListener(listener: MessageListener) {
         if (!messageListeners.contains(listener)) messageListeners.add(listener)
     }
 
-    open fun unregisterMessageListener(listener: MessageListener) {
-        messageListeners.remove(listener)
-    }
-
-    open fun registerElementListener(listener: ElementListener) {
+    fun registerElementListener(listener: ElementListener) {
         if (!elementListeners.contains(listener)) elementListeners.add(listener)
     }
 
-    open fun unregisterElementListener(listener: ElementListener) {
-        elementListeners.remove(listener)
-    }
-
-    open fun registerDriverListener(listener: DriverListener) {
+    fun registerDriverListener(listener: DriverListener) {
         if (!driverListeners.contains(listener)) driverListeners.add(listener)
     }
 
-    open fun unregisterDriverListener(listener: DriverListener) {
+    fun register(element: Element<*>, device: String = "") {
+        registeredElements.set(device, element.propName, element.elementName, element)
+    }
+
+    fun <T> register(element: KClass<out Enum<T>>, device: String = "") where T : Enum<T>, T : Element<*> {
+        element.java.enumConstants.forEach { register(it as Element<*>, device) }
+    }
+
+    fun unregisterMessageListener(listener: MessageListener) {
+        messageListeners.remove(listener)
+    }
+
+    fun unregisterElementListener(listener: ElementListener) {
+        elementListeners.remove(listener)
+    }
+
+    fun unregisterDriverListener(listener: DriverListener) {
         driverListeners.remove(listener)
     }
 
-    private fun registerDriver(device: String, driver: PropertyElement<String>) {
-        when {
-            Device.groupHasDriver(Device.CCD, driver.value) -> Telescope(device, driver.value)
-            else -> null
-        }?.also {
-            it.attach(this)
+    fun unregister(element: Element<*>, device: String = "") {
+        registeredElements.remove(device, element.propName, element.elementName)
+    }
 
-            if (drivers.contains(device)) {
-                drivers.remove(device)?.detach()
-                drivers[device] = it
-            } else {
-                drivers[device] = it
-                driverListeners.forEach { listener -> listener.onDriverAdded(it) }
+    fun <T> unregister(element: KClass<out Enum<T>>, device: String = "") where T : Enum<T>, T : Element<*> {
+        element.java.enumConstants.forEach { unregister(it as Element<*>, device) }
+    }
+
+    private fun registerDriver(device: String, driver: PropertyElement<String>) {
+        DRIVERS[driver.value]
+            ?.java
+            ?.getDeclaredConstructor(Client::class.java, String::class.java, String::class.java)
+            ?.newInstance(this, device, driver.value)
+            ?.also {
+                if (!drivers.contains(device)) {
+                    it.initialize()
+                    drivers[device] = it
+                    driverListeners.forEach { listener -> listener.onDriverAdded(it) }
+                }
             }
-        }
     }
 
     private fun processTag(tag: XMLTag) {
         when (tag.name) {
-            // Ignore it.
-            "indi" -> return
             // Delete the given property, or entire device if no property is specified.
             "delProperty" -> {
                 val device = tag.attributes["device"]!!
@@ -85,23 +104,15 @@ open class Client(
 
                 // Delete by device and name.
                 if (name.isNotEmpty()) {
-                    elements.clear(device, name)
+                    elements.remove(device, name)
                 }
                 // Delete by device.
                 else if (device.isNotEmpty()) {
-                    elements.clear(device)
-
-                    drivers.remove(device)?.also {
-                        it.detach()
-                        driverListeners.forEach { listener -> listener.onDriverRemoved(it) }
-                    }
+                    elements.remove(device)
                 }
                 // Delete all.
                 else {
                     elements.clear()
-
-                    drivers.forEach { it.value.detach() }
-                    drivers.clear()
                 }
             }
             // Define a property that holds one or more elements or
@@ -119,64 +130,61 @@ open class Client(
                 val device = tag.attributes["device"]!!
                 val propName = tag.attributes["name"]!!
                 val isReadOnly = tag.attributes["perm"]?.let { it == "ro" }
-                val state = tag.attributes["state"]?.let { State.valueOf(it.toUpperCase()) }
-                val elements = ArrayList<Array<Any?>>(tag.children.size)
+                val state = tag.attributes["state"]?.toUpperCase()?.let { State.valueOf(it) }
 
                 for (c in tag.children) {
-                    val elementName = c.attributes["name"]!!
-                    val size = c.attributes["size"]?.toIntOrNull()
-                    val min = c.attributes["min"]?.toDoubleOrNull()
-                    val max = c.attributes["max"]?.toDoubleOrNull()
-                    val step = c.attributes["step"]?.toDoubleOrNull()
-                    val format = c.attributes["format"]
+                    val name = c.attributes["name"]!!
                     val value = c.text
 
-                    val p: Array<Any?> = when (c.name) {
-                        // One member of a text/number/switch/light/BLOB vector.
-                        // defBLOB does not contain an initial value for the BLOB.
-                        "defText", "oneText" -> arrayOf(elementName, value, size, format, min, max, step)
-                        "defNumber", "oneNumber" -> arrayOf(elementName, value.toDoubleOrNull() ?: 0.0, size, format, min, max, step)
-                        "defSwitch", "oneSwitch" -> arrayOf(elementName, value == "On", size, format, min, max, step)
-                        "defLight", "oneLight" -> arrayOf(elementName, if (value.isEmpty()) State.IDLE else State.valueOf(value.toUpperCase()), size, format, min, max, step)
-                        "defBLOB" -> arrayOf(elementName, EMPTY_BYTE_ARRAY, size, format, min, max, step)
-                        // TODO: oneBLOB
-                        else -> continue
-                    }
+                    val size = c.attributes["size"]?.toIntOrNull() ?: 0
+                    val format = c.attributes["format"] ?: ""
+                    val min = c.attributes["min"]?.toDoubleOrNull() ?: 0.0
+                    val max = c.attributes["max"]?.toDoubleOrNull() ?: 0.0
+                    val step = c.attributes["step"]?.toDoubleOrNull() ?: 0.0
 
-                    elements.add(p)
-                }
+                    when (c.name) {
+                        "defText",
+                        "defNumber",
+                        "defSwitch",
+                        "defLight",
+                        "defBLOB" -> {
+                            val e = registeredElements.get(device, propName, name)
+                                ?: registeredElements.get("", propName, name)
+                                ?: continue
 
-                // Add or set properties.
-                if (elements.isNotEmpty()) {
-                    for (element in elements) {
-                        val name = element[0] as String
-
-                        val ne = PROPERTIES[propName]?.invoke(name) ?: continue
-                        val oe = element(device, propName, name)
-
-                        val value = element[1] ?: oe?.value
-                        val size = element[2] as? Int ?: oe?.size ?: 0
-                        val format = element[3] as? String ?: oe?.format ?: ""
-                        val min = element[4] as? Double ?: oe?.min ?: 0.0
-                        val max = element[5] as? Double ?: oe?.max ?: 0.0
-                        val step = element[6] as? Double ?: oe?.step ?: 0.0
-
-                        val perm = isReadOnly ?: oe?.isReadOnly ?: false
-                        val s = state ?: oe?.state ?: State.IDLE
-
-                        val pe = when (ne.type) {
-                            ElementType.TEXT -> PropertyElement(ne as TextElement, value as String, perm, s, min, max, step, size, format).also {
-                                if (propName == "DRIVER_INFO" && ne.elementName == "DRIVER_EXEC") registerDriver(device, it)
+                            val pe = when (e) {
+                                is TextElement -> PropertyElement(e, value, isReadOnly ?: false, state ?: State.IDLE)
+                                is NumberElement -> PropertyElement(e, value.toDoubleOrNull() ?: 0.0, isReadOnly ?: false, state ?: State.IDLE, min, max, step, size, format)
+                                is SwitchElement -> PropertyElement(e, value == "On", isReadOnly ?: false, state ?: State.IDLE)
+                                is LightElement -> PropertyElement(e, State.valueOf(value), isReadOnly ?: false, state ?: State.IDLE)
+                                else -> PropertyElement(e as BLOBElement, EMPTY_BYTE_ARRAY, isReadOnly ?: false, state ?: State.IDLE, min, max, step, size, format)
                             }
-                            ElementType.NUMBER -> PropertyElement(ne as NumberElement, value as Double, perm, s, min, max, step, size, format)
-                            ElementType.SWITCH -> PropertyElement(ne as SwitchElement, value as Boolean, perm, s, min, max, step, size, format)
-                            ElementType.LIGHT -> PropertyElement(ne as LightElement, value as State, perm, s, min, max, step, size, format)
-                            ElementType.BLOB -> PropertyElement(ne as BLOBElement, value as ByteArray, perm, s, min, max, step, size, format)
+
+                            elements.set(device, propName, name, pe)
+
+                            if (propName == "DRIVER_INFO" && name == "DRIVER_EXEC") {
+                                registerDriver(device, pe as PropertyElement<String>)
+                            }
                         }
+                        "oneText",
+                        "oneNumber",
+                        "oneSwitch",
+                        "oneLight",
+                        "oneBLOB" -> {
+                            val ope = elements.get(device, propName, name) ?: continue
+                            val a = isReadOnly ?: ope.isReadOnly
+                            val b = state ?: ope.state
 
-                        this.elements.set(device, propName, name, pe)
+                            val pe = when (ope.type) {
+                                ElementType.TEXT -> (ope as PropertyElement<String>).copy(value = value, isReadOnly = a, state = b)
+                                ElementType.NUMBER -> (ope as PropertyElement<Double>).copy(value = value.toDoubleOrNull() ?: ope.value, isReadOnly = a, state = b)
+                                ElementType.SWITCH -> (ope as PropertyElement<Boolean>).copy(value = value == "On", isReadOnly = a, state = b)
+                                ElementType.LIGHT -> (ope as PropertyElement<State>).copy(value = State.valueOf(value), isReadOnly = a, state = b)
+                                else -> (ope.element as PropertyElement<ByteArray>).copy(value = EMPTY_BYTE_ARRAY, isReadOnly = a, state = b) // TODO
+                            }
 
-                        elementListeners.forEach { listener -> listener.onElement(device, pe) }
+                            elements.set(device, propName, name, pe)
+                        }
                     }
                 }
             }
@@ -218,9 +226,7 @@ open class Client(
                 disconnect()
             }
 
-            // TODO: Emitir "ready" quando nao há mais elementos de definição
-            fetchProperties()
-            enableBLOB()
+            fetchProperties(name = "DRIVER_INFO")
         }
     }
 
@@ -257,9 +263,7 @@ open class Client(
     protected fun write(
         data: ByteArray,
         range: ClosedRange<Int> = data.indices,
-    ) {
-        outputStream.write(data, range.start, range.endInclusive - range.start + 1)
-    }
+    ) = outputStream.write(data, range.start, range.endInclusive - range.start + 1)
 
     fun write(command: String) = write(command.toByteArray(Charsets.ISO_8859_1))
 
@@ -292,71 +296,230 @@ open class Client(
         write(command)
     }
 
-    /**
-     * Gets the specified element.
-     */
-    fun element(device: String, propName: String, elementName: String) = synchronized(elements) { elements.get(device, propName, elementName) }
+    fun element(device: String, propName: String, name: String) = elements.get(device, propName, name)
 
-    /**
-     * Gets the device names.
-     */
-    fun devices(): Set<String> = synchronized(elements) { elements.keys() }
+    fun devices(): List<String> = elements.keys()
 
-    /**
-     * Gets the available property names from the given [device].
-     */
-    fun propertyNames(device: String) = synchronized(elements) { elements.keys(device) }
+    fun properties(device: String) = elements.keys(device)
 
-    /**
-     * Gets the available elemens names from the given [device] and property name.
-     */
-    fun elementNames(device: String, propName: String) = synchronized(elements) { elements.keys(device, propName) }
+    fun elements(device: String, propName: String) = elements.values(device, propName)
 
-    /**
-     * Gets the available drivers.
-     */
     fun drivers() = drivers.values.toList()
 
-    /**
-     * Gets the available telescope drivers.
-     */
     fun telescopes() = drivers.values.filterIsInstance<Telescope>()
+
+    fun focusers() = drivers.values.filterIsInstance<Focuser>()
 
     companion object {
 
-        private val EMPTY_BYTE_ARRAY = byteArrayOf()
-
-        // TODO: Add more properties.
-        private val PROPERTIES = mapOf<String, (String) -> Element<*>>(
-            "CONNECTION" to Connection::parse,
-            "CONNECTION_MODE" to ConnectionMode::parse,
-            "TIME_UTC" to Time::parse,
-            "DEVICE_BAUD_RATE" to BaudRate::parse,
-            "DEVICE_PORT" to DevicePort::parse,
-            "DRIVER_INFO" to DriverInfo::parse,
-            "DEBUG" to Debug::parse,
-            "TELESCOPE_ABORT_MOTION" to TelescopeAbortMotion::parse,
-            "EQUATORIAL_EOD_COORD" to Coordinate::parse,
-            "EQUATORIAL_COORD" to CoordinateJ2000::parse,
-            "HORIZONTAL_COORD" to Coordinate::parse,
-            "GEOGRAPHIC_COORD" to Coordinate::parse,
-            "TELESCOPE_MOTION_NS" to MotionDirection::parse,
-            "TELESCOPE_MOTION_WE" to MotionDirection::parse,
-            "MOUNT_TYPE" to MountType::parse,
-            "MOUNT_AXES" to MountAxis::parse,
-            "ON_COORD_SET" to OnCoordSet::parse,
-            "TELESCOPE_PARK" to Park::parse,
-            "TELESCOPE_PARK_OPTION" to ParkOption::parse,
-            "TELESCOPE_PARK_POSITION" to ParkPosition::parse,
-            "TELESCOPE_PIER_SIDE" to PierSide::parse,
-            "TELESCOPE_SLEW_RATE" to SlewRate::parse,
-            "TELESCOPE_TRACK_MODE" to TrackMode::parse,
-            "TELESCOPE_TRACK_STATE" to TrackState::parse,
-            "TELESCOPE_TRACK_RATE" to TrackRate::parse,
-            "TELESCOPE_TIMED_GUIDE_NS" to GuideDirection::parse,
-            "TELESCOPE_TIMED_GUIDE_WE" to GuideDirection::parse,
-            "SAT_TRACKING_STAT" to SatTracking::parse,
-            "HEMISPHERE" to Hemisphere::parse,
+        private val DRIVERS = mapOf<String, KClass<out Driver>?>(
+            // CCD
+            "indi_atik_ccd" to null,
+            "indi_asi_ccd" to null,
+            "indi_nikon_ccd" to null,
+            "indi_inovaplx_ccd" to null,
+            "indi_v4l2_ccd" to null,
+            "indi_canon_ccd" to null,
+            "indi_toupcam_ccd" to null,
+            "indi_simulator_ccd" to null,
+            "indi_qhy_ccd" to null,
+            "indi_sony_ccd" to null,
+            "indi_pentax_ccd" to null,
+            "indi_mi_ccd_usb" to null,
+            "indi_sbig_ccd" to null,
+            "indi_gphoto_ccd" to null,
+            "indi_mallincam_ccd" to null,
+            "indi_nightscape_ccd" to null,
+            "indi_pentax" to null,
+            "indi_nncam_ccd" to null,
+            "indi_starshootg_ccd" to null,
+            "indi_ffmv_ccd" to null,
+            "indi_simulator_guide" to null,
+            "indi_mi_ccd_eth" to null,
+            "indi_apogee_ccd" to null,
+            "indi_webcam_ccd" to null,
+            "indi_qsi_ccd" to null,
+            "indi_altair_ccd" to null,
+            "indi_sv305_ccd" to null,
+            "indi_sx_ccd" to null,
+            "indi_dsi_ccd" to null,
+            "indi_fuji_ccd" to null,
+            "indi_fishcamp_ccd" to null,
+            "indi_fli_ccd" to null,
+            "indi_rpicam" to null,
+            // Waether
+            "indi_sqm_weather" to null,
+            "indi_aagcloudwatcher_ng" to null,
+            "indi_simulator_weather" to null,
+            "indi_vantage_weather" to null,
+            "indi_weatherradio" to null,
+            "indi_astromech_lpm" to null,
+            "indi_watcher_weather" to null,
+            "indi_weather_safety_proxy" to null,
+            "indi_openweathermap_weather" to null,
+            "indi_mbox_weather" to null,
+            "indi_meta_weather" to null,
+            "indi_duino" to null,
+            "indi_aagcloudwatcher" to null,
+            // Agent
+            "indi_imager_agent" to null,
+            // Focuser
+            "indi_simulator_focus" to null,
+            "indi_moonlitedro_focus" to null,
+            "indi_steeldrive2_focus" to null,
+            "indi_lynx_focus" to null,
+            "indi_fcusb_focus" to null,
+            "indi_smartfocus_focus" to null,
+            "indi_simulator_rotator" to null,
+            "indi_rbfocus_focus" to null,
+            "indi_lacerta_mfoc_focus" to null,
+            "indi_gemini_focus" to null,
+            "indi_myfocuserpro2_focus" to null,
+            "indi_tcfs_focus" to null,
+            "indi_lakeside_focus" to null,
+            "indi_robo_focus" to null,
+            "indi_celestron_sct_focus" to null,
+            "indi_nstep_focus" to null,
+            "indi_asi_focuser" to null,
+            "indi_pyxis_rotator" to null,
+            "indi_falcon_rotator" to null,
+            "indi_deepskydad_af2_focus" to null,
+            "indi_nightcrawler_focus" to null,
+            "indi_steeldrive_focus" to null,
+            "indi_hitecastrodc_focus" to null,
+            "indi_tcfs3_focus" to null,
+            "indi_armadillo_focus" to null,
+            "indi_dreamfocuser_focus" to null,
+            "indi_dmfc_focus" to null,
+            "indi_platypus_focus" to null,
+            "indi_activefocuser_focus" to null,
+            "indi_astromechfoc" to null,
+            "indi_beefocus" to null,
+            "indi_onfocus_focus" to null,
+            "indi_aaf2_focus" to null,
+            "indi_perfectstar_focus" to null,
+            "indi_fli_focus" to null,
+            "indi_moonlite_focus" to null,
+            "indi_deepskydad_af3_focus" to null,
+            "indi_sestosenso_focus" to null,
+            "indi_rainbowrsf_focus" to null,
+            "indi_microtouch_focus" to null,
+            "indi_nfocus" to null,
+            "indi_siefs_focus" to null,
+            "indi_usbfocusv3_focus" to null,
+            "indi_deepskydad_af1_focus" to null,
+            "indi_sestosenso2_focus" to null,
+            "indi_efa_focus" to null,
+            // Dome
+            "indi_scopedome_dome" to null,
+            "indi_talon6" to null,
+            "indi_script_dome" to null,
+            "indi_baader_dome" to null,
+            "indi_domepro2_dome" to null,
+            "indi_nexdome" to null,
+            "indi_ddw_dome" to null,
+            "indi_rigel_dome" to null,
+            "indi_rolloff_dome" to null,
+            "indi_maxdomeii" to null,
+            "indi_simulator_dome" to null,
+            "indi_dragonfly_dome" to null,
+            // Spectograph
+            "indi_limesdr_detector" to null,
+            "indi_rtlsdr" to null,
+            "indi_spectracyber" to null,
+            "indi_simulator_spectrograph" to null,
+            "indi_shelyakeshel_spectrograph" to null,
+            "indi_shelyakspox_spectrograph" to null,
+            // Auxiliary
+            "indi_gpusb" to null,
+            "indi_skysafari" to null,
+            "indi_planewave_deltat" to null,
+            "indi_watchdog" to null,
+            "indi_gpsnmea" to null,
+            "indi_star2000" to null,
+            "indi_pegasus_ppb" to null,
+            "indi_pegasus_ppba" to null,
+            "indi_usbdewpoint" to null,
+            "indi_rtklib" to null,
+            "indi_astrolink4" to null,
+            "indi_joystick" to null,
+            "indi_snapcap" to null,
+            "indi_mgenautoguider" to null,
+            "indi_pegasus_upb" to null,
+            "indi_gpsd" to null,
+            "indi_flipflat" to null,
+            "indi_astrometry" to null,
+            "indi_asi_st4" to null,
+            "indi_duino" to null,
+            "indi_seletek_rotator" to null,
+            "indi_asi_power" to null,
+            "indi_simulator_gps" to null,
+            "indi_arduinost4" to null,
+            // Detector
+            "indi_ahp_correlator" to null,
+            // Telescope
+            "indi_lx200zeq25" to null,
+            "indi_pmc8_telescope" to null,
+            "indi_ioptronv3_telescope" to null,
+            "indi_celestron_aux" to null,
+            "indi_azgti_telescope" to null,
+            "indi_synscan_telescope" to null,
+            "indi_skywatcherAltAzMount" to null,
+            "indi_starbook_telescope" to null,
+            "indi_lx200gemini" to null,
+            "indi_simulator_telescope" to Simulator::class,
+            "indi_ieq_telescope" to null,
+            "indi_dsc_telescope" to null,
+            "indi_lx200stargo" to null,
+            "indi_nexstarevo_telescope" to null,
+            "indi_skycommander_telescope" to null,
+            "indi_lx200_10micron" to null,
+            "indi_rainbow_telescope" to null,
+            "indi_lx200basic" to null,
+            "indi_crux_mount" to null,
+            "indi_lx200gps" to null,
+            "indi_lx200pulsar2" to null,
+            "indi_eq500x_telescope" to null,
+            "indi_lx200ap_gtocp2" to null,
+            "indi_lx200_TeenAstro" to null,
+            "indi_lx200autostar" to null,
+            "indi_celestron_gps" to null,
+            "indi_lx200aok" to null,
+            "indi_ioptronHC8406" to null,
+            "indi_script_telescope" to null,
+            "indi_synscanlegacy_telescope" to null,
+            "indi_lx200ss2000pc" to null,
+            "indi_lx200ap" to null,
+            "indi_lx200fs2" to null,
+            "indi_paramount_telescope" to null,
+            "indi_ieqlegacy_telescope" to null,
+            "indi_lx200classic" to null,
+            "indi_lx200_16" to null,
+            "indi_skywatcherAltAzSimple" to null,
+            "indi_eqmod_telescope" to null,
+            "indi_lx200gotonova" to null,
+            "indi_lx200_OnStep" to null,
+            "indi_lx200ap_experimental" to null,
+            "indi_temma_telescope" to null,
+            // Filter Wheel
+            "indi_manual_wheel" to null,
+            "indi_quantum_wheel" to null,
+            "indi_fli_wheel" to null,
+            "indi_qhycfw3_wheel" to null,
+            "indi_asi_wheel" to null,
+            "indi_trutech_wheel" to null,
+            "indi_sx_wheel" to null,
+            "indi_qhycfw1_wheel" to null,
+            "indi_apogee_wheel" to null,
+            "indi_optec_wheel" to null,
+            "indi_xagyl_wheel" to null,
+            "indi_qhycfw2_wheel" to null,
+            "indi_simulator_wheel" to null,
+            "indi_atik_wheel" to null,
+            // Adaptive Optic
+            "indi_sx_ao" to null,
         )
+
+
     }
 }

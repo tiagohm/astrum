@@ -5,5 +5,5 @@ interface LightElement : Element<State> {
     override val type: ElementType
         get() = ElementType.LIGHT
 
-    override fun valueToText(value: State) = value.text
+    override fun convert(value: State) = value.text
 }

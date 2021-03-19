@@ -1,37 +1,34 @@
 package br.tiagohm.astrum.indi.drivers.focuser
 
-import br.tiagohm.astrum.indi.drivers.BaseDriver
+import br.tiagohm.astrum.indi.drivers.Driver
 
-open class Focuser(
-    override val name: String,
-    override val executable: String,
-) : BaseDriver() {
+interface Focuser : Driver {
 
-    open fun focusIn() = send(FocusDirection.INWARD, true)
-
-    open fun focusOut() = send(FocusDirection.OUTWARD, true)
-
-    open fun abort() = send(FocusAbortMotion.ABORT, true)
-
-    open val isIn: Boolean
+    val isIn: Boolean
         get() = switch(FocusDirection.INWARD)
 
-    open val isOut: Boolean
+    val isOut: Boolean
         get() = switch(FocusDirection.OUTWARD)
 
-    open fun move(ms: Double) = send(FocusTimer.VALUE, ms)
+    fun focusIn() = send(FocusDirection.INWARD, true)
 
-    open fun moveAbsolute(n: Double) = send(FocusPosition.ABSOLUTE, n)
+    fun focusOut() = send(FocusDirection.OUTWARD, true)
 
-    open fun canMoveAbsolute() = has(FocusPosition.ABSOLUTE)
+    fun abort() = send(FocusAbortMotion.ABORT, true)
 
-    open fun moveRelative(n: Double) = send(FocusPosition.RELATIVE, n)
+    fun move(ms: Double) = send(FocusTimer.VALUE, ms)
 
-    open fun canMoveRelative() = has(FocusPosition.RELATIVE)
+    fun moveAbsolute(n: Double) = send(FocusPosition.ABSOLUTE, n)
 
-    open fun hasBacklash() = has(FocusBackslashStep.VALUE)
+    fun canMoveAbsolute() = has(FocusPosition.ABSOLUTE)
 
-    open fun backslash(steps: Int) {
+    fun moveRelative(n: Double) = send(FocusPosition.RELATIVE, n)
+
+    fun canMoveRelative() = has(FocusPosition.RELATIVE)
+
+    fun hasBacklash() = has(FocusBackslashStep.VALUE)
+
+    fun backslash(steps: Int) {
         // Make sure focus compensation is enabled.
         if (steps != 0) send(FocusBackslashToggle.ENABLED, true)
         send(FocusBackslashStep.VALUE, steps.toDouble())
@@ -39,7 +36,7 @@ open class Focuser(
         if (steps == 0) send(FocusBackslashToggle.DISABLED, true)
     }
 
-    open fun backslash() = number(FocusBackslashStep.VALUE)
+    fun backslash() = number(FocusBackslashStep.VALUE)
 
-    open fun hasDeviation() = name == "Nikon DSLR Z6"
+    fun hasDeviation() = name == "Nikon DSLR Z6"
 }

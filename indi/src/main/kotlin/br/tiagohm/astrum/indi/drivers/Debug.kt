@@ -9,9 +9,4 @@ enum class Debug : SwitchElement {
     override val propName = "DEBUG"
 
     override val elementName = name
-
-    companion object {
-
-        fun parse(name: String) = valueOf(name)
-    }
 }

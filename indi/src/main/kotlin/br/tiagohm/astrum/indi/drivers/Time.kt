@@ -9,9 +9,4 @@ enum class Time : TextElement {
     override val propName = "TIME_UTC"
 
     override val elementName = name
-
-    companion object {
-
-        fun parse(name: String) = valueOf(name)
-    }
 }

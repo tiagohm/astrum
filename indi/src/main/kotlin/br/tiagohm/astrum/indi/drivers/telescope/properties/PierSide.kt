@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.drivers.telescope
+package br.tiagohm.astrum.indi.drivers.telescope.properties
 
 import br.tiagohm.astrum.indi.protocol.SwitchElement
 
@@ -19,9 +19,4 @@ enum class PierSide : SwitchElement {
     override val propName = "TELESCOPE_PIER_SIDE"
 
     override val elementName = "PIER_$name"
-
-    companion object {
-
-        fun parse(name: String) = valueOf(name.substring(5))
-    }
 }

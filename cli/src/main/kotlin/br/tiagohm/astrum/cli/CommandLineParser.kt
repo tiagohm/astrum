@@ -55,7 +55,7 @@ object CommandLineParser {
         }
 
         if (state == IN_QUOTE || state == IN_DOUBLE_QUOTE) {
-            throw IOException("Unbalanced quotes in $line")
+            throw IOException("Unbalanced quotes in $line.")
         }
 
         return list.toTypedArray()

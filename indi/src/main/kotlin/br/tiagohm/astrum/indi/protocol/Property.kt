@@ -16,7 +16,7 @@ class Property<E : Element<T>, T>(vararg val elements: E) : Command<Array<T>> {
             for (i in value.indices) {
                 "one${type}" {
                     attribute("name", elements[i].elementName)
-                    text(elements[i].valueToText(value[i]))
+                    text(elements[i].convert(value[i]))
                 }
             }
         }.toString(false)

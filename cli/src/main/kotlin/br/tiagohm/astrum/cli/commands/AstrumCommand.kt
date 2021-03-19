@@ -42,16 +42,14 @@ class AstrumCommand : Command, MessageListener, DriverListener {
         if (client == null) {
             client = Client(host, port).also {
                 it.registerMessageListener(this)
-                it.registerDriverListener(this)
+                it.registerMessageListener(this)
 
                 it.connect()
-                it.fetchProperties()
-                it.enableBLOB()
 
-                blue("[INFO] Connected")
+                blue("[INFO] Connected.")
             }
         } else {
-            orange("[WARNING] Already connected")
+            orange("[WARNING] Already connected.")
         }
     }
 
@@ -63,13 +61,13 @@ class AstrumCommand : Command, MessageListener, DriverListener {
     fun disconnect() {
         if (client != null) {
             client!!.unregisterMessageListener(this)
-            client!!.unregisterDriverListener(this)
+            client!!.unregisterMessageListener(this)
             client!!.disconnect()
             client = null
 
-            blue("[INFO] Disconnected")
+            blue("[INFO] Disconnected.")
         } else {
-            orange("[WARNING] Already disconnected")
+            orange("[WARNING] Already disconnected.")
         }
     }
 
@@ -86,10 +84,10 @@ class AstrumCommand : Command, MessageListener, DriverListener {
     }
 
     override fun onDriverAdded(driver: Driver) {
-        green("[OK] Driver ${driver.name} found")
+        green("[OK] Driver ${driver.name} found.")
     }
 
     override fun onDriverRemoved(driver: Driver) {
-        orange("[WARNING] Driver ${driver.name} was removed")
+        orange("[WARNING] Driver ${driver.name} was removed.")
     }
 }

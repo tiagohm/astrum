@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.drivers.telescope
+package br.tiagohm.astrum.indi.drivers.telescope.properties
 
 import br.tiagohm.astrum.indi.protocol.SwitchElement
 
@@ -9,9 +9,4 @@ enum class Park : SwitchElement {
     override val propName = "TELESCOPE_PARK"
 
     override val elementName = name
-
-    companion object {
-
-        fun parse(name: String) = valueOf(name)
-    }
 }

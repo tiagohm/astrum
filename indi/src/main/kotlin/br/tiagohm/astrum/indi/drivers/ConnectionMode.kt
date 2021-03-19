@@ -9,9 +9,4 @@ enum class ConnectionMode : SwitchElement {
     override val propName = "CONNECTION_MODE"
 
     override val elementName = "CONNECTION_$name"
-
-    companion object {
-
-        fun parse(name: String) = valueOf(name.substring(11))
-    }
 }

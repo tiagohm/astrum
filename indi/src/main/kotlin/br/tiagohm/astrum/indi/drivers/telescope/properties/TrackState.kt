@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.drivers.telescope
+package br.tiagohm.astrum.indi.drivers.telescope.properties
 
 import br.tiagohm.astrum.indi.protocol.SwitchElement
 
@@ -9,9 +9,4 @@ enum class TrackState : SwitchElement {
     override val propName = "TELESCOPE_TRACK_STATE"
 
     override val elementName = "TRACK_$name"
-
-    companion object {
-
-        fun parse(name: String) = valueOf(name.substring(6))
-    }
 }

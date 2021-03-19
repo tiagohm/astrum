@@ -140,7 +140,7 @@ Commands:
 
 ---
 
-`datetime <arg0>`: Sets the UTC Date & Offset. Use NOW for get the current date.
+`time <arg0>`: Sets the UTC Date & Offset. Use NOW for get the current date.
 
 * `arg0`(string): The UTC Date & Offset in ISO 8601 format
 
@@ -225,7 +225,7 @@ Output:
 * `--dec`: DEC guiding pulse in milliseconds following by direction (N or S)
 * `--ra`: RA guiding pulse in milliseconds following by direction (E or W)
 
-Example: `pulse 1000.0N 2000.0W`
+Example: `pulse --dec 1000.0N --ra 2000.0W`
 
 ---
 

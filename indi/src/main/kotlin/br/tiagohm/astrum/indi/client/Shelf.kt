@@ -1,13 +1,15 @@
-package br.tiagohm.astrum.indi.common
+package br.tiagohm.astrum.indi.client
 
-internal class Shelf<T> {
+open class Shelf<T> {
 
     private val data = HashMap<String, HashMap<String, HashMap<String, T>>>()
 
+    @Synchronized
     fun get(first: String, second: String, third: String): T? {
         return data[first]?.get(second)?.get(third)
     }
 
+    @Synchronized
     fun set(first: String, second: String, third: String, value: T) {
         if (data.containsKey(first)) {
             if (data[first]!!.containsKey(second)) {
@@ -20,27 +22,42 @@ internal class Shelf<T> {
         }
     }
 
+    @Synchronized
     fun clear() = apply { data.clear() }
 
+    @Synchronized
     fun clear(first: String) = apply { data[first]?.clear() }
 
+    @Synchronized
     fun clear(first: String, second: String) = apply { data[first]?.get(second)?.clear() }
 
+    @Synchronized
     fun remove(first: String) = apply { data.remove(first) }
 
+    @Synchronized
     fun remove(first: String, second: String) = apply { data[first]?.remove(second) }
 
+    @Synchronized
     fun remove(first: String, second: String, third: String) = apply { data[first]?.get(second)?.remove(third) }
 
+    @Synchronized
     fun has(first: String) = data.containsKey(first)
 
+    @Synchronized
     fun has(first: String, second: String) = has(first) && data[first]!!.containsKey(second)
 
+    @Synchronized
     fun has(first: String, second: String, third: String) = has(first, second) && data[first]!![second]!!.containsKey(third)
 
-    fun keys(): Set<String> = data.keys
+    @Synchronized
+    fun keys() = data.keys.toList()
 
-    fun keys(first: String): Set<String> = data[first]?.keys ?: emptySet()
+    @Synchronized
+    fun keys(first: String) = data[first]?.keys?.toList() ?: emptyList()
 
-    fun keys(first: String, second: String) = data[first]?.get(second)?.keys ?: emptySet()
+    @Synchronized
+    fun keys(first: String, second: String) = data[first]?.get(second)?.keys?.toList() ?: emptyList()
+
+    @Synchronized
+    fun values(first: String, second: String) = data[first]?.get(second)?.values?.toList() ?: emptyList()
 }

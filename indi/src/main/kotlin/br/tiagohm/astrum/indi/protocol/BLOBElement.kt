@@ -5,7 +5,7 @@ interface BLOBElement : Element<ByteArray> {
     override val type: ElementType
         get() = ElementType.BLOB
 
-    override fun valueToText(value: ByteArray): String {
+    override fun convert(value: ByteArray): String {
         TODO("Not yet implemented")
     }
 }

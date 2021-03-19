@@ -13,9 +13,4 @@ enum class BaudRate(val rate: Int) : SwitchElement {
     override val propName = "DEVICE_BAUD_RATE"
 
     override val elementName = "$rate"
-
-    companion object {
-
-        fun parse(name: String) = valueOf("RATE_$name")
-    }
 }

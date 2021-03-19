@@ -25,6 +25,7 @@ fun main(vararg args: String) {
         os.contains("nux") -> Paths.get(homeDir, ".config", "astrum")
         else -> throw IllegalArgumentException("Unsupported operating system")
     }.toFile().also { it.mkdir() }
+
     // Terminal
     val terminal = TerminalBuilder.builder().build()
     val lineReader = LineReaderBuilder.builder()

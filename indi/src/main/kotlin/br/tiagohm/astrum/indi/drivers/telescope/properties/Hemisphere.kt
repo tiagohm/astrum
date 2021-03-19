@@ -1,4 +1,4 @@
-package br.tiagohm.astrum.indi.drivers.telescope
+package br.tiagohm.astrum.indi.drivers.telescope.properties
 
 import br.tiagohm.astrum.indi.protocol.SwitchElement
 
@@ -7,9 +7,4 @@ enum class Hemisphere(override val elementName: String) : SwitchElement {
     SOUTH("South");
 
     override val propName = "HEMISPHERE"
-
-    companion object {
-
-        fun parse(text: String) = valueOf(text.toUpperCase())
-    }
 }
