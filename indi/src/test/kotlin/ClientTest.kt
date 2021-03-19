@@ -49,7 +49,7 @@ class ClientTest {
         System.err.println(telescope.slewRates())
         System.err.println(telescope.slewRate())
         System.err.println(telescope.trackMode())
-        System.err.println(telescope.dateTime())
+        System.err.println(telescope.time())
 
         Thread.sleep(10000)
 

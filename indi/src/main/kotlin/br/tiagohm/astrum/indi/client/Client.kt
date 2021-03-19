@@ -469,7 +469,7 @@ open class Client(
             "indi_lx200gemini" to null,
             "indi_simulator_telescope" to TelescopeSimulator::class,
             "indi_ieq_telescope" to null,
-            "indi_dsc_telescope" to null,
+            "indi_dsc_telescope" to DSC::class,
             "indi_lx200stargo" to null,
             "indi_nexstarevo_telescope" to null,
             "indi_skycommander_telescope" to null,

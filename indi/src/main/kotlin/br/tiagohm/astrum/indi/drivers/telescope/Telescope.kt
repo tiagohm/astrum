@@ -49,7 +49,7 @@ interface Telescope : Driver {
         register(PierSide::class)
         register(TrackState::class)
         register(TrackRate::class)
-        register(OnCoordSet::class) // TODO: Some scopes can support some this attrs
+        register(OnCoordSet::class)
         register(TrackRate::class)
         // TODO: Track Satellite
         register(Park::class)
@@ -94,8 +94,7 @@ interface Telescope : Driver {
 
     fun mountType() = when {
         switch(MountType.ALTAZ) -> MountType.ALTAZ
-        switch(MountType.EQ_FORK) -> MountType.EQ_FORK
-        else -> MountType.EQ_GEM
+        else -> MountType.EQUATORIAL
     }
 
     fun trackModes() = client.elements(name, "TELESCOPE_TRACK_MODE").map { it.element as TrackMode }

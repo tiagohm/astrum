@@ -4,8 +4,7 @@ import br.tiagohm.astrum.indi.protocol.SwitchElement
 
 enum class MountType : SwitchElement {
     ALTAZ,
-    EQ_FORK,
-    EQ_GEM;
+    EQUATORIAL;
 
     override val propName = "MOUNT_TYPE"
 
